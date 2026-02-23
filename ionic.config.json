@@ -1,0 +1,7 @@
+{
+  "name": "car-garage-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
