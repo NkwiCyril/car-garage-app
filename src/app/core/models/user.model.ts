@@ -26,7 +26,7 @@ export interface OtpVerifyRequest {
 export interface ResetPasswordRequest {
   phone: string;
   newPassword: string;
-  confirmPassword: string;
+  reapeatPassword: string;
 }
 
 export interface AuthResponse {

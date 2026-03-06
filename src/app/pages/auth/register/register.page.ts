@@ -22,7 +22,7 @@ export class RegisterPage {
   name: string = '';
   phone: string = '';
   password: string = '';
-  confirmPassword: string = '';
+  reapeatPassword: string = '';
 
   constructor(private router: Router) {}
 
