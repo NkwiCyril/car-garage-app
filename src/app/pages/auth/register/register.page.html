@@ -1,0 +1,81 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="register-container">
+    <!-- Header -->
+    <div class="header-section">
+      <button class="back-btn" (click)="goToLogin()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Title -->
+    <div class="title-section">
+      <h1 class="title">Create Account</h1>
+      <p class="subtitle">Sign up to get started with DriveEase</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section">
+      <div class="input-group">
+        <label class="input-label">Full Name</label>
+        <ion-input
+          class="de-input"
+          type="text"
+          placeholder="Enter your full name"
+          [(ngModel)]="name"
+          fill="outline"
+          mode="md"
+        ></ion-input>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Phone Number</label>
+        <ion-input
+          class="de-input"
+          type="tel"
+          placeholder="Enter your phone number"
+          [(ngModel)]="phone"
+          fill="outline"
+          mode="md"
+        ></ion-input>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <ion-input
+          class="de-input"
+          type="password"
+          placeholder="Create a password"
+          [(ngModel)]="password"
+          fill="outline"
+          mode="md"
+        >
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Confirm Password</label>
+        <ion-input
+          class="de-input"
+          type="password"
+          placeholder="Repeat your password"
+          [(ngModel)]="confirmPassword"
+          fill="outline"
+          mode="md"
+        >
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </div>
+
+      <!-- Register Button -->
+      <button class="register-btn" (click)="register()">Sign Up</button>
+    </div>
+
+    <!-- Login link -->
+    <div class="login-section">
+      <p>Already have an account? <a (click)="goToLogin()" class="de-link">Login</a></p>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,36 @@
+<ion-content [fullscreen]="true" [scrollY]="false">
+  <div class="splash-container">
+    <div class="splash-top">
+      <!-- Logo Icon -->
+      <div class="logo-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="#1a73e8"/>
+          <path d="M14 28h20l-2-8H16l-2 8zm2 2v2a1 1 0 001 1h2a1 1 0 001-1v-2h8v2a1 1 0 001 1h2a1 1 0 001-1v-2h1a1 1 0 001-1v-1H15v1a1 1 0 001 1zm3-4a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm10 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" fill="white"/>
+        </svg>
+      </div>
+
+      <!-- App Name -->
+      <h1 class="app-name"> DriveEase</h1>
+
+      <!-- Tagline -->
+      <p class="app-tagline">PARKING &bull; RENTING &bull; BUYING</p>
+    </div>
+
+    <div class="splash-bottom">
+      <!-- Dots indicator -->
+      <div class="dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <!-- Next Button -->
+      <button class="next-btn" (click)="goToNext()">
+        Next
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</ion-content>

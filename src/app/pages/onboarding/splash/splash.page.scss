@@ -1,0 +1,123 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: transparent;
+}
+
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  background: linear-gradient(180deg, #ffffff 0%, #e8f0fe 40%, #a8c8f0 70%, #1a73e8 100%);
+  padding: 0 var(--de-spacing-xl);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.splash-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding-top: 80px;
+}
+
+.logo-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: var(--de-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(10, 22, 40, 0.2);
+
+  svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.app-name {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--de-primary);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.app-tagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--de-gray-dark);
+  letter-spacing: 3px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.splash-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 48px;
+  gap: 32px;
+}
+
+.dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+
+  &.active {
+    width: 24px;
+    border-radius: 4px;
+    background: var(--de-primary);
+  }
+}
+
+.next-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+  height: 52px;
+  border: none;
+  border-radius: var(--de-radius-md);
+  background: var(--de-primary);
+  color: var(--de-white);
+  font-size: 16px;
+  font-weight: 600;
+  font-family: var(--de-font-family);
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 16px rgba(10, 22, 40, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(10, 22, 40, 0.2);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}

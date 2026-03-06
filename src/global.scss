@@ -1,13 +1,10 @@
 /*
- * App Global CSS
+ * App Global CSS - DriveEase
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
  */
+
+/* Google Fonts - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
@@ -25,13 +22,159 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+/* Global Styles */
+* {
+  font-family: var(--de-font-family);
+}
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+body {
+  background-color: var(--de-white);
+  color: var(--de-primary);
+}
+
+// Utility classes
+.de-text-center {
+  text-align: center;
+}
+
+.de-text-muted {
+  color: var(--de-gray);
+}
+
+.de-text-accent {
+  color: var(--de-accent);
+}
+
+.de-text-white {
+  color: var(--de-white);
+}
+
+// Button styles
+.de-btn-primary {
+  --background: var(--de-accent);
+  --border-radius: var(--de-radius-md);
+  --box-shadow: var(--de-shadow-sm);
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  width: 100%;
+  height: 52px;
+}
+
+.de-btn-outline {
+  --background: transparent;
+  --border-color: var(--de-gray-light);
+  --border-width: 1.5px;
+  --border-style: solid;
+  --border-radius: var(--de-radius-md);
+  --color: var(--de-primary);
+  font-weight: 500;
+  font-size: 14px;
+  width: 100%;
+  height: 48px;
+}
+
+.de-btn-dark {
+  --background: var(--de-primary);
+  --border-radius: var(--de-radius-md);
+  --box-shadow: var(--de-shadow-sm);
+  --padding-top: 14px;
+  --padding-bottom: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.3px;
+  width: 100%;
+  height: 52px;
+}
+
+// Input styles
+.de-input {
+  --background: var(--de-off-white);
+  --border-radius: var(--de-radius-md);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --placeholder-color: var(--de-gray);
+  --color: var(--de-primary);
+  font-size: 15px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: var(--de-radius-md);
+}
+
+.de-input.has-focus {
+  border-color: var(--de-accent);
+}
+
+// Card styles
+.de-card {
+  border-radius: var(--de-radius-lg);
+  box-shadow: var(--de-shadow-sm);
+  background: var(--de-white);
+}
+
+// Link styles
+.de-link {
+  color: var(--de-accent);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+// Divider with text
+.de-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--de-gray-light);
+  }
+
+  span {
+    font-size: 13px;
+    color: var(--de-gray);
+    white-space: nowrap;
+  }
+}
+
+// Social button styles
+.de-social-btn {
+  --background: var(--de-white);
+  --border-color: var(--de-gray-light);
+  --border-width: 1.5px;
+  --border-style: solid;
+  --border-radius: var(--de-radius-md);
+  --color: var(--de-primary);
+  --box-shadow: none;
+  font-weight: 500;
+  font-size: 14px;
+  height: 48px;
+
+  ion-icon {
+    margin-right: 8px;
+    font-size: 20px;
+  }
+}
+
+// Hide scrollbar globally for cleaner look
+::-webkit-scrollbar {
+  display: none;
+}
+
+// Safe area padding
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
