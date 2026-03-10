@@ -23,7 +23,7 @@
           class="de-input"
           type="text"
           placeholder="Enter your full name"
-          [(ngModel)]="name"
+          [(ngModel)]="fullName"
           fill="outline"
           mode="md"
         ></ion-input>
@@ -61,7 +61,7 @@
           class="de-input"
           type="password"
           placeholder="Repeat your password"
-          [(ngModel)]="reapeatPassword"
+          [(ngModel)]="confirmPassword"
           fill="outline"
           mode="md"
         >
@@ -70,7 +70,10 @@
       </div>
 
       <!-- Register Button -->
-      <button class="register-btn" (click)="register()">Sign Up</button>
+      <button class="register-btn" (click)="register()" [disabled]="isLoading">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">Sign Up</span>
+      </button>
     </div>
 
     <!-- Login link -->

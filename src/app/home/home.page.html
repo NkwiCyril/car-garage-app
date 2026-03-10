@@ -1,20 +1,26 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Dashboard
+      DriveEase Dashboard
     </ion-title>
+    <ion-button slot="end" fill="clear" (click)="confirmLogout()" class="logout-btn">
+      Logout
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Dashboard</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <div id="container">
-    <strong>Welcome to Garage Space</strong>
-    <p>Ready to begin?</p>
+    <strong>Welcome to DriveEase{{ userName ? ', ' + userName : '' }}!</strong>
+    <p>Your parking, rental, and car marketplace dashboard</p>
+    <p style="margin-top: 20px; color: #8c8c8c; font-size: 14px;">
+      Features coming soon...
+    </p>
   </div>
 </ion-content>

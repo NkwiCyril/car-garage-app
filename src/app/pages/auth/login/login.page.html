@@ -49,7 +49,10 @@
       </div>
 
       <!-- Login Button -->
-      <button class="login-btn" (click)="login()">Login</button>
+      <button class="login-btn" (click)="login()" [disabled]="isLoading">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">Login</span>
+      </button>
     </div>
 
     <!-- Divider -->

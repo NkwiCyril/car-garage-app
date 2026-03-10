@@ -1,0 +1,24 @@
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { StorageService } from '../services/storage.service';
+
+export const initialRedirectGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const storageService = inject(StorageService);
+  const router = inject(Router);
+
+  if (authService.isLoggedIn) {
+    router.navigate(['/home']);
+    return false;
+  }
+
+  const hasOnboarded = storageService.get<boolean>('hasOnboarded');
+  if (hasOnboarded) {
+    router.navigate(['/auth/login']);
+  } else {
+    router.navigate(['/onboarding/splash']);
+  }
+  
+  return false;
+};

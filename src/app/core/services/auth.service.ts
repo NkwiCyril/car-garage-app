@@ -1,11 +1,18 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { AuthResponse, LoginRequest, RegisterRequest } from '../models/user.model';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private apiUrl = environment.apiUrl;
   private isAuthenticated$ = new BehaviorSubject<boolean>(false);
+  private currentUser$ = new BehaviorSubject<any>(null);
 
   get isLoggedIn$(): Observable<boolean> {
     return this.isAuthenticated$.asObservable();
@@ -15,42 +22,96 @@ export class AuthService {
     return this.isAuthenticated$.value;
   }
 
-  login(phone: string, password: string): Observable<any> {
-    // TODO: Replace with actual API call
-    return of({ success: true });
+  get currentUser(): any {
+    return this.currentUser$.value;
   }
 
-  register(fullName: string, phone: string, password: string): Observable<any> {
-    // TODO: Replace with actual API call
-    return of({ success: true });
+  constructor(
+    private http: HttpClient,
+    private storageService: StorageService
+  ) {
+    this.checkAuthStatus();
+  }
+
+  private checkAuthStatus(): void {
+    const token = this.storageService.get<string>('authToken');
+    const user = this.storageService.get<any>('currentUser');
+    if (token && user) {
+      this.isAuthenticated$.next(true);
+      this.currentUser$.next(user);
+    }
+  }
+
+  login(phone: string, password: string): Observable<any> {
+    console.log('Login request:', { phone, password });
+    const payload: LoginRequest = { phone, password };
+    return this.http.post<any>(`${this.apiUrl}/users/login`, payload).pipe(
+      tap((response) => {
+        if (response.success && response.token) {
+          this.storageService.set('authToken', response.token);
+          this.storageService.set('currentUser', response.user);
+          this.isAuthenticated$.next(true);
+          this.currentUser$.next(response.user);
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  register(fullName: string, phone: string, password: string, repeatPassword: string): Observable<any> {
+    const payload: RegisterRequest & { repeatPassword: string } = {
+      name: fullName,
+      phone,
+      password,
+      repeatPassword
+    };
+    return this.http.post<any>(`${this.apiUrl}/users/register`, payload).pipe(
+      catchError(this.handleError)
+    );
   }
 
   loginWithGoogle(): Observable<any> {
-    // TODO: Replace with Google OAuth API call
-    return of({ success: true });
+    throw new Error('Google OAuth not implemented yet');
   }
 
   forgotPassword(phone: string): Observable<any> {
-    // TODO: Replace with actual API call to send OTP
-    return of({ success: true });
+    throw new Error('Forgot password not implemented yet');
   }
 
   verifyOtp(phone: string, otp: string): Observable<any> {
-    // TODO: Replace with actual API call
-    return of({ success: true });
+    throw new Error('OTP verification not implemented yet');
   }
 
   resetPassword(phone: string, newPassword: string): Observable<any> {
-    // TODO: Replace with actual API call
-    return of({ success: true });
+    throw new Error('Reset password not implemented yet');
   }
 
   logout(): void {
+    this.storageService.remove('authToken');
+    this.storageService.remove('currentUser');
     this.isAuthenticated$.next(false);
-    // TODO: Clear tokens, navigate to login
+    this.currentUser$.next(null);
   }
 
-  setAuthenticated(value: boolean): void {
-    this.isAuthenticated$.next(value);
+  getToken(): string | null {
+    return this.storageService.get<string>('authToken');
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'An error occurred';
+    
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      if (error.error?.message) {
+        errorMessage = error.error.message;
+      } else if (error.error?.errors) {
+        errorMessage = error.error.errors.map((e: any) => e.msg).join(', ');
+      } else {
+        errorMessage = `Server error: ${error.status}`;
+      }
+    }
+    
+    return throwError(() => new Error(errorMessage));
   }
 }

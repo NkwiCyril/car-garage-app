@@ -25,3 +25,23 @@
 #container a {
   text-decoration: none;
 }
+
+// Logout button in header
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ion-color-danger);
+  padding: 8px;
+  margin-left: auto; // pushes it to the right
+}
+
+// Alert button styles (applied globally or in global.scss)
+.alert-cancel-btn {
+  color: var(--ion-color-medium) !important;
+}
+
+.alert-logout-btn {
+  color: var(--ion-color-danger) !important;
+  font-weight: bold !important;
+}
