@@ -9,7 +9,7 @@ export const initialRedirectGuard: CanActivateFn = () => {
   const router = inject(Router);
 
   if (authService.isLoggedIn) {
-    router.navigate(['/home']);
+    router.navigate(['/tabs/home']);
     return false;
   }
 
