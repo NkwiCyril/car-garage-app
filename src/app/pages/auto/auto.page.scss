@@ -1,0 +1,470 @@
+.auto-container {
+  padding: 0 24px 32px;
+  padding-top: calc(env(safe-area-inset-top) + 20px);
+  background: var(--de-white);
+  min-height: 100%;
+}
+
+// ─── Header ────────────────────────────────────────────
+.auto-header {
+  margin-bottom: 20px;
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--de-text-primary);
+    margin: 0 0 4px;
+    letter-spacing: -0.3px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--de-gray);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+// ─── Segment ───────────────────────────────────────────
+.segment-wrapper {
+  margin-bottom: 24px;
+
+  ion-segment {
+    --background: var(--de-off-white);
+    border-radius: 12px;
+    padding: 3px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+
+    ion-segment-button {
+      --color: var(--de-gray);
+      --color-checked: var(--de-primary);
+      --indicator-color: var(--de-primary);
+      --indicator-box-shadow: none;
+      --border-radius: 9px;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0;
+      min-height: 38px;
+      text-transform: none;
+    }
+  }
+}
+
+// ─── Tab Fade ──────────────────────────────────────────
+.tab-content {
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Search + Filter ───────────────────────────────────
+.search-filter-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 12px;
+  padding: 0 14px;
+  height: 46px;
+
+  ion-icon {
+    font-size: 17px;
+    color: var(--de-gray);
+    flex-shrink: 0;
+  }
+
+  input {
+    border: none;
+    background: none;
+    outline: none;
+    font-family: var(--de-font-family);
+    font-size: 14px;
+    color: var(--de-text-primary);
+    width: 100%;
+
+    &::placeholder { color: var(--de-gray); }
+  }
+}
+
+.filter-btn {
+  width: 46px;
+  height: 46px;
+  background: var(--de-primary);
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 19px;
+    color: var(--de-white);
+  }
+}
+
+// ─── List Cards ────────────────────────────────────────
+.list-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-card {
+  display: flex;
+  background: var(--de-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--de-shadow-sm);
+  transition: transform 0.15s ease;
+
+  &:active { transform: scale(0.98); }
+}
+
+.list-card-image {
+  position: relative;
+  width: 110px;
+  min-height: 110px;
+  flex-shrink: 0;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--de-off-white);
+
+  ion-icon {
+    font-size: 28px;
+    color: var(--de-gray-light);
+  }
+
+  // All variants use same neutral brand background — no off-brand colors
+  &.garage-bg,
+  &.rent-bg,
+  &.buy-bg {
+    background: var(--de-off-white);
+    ion-icon { color: var(--de-gray-light); }
+  }
+}
+
+.card-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--de-white);
+  color: var(--de-gray-dark);
+  box-shadow: 0 1px 3px rgba(10, 22, 40, 0.08);
+
+  &.open {
+    color: var(--de-success);
+  }
+
+  &.full {
+    color: var(--de-danger);
+  }
+
+  &.type-badge,
+  &.condition-badge {
+    color: var(--de-accent);
+  }
+}
+
+.list-card-body {
+  flex: 1;
+  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--de-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 12px;
+    color: var(--de-warning);
+  }
+
+  span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--de-gray-dark);
+  }
+}
+
+.card-type-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--de-gray);
+  background: var(--de-off-white);
+  padding: 2px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.card-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+
+  ion-icon {
+    font-size: 13px;
+    color: var(--de-gray);
+  }
+
+  span {
+    font-size: 12px;
+    color: var(--de-gray);
+  }
+}
+
+.card-meta {
+  font-size: 12px;
+  color: var(--de-gray);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 6px;
+
+  ion-icon { font-size: 13px; }
+}
+
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.card-meta-sep {
+  color: var(--de-gray-light);
+  font-size: 10px;
+}
+
+.card-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.card-price {
+  .price-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--de-text-primary);
+  }
+
+  .price-unit {
+    font-size: 11px;
+    color: var(--de-gray);
+    font-weight: 400;
+  }
+}
+
+.spots-left {
+  font-size: 11px;
+  color: var(--de-accent);
+  font-weight: 600;
+}
+
+.rent-btn-sm {
+  background: var(--de-primary);
+  color: var(--de-white);
+  border: none;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--de-font-family);
+  cursor: pointer;
+  letter-spacing: 0.2px;
+}
+
+// ─── Sell Section ──────────────────────────────────────
+.sell-section {
+  text-align: center;
+  padding: 8px 0 24px;
+}
+
+.sell-hero {
+  margin-bottom: 32px;
+
+  .sell-hero-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: var(--de-off-white);
+    border: 1.5px solid var(--de-gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+
+    ion-icon {
+      font-size: 28px;
+      color: var(--de-primary);
+    }
+  }
+
+  h2 {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--de-text-primary);
+    margin: 0 0 8px;
+    letter-spacing: -0.2px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--de-gray);
+    line-height: 1.55;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}
+
+.sell-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.sell-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 14px;
+  padding: 14px 16px;
+
+  .step-number {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--de-primary);
+    color: var(--de-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .step-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--de-white);
+    border: 1px solid var(--de-gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 18px;
+      color: var(--de-primary);
+    }
+  }
+
+  .step-text {
+    h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--de-text-primary);
+      margin: 0 0 2px;
+    }
+
+    p {
+      font-size: 12px;
+      color: var(--de-gray);
+      margin: 0;
+    }
+  }
+}
+
+.sell-cta-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--de-primary);
+  color: var(--de-white);
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-family: var(--de-font-family);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 12px;
+  letter-spacing: 0.2px;
+
+  ion-icon { font-size: 20px; }
+}
+
+.sell-note {
+  font-size: 12px;
+  color: var(--de-gray);
+  margin: 0;
+}

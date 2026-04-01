@@ -1,0 +1,195 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="auto-container">
+
+    <!-- Header -->
+    <div class="auto-header">
+      <h1 class="page-title">Auto</h1>
+      <p class="page-subtitle">Find parking, rent, buy or sell vehicles</p>
+    </div>
+
+    <!-- Top Tabs / Segment -->
+    <div class="segment-wrapper">
+      <ion-segment [value]="activeTab" (ionChange)="onTabChange($event)" mode="md">
+        <ion-segment-button value="garage">
+          <ion-label>Garage</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="rent">
+          <ion-label>Rent</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="buy">
+          <ion-label>Buy</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="sell">
+          <ion-label>Sell</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <!-- Garage Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'garage'">
+      <div class="search-filter-row">
+        <div class="search-box">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Search parking spots..." />
+        </div>
+        <button class="filter-btn">
+          <ion-icon name="filter-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="list-cards">
+        <div class="list-card" *ngFor="let spot of garagePlaceholder">
+          <div class="list-card-image">
+            <div class="image-placeholder garage-bg">
+              <ion-icon name="car-outline"></ion-icon>
+            </div>
+            <div class="card-badge" [class.open]="spot.status === 'Open'" [class.full]="spot.status === 'Full'">
+              {{ spot.status }}
+            </div>
+          </div>
+          <div class="list-card-body">
+            <div class="card-top-row">
+              <h3 class="card-title">{{ spot.name }}</h3>
+              <div class="card-rating">
+                <ion-icon name="star"></ion-icon>
+                <span>{{ spot.rating }}</span>
+              </div>
+            </div>
+            <div class="card-location">
+              <ion-icon name="location-outline"></ion-icon>
+              <span>{{ spot.distance }} &bull; {{ spot.area }}</span>
+            </div>
+            <div class="card-bottom-row">
+              <div class="card-price">
+                <span class="price-val">{{ spot.price }} CFA</span>
+                <span class="price-unit">/hr</span>
+              </div>
+              <span class="spots-left">{{ spot.spots }} spots left</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rent Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'rent'">
+      <div class="search-filter-row">
+        <div class="search-box">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Search rental cars..." />
+        </div>
+        <button class="filter-btn">
+          <ion-icon name="filter-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="list-cards">
+        <div class="list-card" *ngFor="let car of rentPlaceholder">
+          <div class="list-card-image">
+            <div class="image-placeholder rent-bg">
+              <ion-icon name="key-outline"></ion-icon>
+            </div>
+            <div class="card-badge type-badge">{{ car.type }}</div>
+          </div>
+          <div class="list-card-body">
+            <div class="card-top-row">
+              <h3 class="card-title">{{ car.name }}</h3>
+              <div class="card-rating">
+                <ion-icon name="star"></ion-icon>
+                <span>{{ car.rating }}</span>
+              </div>
+            </div>
+            <span class="card-meta">{{ car.transmission }}</span>
+            <div class="card-bottom-row">
+              <div class="card-price">
+                <span class="price-val">{{ formatPrice(car.price) }} CFA</span>
+                <span class="price-unit">/{{ car.unit }}</span>
+              </div>
+              <button class="rent-btn-sm">Rent</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buy Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'buy'">
+      <div class="search-filter-row">
+        <div class="search-box">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" placeholder="Search cars for sale..." />
+        </div>
+        <button class="filter-btn">
+          <ion-icon name="filter-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="list-cards">
+        <div class="list-card" *ngFor="let car of buyPlaceholder">
+          <div class="list-card-image">
+            <div class="image-placeholder buy-bg">
+              <ion-icon name="bag-handle-outline"></ion-icon>
+            </div>
+            <div class="card-badge condition-badge">{{ car.condition }}</div>
+          </div>
+          <div class="list-card-body">
+            <div class="card-top-row">
+              <h3 class="card-title">{{ car.name }}</h3>
+              <span class="card-type-tag">{{ car.type }}</span>
+            </div>
+            <div class="card-meta-row">
+              <span class="card-meta">{{ car.mileage }}</span>
+              <span class="card-meta-sep">&bull;</span>
+              <span class="card-meta">
+                <ion-icon name="location-outline"></ion-icon>
+                {{ car.location }}
+              </span>
+            </div>
+            <div class="card-bottom-row">
+              <div class="card-price">
+                <span class="price-val">{{ formatPrice(car.price) }} CFA</span>
+              </div>
+              <button class="rent-btn-sm">View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sell Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'sell'">
+      <div class="sell-section">
+        <div class="sell-hero">
+          <div class="sell-hero-icon">
+            <ion-icon name="pricetag-outline"></ion-icon>
+          </div>
+          <h2>{{ sellPlaceholder.title }}</h2>
+          <p>{{ sellPlaceholder.subtitle }}</p>
+        </div>
+
+        <div class="sell-steps">
+          <div class="sell-step" *ngFor="let step of sellPlaceholder.steps; let i = index">
+            <div class="step-number">{{ i + 1 }}</div>
+            <div class="step-content">
+              <div class="step-icon-wrapper">
+                <ion-icon [name]="step.icon"></ion-icon>
+              </div>
+              <div class="step-text">
+                <h4>{{ step.label }}</h4>
+                <p>{{ step.desc }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="sell-cta-btn">
+          <ion-icon name="car-outline"></ion-icon>
+          <span>List Your Car</span>
+        </button>
+
+        <p class="sell-note">It's free to list your first vehicle</p>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
