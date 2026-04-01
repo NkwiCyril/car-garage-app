@@ -3,8 +3,22 @@
  * ----------------------------------------------------------------------------
  */
 
-/* Google Fonts - Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Plus Jakarta Sans - Local Font */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/assets/font/Plus_Jakarta_Sans/PlusJakartaSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/assets/font/Plus_Jakarta_Sans/PlusJakartaSans-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
 
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/core.css";
@@ -163,6 +177,17 @@ body {
     margin-right: 8px;
     font-size: 20px;
   }
+}
+
+// Ion content background override
+ion-content {
+  --background: var(--de-white);
+}
+
+// Ion toolbar override
+ion-toolbar {
+  --background: var(--de-white);
+  --border-color: var(--de-gray-light);
 }
 
 // Hide scrollbar globally for cleaner look
