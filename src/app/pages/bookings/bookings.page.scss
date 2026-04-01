@@ -1,0 +1,218 @@
+.bookings-container {
+  padding: 0 24px 32px;
+  padding-top: calc(env(safe-area-inset-top) + 20px);
+  background: var(--de-white);
+  min-height: 100%;
+}
+
+// ─── Header ────────────────────────────────────────────
+.bookings-header {
+  margin-bottom: 20px;
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--de-text-primary);
+    margin: 0 0 4px;
+    letter-spacing: -0.3px;
+  }
+
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--de-gray);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+// ─── Segment ───────────────────────────────────────────
+.segment-wrapper {
+  margin-bottom: 24px;
+
+  ion-segment {
+    --background: var(--de-off-white);
+    border-radius: 12px;
+    padding: 3px;
+
+    ion-segment-button {
+      --color: var(--de-gray);
+      --color-checked: var(--de-primary);
+      --indicator-color: var(--de-primary);
+      --indicator-box-shadow: none;
+      --border-radius: 9px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0;
+      min-height: 36px;
+      text-transform: none;
+    }
+  }
+}
+
+// ─── Bookings List ─────────────────────────────────────
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.booking-card {
+  display: flex;
+  gap: 14px;
+  background: var(--de-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: var(--de-shadow-sm);
+  transition: transform 0.15s ease;
+
+  &:active { transform: scale(0.98); }
+}
+
+.booking-icon-col {
+  flex-shrink: 0;
+}
+
+.booking-type-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--de-primary);
+  }
+
+  // Both types use brand-consistent styling
+  &.parking,
+  &.rental {
+    background: var(--de-off-white);
+    ion-icon { color: var(--de-primary); }
+  }
+}
+
+.booking-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.booking-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--de-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.booking-status {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+
+  ion-icon { font-size: 12px; }
+
+  &.active {
+    color: var(--de-accent);
+    background: rgba(26, 115, 232, 0.08);
+  }
+
+  &.completed {
+    color: var(--de-success);
+    background: rgba(46, 204, 113, 0.08);
+  }
+
+  &.cancelled {
+    color: var(--de-danger);
+    background: rgba(231, 76, 60, 0.08);
+  }
+}
+
+.booking-info-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+
+  ion-icon {
+    font-size: 13px;
+    color: var(--de-gray);
+    flex-shrink: 0;
+  }
+
+  span {
+    font-size: 12px;
+    color: var(--de-gray);
+  }
+}
+
+.booking-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--de-text-primary);
+  margin-top: 8px;
+}
+
+// ─── Empty State ───────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+
+  .empty-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--de-off-white);
+    border: 1.5px solid var(--de-gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    ion-icon {
+      font-size: 28px;
+      color: var(--de-gray);
+    }
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--de-text-primary);
+    margin: 0 0 8px;
+    letter-spacing: -0.2px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--de-gray);
+    margin: 0;
+    line-height: 1.5;
+  }
+}
