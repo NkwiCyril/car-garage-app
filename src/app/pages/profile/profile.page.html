@@ -1,0 +1,58 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="profile-container">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="avatar-large">
+        <span>{{ userName.charAt(0) || 'U' }}</span>
+      </div>
+      <div class="profile-info">
+        <h2 class="profile-name">{{ userName }}</h2>
+        <p class="profile-phone">{{ userPhone }}</p>
+      </div>
+      <button class="edit-profile-btn">
+        <ion-icon name="create-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-value">12</span>
+        <span class="stat-label">Bookings</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">3</span>
+        <span class="stat-label">Vehicles</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">2</span>
+        <span class="stat-label">Favorites</span>
+      </div>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="menu-section">
+      <div class="menu-item" *ngFor="let item of menuItems" (click)="onMenuItemClick(item)">
+        <div class="menu-icon">
+          <ion-icon [name]="item.icon"></ion-icon>
+        </div>
+        <div class="menu-text">
+          <span class="menu-label">{{ item.label }}</span>
+          <span class="menu-subtitle">{{ item.subtitle }}</span>
+        </div>
+        <ion-icon name="chevron-forward" class="menu-arrow"></ion-icon>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <button class="logout-btn" (click)="confirmLogout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      <span>Logout</span>
+    </button>
+
+    <p class="app-version">DriveEase v1.0.0</p>
+  </div>
+</ion-content>
