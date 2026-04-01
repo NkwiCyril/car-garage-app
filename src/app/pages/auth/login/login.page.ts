@@ -54,7 +54,7 @@ export class LoginPage {
         this.isLoading = false;
         if (response.success) {
           await this.showToast('Login successful!', 'success');
-          this.router.navigate(['/home']);
+          this.router.navigate(['/tabs/home']);
         }
       },
       error: async (error) => {
