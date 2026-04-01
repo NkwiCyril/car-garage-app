@@ -48,11 +48,18 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
 
-  // Home (protected route)
+  // Tabs (protected - main app shell)
+  {
+    path: 'tabs',
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/tabs/tabs.routes').then((m) => m.tabsRoutes),
+  },
+
+  // Legacy home redirect
   {
     path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-    canActivate: [authGuard],
+    redirectTo: 'tabs/home',
+    pathMatch: 'full',
   },
 
   // Default redirect - smart routing based on auth status
