@@ -3,17 +3,18 @@
 
 :root {
   // Primary Colors
-  --de-primary: #0a1628;
-  --de-primary-light: #132240;
-  --de-primary-dark: #060f1c;
-  --de-accent: #1a73e8;
-  --de-accent-light: #4a94f0;
-  --de-accent-dark: #1260c4;
+  --de-primary: #1a73e8;
+  --de-primary-light: #4a94f0;
+  --de-primary-dark: #1260c4;
+  --de-accent: #0a1628;
+  --de-accent-light: #132240;
+  --de-accent-dark: #060f1c;
   --de-white: #ffffff;
   --de-off-white: #f5f7fa;
   --de-gray-light: #e8ecf1;
   --de-gray: #8c8c8c;
   --de-gray-dark: #4a4a4a;
+  --de-text-primary: #0a1628;
   --de-success: #2ecc71;
   --de-warning: #f39c12;
   --de-danger: #e74c3c;
@@ -43,7 +44,7 @@
   --de-spacing-2xl: 48px;
 
   // Font
-  --de-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --de-font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   // Ionic overrides
   --ion-color-primary: #1a73e8;
@@ -62,13 +63,13 @@
 
   --ion-font-family: var(--de-font-family);
   --ion-background-color: var(--de-white);
-  --ion-text-color: var(--de-primary);
+  --ion-text-color: var(--de-text-primary);
 }
 
 // Disable dark mode system override for this app
 @media (prefers-color-scheme: dark) {
   :root {
     --ion-background-color: var(--de-white);
-    --ion-text-color: var(--de-primary);
+    --ion-text-color: var(--de-text-primary);
   }
 }
