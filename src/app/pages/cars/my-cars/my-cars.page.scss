@@ -1,0 +1,352 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: var(--de-white);
+}
+
+.my-cars-container {
+  padding: 0 24px 48px;
+  padding-top: calc(env(safe-area-inset-top) + 16px);
+  background: var(--de-white);
+  min-height: 100%;
+}
+
+// ─── Header ────────────────────────────────────────────
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.back-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--de-radius-sm);
+  background: var(--de-off-white);
+  color: var(--de-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+
+  &:active { background: var(--de-gray-light); }
+}
+
+.header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--de-text-primary);
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.car-count {
+  background: var(--de-primary);
+  color: var(--de-white);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.2px;
+}
+
+// ─── Loading ───────────────────────────────────────────
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 0;
+  gap: 12px;
+
+  ion-spinner { color: var(--de-primary); --color: var(--de-primary); }
+
+  p {
+    font-size: 14px;
+    color: var(--de-gray);
+    margin: 0;
+  }
+}
+
+// ─── Empty State ───────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 0 24px;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  ion-icon {
+    font-size: 34px;
+    color: var(--de-gray);
+  }
+}
+
+.empty-state h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--de-text-primary);
+  margin: 0 0 10px;
+  letter-spacing: -0.2px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: var(--de-gray);
+  line-height: 1.6;
+  max-width: 280px;
+  margin: 0 0 28px;
+}
+
+.empty-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+// ─── CTA Buttons ───────────────────────────────────────
+.cta-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  background: var(--de-accent);
+  color: var(--de-white);
+  border: none;
+  border-radius: var(--de-radius-md);
+  font-family: var(--de-font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: transform 0.15s ease;
+
+  ion-icon { font-size: 19px; }
+
+  &:active { transform: scale(0.98); }
+
+  &.cta-outline {
+    background: var(--de-white);
+    color: var(--de-accent);
+    border: 1.5px solid var(--de-gray-light);
+  }
+}
+
+// ─── Car List ──────────────────────────────────────────
+.car-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.car-card {
+  background: var(--de-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: var(--de-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--de-shadow-sm);
+}
+
+// ─── Card Top ──────────────────────────────────────────
+.card-top {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+}
+
+.car-thumbnail {
+  width: 96px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--de-off-white);
+  border: 1px solid var(--de-gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.car-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 26px;
+    color: var(--de-gray-light);
+  }
+}
+
+.car-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.car-name-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.car-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--de-text-primary);
+  margin: 0;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  letter-spacing: 0.2px;
+
+  &.status-sale {
+    background: rgba(26, 115, 232, 0.1);
+    color: var(--de-primary);
+  }
+
+  &.status-rent {
+    background: rgba(46, 204, 113, 0.12);
+    color: #1a8a42;
+  }
+
+  &.status-garage {
+    background: rgba(243, 156, 18, 0.12);
+    color: #a06000;
+  }
+
+  &.status-normal {
+    background: var(--de-off-white);
+    color: var(--de-gray);
+  }
+}
+
+.car-meta {
+  font-size: 12px;
+  color: var(--de-gray);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+
+  .meta-sep { color: var(--de-gray-light); }
+}
+
+.car-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--de-text-primary);
+  margin-top: 2px;
+}
+
+// ─── Card Actions ──────────────────────────────────────
+.card-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 14px;
+  border-top: 1px solid var(--de-gray-light);
+  flex-wrap: wrap;
+}
+
+.action-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-family: var(--de-font-family);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: opacity 0.15s ease;
+
+  ion-icon { font-size: 14px; }
+
+  &:active { opacity: 0.75; }
+
+  &.collect {
+    background: rgba(26, 115, 232, 0.08);
+    color: var(--de-primary);
+    border-color: rgba(26, 115, 232, 0.25);
+  }
+
+  &.sell {
+    background: rgba(26, 115, 232, 0.08);
+    color: var(--de-primary);
+    border-color: rgba(26, 115, 232, 0.25);
+  }
+
+  &.rent {
+    background: rgba(46, 204, 113, 0.1);
+    color: #1a8a42;
+    border-color: rgba(46, 204, 113, 0.3);
+  }
+
+  &.delete {
+    background: rgba(231, 76, 60, 0.08);
+    color: var(--de-danger);
+    border-color: rgba(231, 76, 60, 0.2);
+    margin-left: auto;
+  }
+}
+
+// ─── Bottom Actions (when list has items) ──────────────
+.bottom-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}

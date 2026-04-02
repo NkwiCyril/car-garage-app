@@ -1,0 +1,192 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="form-container">
+
+    <!-- Header -->
+    <div class="header-section">
+      <button class="back-btn" (click)="goBack()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Title -->
+    <div class="title-section">
+      <h1 class="title">Add a Car</h1>
+      <p class="subtitle">Fill in your vehicle details to add it to your account</p>
+    </div>
+
+    <!-- Vehicle Details -->
+    <p class="section-label">Vehicle Details</p>
+
+    <div class="input-group">
+      <label class="input-label">Make <span class="required">*</span></label>
+      <ion-input
+        class="de-input"
+        type="text"
+        placeholder="e.g. Toyota"
+        [(ngModel)]="make"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Model <span class="required">*</span></label>
+      <ion-input
+        class="de-input"
+        type="text"
+        placeholder="e.g. Corolla"
+        [(ngModel)]="model"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <div class="form-row-2">
+      <div class="input-group">
+        <label class="input-label">Year <span class="required">*</span></label>
+        <ion-input
+          class="de-input"
+          type="number"
+          placeholder="e.g. 2020"
+          [(ngModel)]="yearStr"
+          fill="outline"
+          mode="md"
+        ></ion-input>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Color</label>
+        <ion-input
+          class="de-input"
+          type="text"
+          placeholder="e.g. White"
+          [(ngModel)]="color"
+          fill="outline"
+          mode="md"
+        ></ion-input>
+      </div>
+    </div>
+
+    <!-- Specifications -->
+    <p class="section-label">Specifications</p>
+
+    <div class="form-row-2">
+      <div class="input-group">
+        <label class="input-label">Condition <span class="required">*</span></label>
+        <div class="select-wrapper">
+          <select class="de-select" [(ngModel)]="condition">
+            <option value="">Select...</option>
+            <option value="new">New</option>
+            <option value="like-new">Like New</option>
+            <option value="used">Used</option>
+          </select>
+          <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Transmission <span class="required">*</span></label>
+        <div class="select-wrapper">
+          <select class="de-select" [(ngModel)]="transmission">
+            <option value="">Select...</option>
+            <option value="automatic">Automatic</option>
+            <option value="manual">Manual</option>
+          </select>
+          <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Mileage (km)</label>
+      <ion-input
+        class="de-input"
+        type="number"
+        placeholder="e.g. 45000"
+        [(ngModel)]="mileageStr"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <!-- Pricing & Listing -->
+    <p class="section-label">Pricing & Listing</p>
+
+    <div class="input-group">
+      <label class="input-label">Price (CFA) <span class="required">*</span></label>
+      <ion-input
+        class="de-input"
+        type="number"
+        placeholder="e.g. 18000000"
+        [(ngModel)]="priceStr"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Listing Type</label>
+      <div class="select-wrapper">
+        <select class="de-select" [(ngModel)]="listingType">
+          <option value="normal">Keep Privately (Not Listed)</option>
+          <option value="sale">List for Sale</option>
+          <option value="rent">List for Rent</option>
+        </select>
+        <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+      </div>
+      <p class="field-hint">You can always change this later from My Cars.</p>
+    </div>
+
+    <!-- Description -->
+    <p class="section-label">Description</p>
+
+    <div class="input-group">
+      <label class="input-label">Notes (optional)</label>
+      <textarea
+        class="de-textarea"
+        placeholder="Any additional details about the car..."
+        [(ngModel)]="description"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <!-- Photos -->
+    <p class="section-label">Photos <span class="section-hint">(up to 5)</span></p>
+
+    <div class="input-group">
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        #fileInput
+        (change)="onFilesSelected($event)"
+        style="display:none"
+      />
+
+      <div class="upload-zone" (click)="fileInput.click()" *ngIf="selectedFiles.length < 5">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+        <span class="upload-label">Tap to upload photos</span>
+        <span class="upload-hint">{{ selectedFiles.length }}/5 added</span>
+      </div>
+
+      <div class="image-previews" *ngIf="imagePreviews.length > 0">
+        <div class="preview-item" *ngFor="let url of imagePreviews; let i = index">
+          <img [src]="url" alt="Preview {{ i + 1 }}" />
+          <button class="remove-preview" (click)="removeImage(i)">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn" (click)="submit()" [disabled]="isLoading">
+      <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      <span *ngIf="!isLoading">Add Car</span>
+    </button>
+
+  </div>
+</ion-content>
