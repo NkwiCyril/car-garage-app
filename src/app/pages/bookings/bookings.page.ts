@@ -104,6 +104,10 @@ export class BookingsPage {
     return this.bookings.filter((b) => b.status === this.activeFilter);
   }
 
+  countByStatus(status: string): number {
+    return this.bookings.filter((b) => b.status === status).length;
+  }
+
   onFilterChange(event: any): void {
     this.activeFilter = event.detail.value;
   }
