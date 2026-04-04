@@ -71,6 +71,10 @@ export class MyCarsPage {
     this.router.navigate(['/cars/park']);
   }
 
+  openCarDetail(car: Car): void {
+    this.router.navigate(['/cars/detail'], { state: { car, isOwned: true } });
+  }
+
   // ─── Car Actions ─────────────────────────────────────
 
   async onCollectCar(car: Car): Promise<void> {

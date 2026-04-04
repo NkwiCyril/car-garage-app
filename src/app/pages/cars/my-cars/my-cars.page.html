@@ -43,7 +43,7 @@
 
     <!-- Car List -->
     <div class="car-list" *ngIf="!isLoading && myCars.length > 0">
-      <div class="car-card" *ngFor="let car of myCars">
+      <div class="car-card" *ngFor="let car of myCars" (click)="openCarDetail(car)">
 
         <!-- Card Top -->
         <div class="card-top">
@@ -75,7 +75,7 @@
         </div>
 
         <!-- Card Actions -->
-        <div class="card-actions">
+        <div class="card-actions" (click)="$event.stopPropagation()">
           <button
             class="action-chip collect"
             *ngIf="car.listingType === 'garage'"
