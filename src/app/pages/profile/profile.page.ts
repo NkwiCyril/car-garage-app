@@ -16,6 +16,7 @@ import {
   shieldCheckmarkOutline,
   logOutOutline,
   chevronForward,
+  chevronForwardOutline,
   createOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
@@ -51,7 +52,7 @@ export class ProfilePage implements OnInit {
       icon: 'car-outline',
       label: 'My Vehicles',
       subtitle: 'Registered cars',
-      route: null,
+      route: '/cars/my',
     },
     {
       icon: 'shield-checkmark-outline',
@@ -87,6 +88,7 @@ export class ProfilePage implements OnInit {
       shieldCheckmarkOutline,
       logOutOutline,
       chevronForward,
+      chevronForwardOutline,
       createOutline,
     });
   }
@@ -128,6 +130,8 @@ export class ProfilePage implements OnInit {
   }
 
   onMenuItemClick(item: any): void {
-    // TODO: Navigate to respective settings pages
+    if (item.route) {
+      this.router.navigate([item.route]);
+    }
   }
 }
