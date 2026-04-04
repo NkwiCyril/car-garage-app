@@ -55,6 +55,28 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/tabs/tabs.routes').then((m) => m.tabsRoutes),
   },
 
+  // Cars (protected full-screen pages, no tab bar)
+  {
+    path: 'cars/add',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/add-car/add-car.page').then((m) => m.AddCarPage),
+  },
+  {
+    path: 'cars/park',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/park-car/park-car.page').then((m) => m.ParkCarPage),
+  },
+  {
+    path: 'cars/my',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/my-cars/my-cars.page').then((m) => m.MyCarsPage),
+  },
+  {
+    path: 'cars/detail',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/car-detail/car-detail.page').then((m) => m.CarDetailPage),
+  },
+
   // Legacy home redirect
   {
     path: 'home',
