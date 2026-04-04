@@ -15,7 +15,7 @@ import {
 })
 export class ResetPasswordPage {
   newPassword: string = '';
-  reapeatPassword: string = '';
+  repeatPassword: string = '';
 
   constructor(private router: Router) {}
 
