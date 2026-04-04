@@ -1,76 +1,115 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="dashboard-container">
+  <div class="dash-wrap">
 
-    <!-- Header -->
-    <div class="header-section">
-      <div class="header-top">
-        <div class="logo-section">
-          <ion-icon name="grid-outline" class="menu-icon"></ion-icon>
-          <h1 class="app-title">DriveEase</h1>
+    <!-- ─── Header ──────────────────────────────────────── -->
+    <div class="dash-header">
+      <div class="header-row">
+        <div class="greeting-block">
+          <p class="greeting-label">Good day,</p>
+          <h1 class="greeting-name">{{ userName || 'Driver' }} 👋</h1>
         </div>
-        <div class="header-actions">
-          <button class="notification-btn" (click)="openNotifications()">
+        <div class="header-right">
+          <button class="icon-btn notif" (click)="openNotifications()">
             <ion-icon name="notifications-outline"></ion-icon>
-            <span class="notif-badge"></span>
+            <span class="notif-dot"></span>
           </button>
-          <div class="avatar-circle">
-            <span>{{ userName.charAt(0) || 'U' }}</span>
+          <div class="avatar-chip" (click)="navigateTo('/tabs/profile')">
+            <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
           </div>
+        </div>
+      </div>
+      <div class="location-pill">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>{{ currentLocation }}</span>
+        <ion-icon name="chevron-down-outline"></ion-icon>
+      </div>
+    </div>
+
+    <!-- ─── Search Bar ──────────────────────────────────── -->
+    <div class="search-row">
+      <div class="search-box" (click)="onSearchFocus()">
+        <ion-icon name="search-outline"></ion-icon>
+        <span class="search-hint">Search cars, parking...</span>
+      </div>
+      <button class="filter-fab">
+        <ion-icon name="options-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- ─── Categories ─────────────────────────────────── -->
+    <div class="categories-row">
+      <div
+        class="cat-item"
+        *ngFor="let cat of categories; let i = index"
+        [class.cat-active]="i === 0"
+        (click)="navigateTo(cat.route)"
+      >
+        <div class="cat-icon">
+          <ion-icon [name]="cat.icon"></ion-icon>
+        </div>
+        <span class="cat-label">{{ cat.label }}</span>
+      </div>
+    </div>
+
+    <!-- ─── Promo Banner ────────────────────────────────── -->
+    <div class="promo-section">
+      <div class="promo-card">
+        <div class="promo-text">
+          <span class="promo-tag">DriveEase</span>
+          <h2 class="promo-title">Find Your<br>Perfect Drive</h2>
+          <p class="promo-sub">Rent, buy & park — all in one place.</p>
+          <button class="promo-btn" (click)="navigateTo('/tabs/auto')">
+            Explore Cars
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </button>
+        </div>
+        <div class="promo-car-wrap">
+          <ion-icon name="car-sport-outline"></ion-icon>
         </div>
       </div>
     </div>
 
-    <!-- Hero Banner -->
-    <div class="hero-banner">
-      <div class="hero-overlay">
-        <span class="hero-badge">NEW SERVICES</span>
-        <h2 class="hero-title">Simplify Your Daily Tasks</h2>
-        <p class="hero-subtitle">Manage parking, rentals and auto care in one seamless experience.</p>
-      </div>
-    </div>
-
-    <!-- Featured Services -->
+    <!-- ─── Featured Services ──────────────────────────── -->
     <div class="section">
-      <div class="section-header">
+      <div class="section-hdr">
         <h2 class="section-title">Featured Services</h2>
-        <a class="see-all-link" (click)="viewAllServices()">View all</a>
+        <button class="see-all-btn" (click)="viewAllServices()">See all</button>
       </div>
 
-      <div class="featured-services">
-        <div class="service-card" *ngFor="let service of featuredServices">
-          <div class="service-icon" [ngClass]="service.iconClass">
-            <ion-icon [name]="service.icon"></ion-icon>
+      <div class="services-scroller">
+        <div class="svc-card" *ngFor="let s of featuredServices" (click)="navigateTo(s.route)">
+          <div class="svc-icon-wrap" [ngClass]="s.iconClass">
+            <ion-icon [name]="s.icon"></ion-icon>
           </div>
-          <div class="service-content">
-            <h3 class="service-title">{{ service.title }}</h3>
-            <p class="service-description">{{ service.description }}</p>
-            <div class="service-footer">
-              <span class="service-meta" [ngClass]="service.metaClass">{{ service.meta }}</span>
-              <button class="service-btn" (click)="navigateTo(service.route)">
-                {{ service.buttonText }}
-              </button>
-            </div>
+          <h3 class="svc-title">{{ s.title }}</h3>
+          <p class="svc-desc">{{ s.description }}</p>
+          <div class="svc-footer">
+            <span class="svc-meta" [ngClass]="s.metaClass">{{ s.meta }}</span>
+            <button class="svc-action" (click)="navigateTo(s.route); $event.stopPropagation()">
+              {{ s.buttonText }}
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
+    <!-- ─── Quick Actions ──────────────────────────────── -->
     <div class="section">
       <h2 class="section-title">Quick Actions</h2>
-      <div class="quick-actions-grid">
+      <div class="quick-grid">
         <div
-          class="action-card"
-          *ngFor="let action of quickActions"
-          (click)="navigateTo(action.route)"
+          class="quick-tile"
+          *ngFor="let a of quickActions"
+          (click)="navigateTo(a.route)"
         >
-          <div class="action-icon">
-            <ion-icon [name]="action.icon"></ion-icon>
+          <div class="tile-icon-wrap">
+            <ion-icon [name]="a.icon"></ion-icon>
           </div>
-          <span class="action-label">{{ action.label }}</span>
+          <span class="tile-label">{{ a.label }}</span>
         </div>
       </div>
     </div>
 
+    <div class="bottom-pad"></div>
   </div>
 </ion-content>

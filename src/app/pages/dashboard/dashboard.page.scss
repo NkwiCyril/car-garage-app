@@ -1,148 +1,340 @@
-.dashboard-container {
-  padding: 0;
+.dash-wrap {
   background: var(--de-white);
   min-height: 100%;
+  padding-bottom: 32px;
 }
 
 // ─── Header ────────────────────────────────────────────
-.header-section {
-  padding: calc(env(safe-area-inset-top) + 16px) 24px 16px;
+.dash-header {
+  padding: calc(env(safe-area-inset-top) + 20px) 24px 20px;
   background: var(--de-white);
 }
 
-.header-top {
+.header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 14px;
 }
 
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .menu-icon {
-    font-size: 26px;
-    color: var(--de-primary);
+.greeting-block {
+  .greeting-label {
+    font-size: 13px;
+    color: var(--de-gray);
+    margin: 0 0 2px;
+    font-weight: 400;
   }
 
-  .app-title {
-    font-size: 20px;
+  .greeting-name {
+    font-size: 22px;
     font-weight: 800;
     color: var(--de-text-primary);
     margin: 0;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.4px;
   }
 }
 
-.header-actions {
+.header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.notification-btn {
-  position: relative;
-  background: transparent;
-  border: none;
-  width: 40px;
-  height: 40px;
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  position: relative;
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--de-text-primary);
+  }
+}
+
+.notif-dot {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  background: var(--de-danger);
+  border-radius: 50%;
+  border: 1.5px solid var(--de-white);
+}
+
+.avatar-chip {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--de-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  span {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--de-white);
+  }
+}
+
+.location-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 20px;
+  padding: 7px 14px;
   cursor: pointer;
 
   ion-icon {
-    font-size: 24px;
-    color: var(--de-text-primary);
+    font-size: 15px;
+    color: var(--de-primary);
+
+    &:last-child {
+      font-size: 13px;
+      color: var(--de-gray);
+      margin-left: 2px;
+    }
   }
 
-  .notif-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 8px;
-    height: 8px;
-    background: var(--de-danger);
-    border-radius: 50%;
+  span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--de-text-primary);
   }
 }
 
-.avatar-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+// ─── Search ────────────────────────────────────────────
+.search-row {
+  padding: 0 24px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 14px;
+  padding: 0 16px;
+  height: 50px;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 19px;
+    color: var(--de-gray);
+    flex-shrink: 0;
+  }
+
+  .search-hint {
+    font-size: 14px;
+    color: var(--de-gray);
+    font-weight: 400;
+  }
+}
+
+.filter-fab {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
   background: var(--de-primary);
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--de-white);
-  font-weight: 700;
-  font-size: 16px;
   cursor: pointer;
-}
+  flex-shrink: 0;
 
-// ─── Hero Banner ──────────────────────────────────────
-.hero-banner {
-  margin: 0 24px 24px;
-  height: 240px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #4a94f0 0%, #1a73e8 100%);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(26, 115, 232, 0.2);
-
-  // Simulated cityscape background pattern
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60%;
-    background: linear-gradient(to top, rgba(10, 22, 40, 0.3) 0%, transparent 100%);
+  ion-icon {
+    font-size: 20px;
+    color: var(--de-white);
   }
 }
 
-.hero-overlay {
-  position: relative;
-  z-index: 1;
-  padding: 28px 24px;
-  height: 100%;
+// ─── Categories ────────────────────────────────────────
+.categories-row {
+  display: flex;
+  padding: 0 24px;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.cat-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  &:active .cat-icon {
+    transform: scale(0.94);
+  }
+}
+
+.cat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  display: flex;
+  align-items: center;
   justify-content: center;
+  transition: transform 0.15s ease;
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--de-gray-dark);
+  }
 }
 
-.hero-badge {
-  display: inline-block;
-  background: var(--de-success);
-  color: var(--de-white);
+.cat-label {
   font-size: 11px;
-  font-weight: 700;
-  padding: 6px 12px;
-  border-radius: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 16px;
-  align-self: flex-start;
+  font-weight: 600;
+  color: var(--de-gray-dark);
+  text-align: center;
 }
 
-.hero-title {
-  font-size: 26px;
-  font-weight: 800;
+.cat-active {
+  .cat-icon {
+    background: var(--de-primary);
+    border-color: var(--de-primary);
+
+    ion-icon {
+      color: var(--de-white);
+    }
+  }
+
+  .cat-label {
+    color: var(--de-primary);
+  }
+}
+
+// ─── Promo Banner ──────────────────────────────────────
+.promo-section {
+  padding: 0 24px;
+  margin-bottom: 32px;
+}
+
+.promo-card {
+  background: linear-gradient(135deg, var(--de-accent) 0%, #1c3659 100%);
+  border-radius: 24px;
+  padding: 28px 24px 28px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: 80px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(26, 115, 232, 0.15);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    right: -10px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: rgba(26, 115, 232, 0.08);
+  }
+}
+
+.promo-text {
+  flex: 1;
+  z-index: 1;
+
+  .promo-tag {
+    display: inline-block;
+    background: rgba(26, 115, 232, 0.35);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+  }
+
+  .promo-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--de-white);
+    margin: 0 0 8px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+  }
+
+  .promo-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 20px;
+    line-height: 1.4;
+  }
+}
+
+.promo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--de-primary);
   color: var(--de-white);
-  margin: 0 0 12px;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: var(--de-font-family);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+
+  ion-icon {
+    font-size: 15px;
+  }
+
+  &:active {
+    opacity: 0.85;
+  }
 }
 
-.hero-subtitle {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0;
-  line-height: 1.5;
-  max-width: 90%;
+.promo-car-wrap {
+  flex-shrink: 0;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  ion-icon {
+    font-size: 80px;
+    color: rgba(255, 255, 255, 0.12);
+    filter: drop-shadow(0 4px 12px rgba(26, 115, 232, 0.3));
+  }
 }
 
 // ─── Sections ──────────────────────────────────────────
@@ -151,7 +343,7 @@
   margin-bottom: 32px;
 }
 
-.section-header {
+.section-hdr {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -165,48 +357,58 @@
   margin: 0 0 16px;
   letter-spacing: -0.3px;
 
-  .section-header & {
+  .section-hdr & {
     margin-bottom: 0;
   }
 }
 
-.see-all-link {
-  font-size: 14px;
+.see-all-btn {
+  background: none;
+  border: none;
+  font-family: var(--de-font-family);
+  font-size: 13px;
   font-weight: 600;
   color: var(--de-primary);
   cursor: pointer;
-  text-decoration: none;
+  padding: 0;
 }
 
-// ─── Featured Services ─────────────────────────────────
-.featured-services {
+// ─── Services horizontal scroll ────────────────────────
+.services-scroller {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  &::-webkit-scrollbar { display: none; }
 }
 
-.service-card {
-  display: flex;
-  gap: 16px;
+.svc-card {
+  min-width: 220px;
   background: var(--de-white);
   border: 1.5px solid var(--de-gray-light);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 20px;
+  cursor: pointer;
   box-shadow: var(--de-shadow-sm);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
 }
 
-.service-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+.svc-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  margin-bottom: 14px;
 
-  ion-icon {
-    font-size: 28px;
-  }
+  ion-icon { font-size: 26px; }
 
   &.icon-parking {
     background: rgba(46, 204, 113, 0.1);
@@ -219,250 +421,94 @@
   }
 }
 
-.service-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.service-title {
-  font-size: 16px;
+.svc-title {
+  font-size: 15px;
   font-weight: 700;
   color: var(--de-text-primary);
   margin: 0 0 6px;
 }
 
-.service-description {
-  font-size: 13px;
+.svc-desc {
+  font-size: 12px;
   color: var(--de-gray);
   line-height: 1.5;
   margin: 0 0 14px;
 }
 
-.service-footer {
+.svc-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
-.service-meta {
-  font-size: 12px;
+.svc-meta {
+  font-size: 11px;
   font-weight: 600;
   flex: 1;
 
-  &.meta-success {
-    color: var(--de-success);
-  }
-
-  &.meta-info {
-    color: var(--de-primary);
-  }
+  &.meta-success { color: var(--de-success); }
+  &.meta-info { color: var(--de-primary); }
 }
 
-.service-btn {
-  background: var(--de-primary);
+.svc-action {
+  background: var(--de-accent);
   color: var(--de-white);
   border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 14px;
   font-family: var(--de-font-family);
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  letter-spacing: 0.2px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 // ─── Quick Actions ─────────────────────────────────────
-.quick-actions-grid {
+.quick-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 
-.action-card {
-  background: var(--de-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 12px;
-  padding: 16px 8px;
+.quick-tile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
 
-  &:active {
-    transform: scale(0.95);
-    background: var(--de-off-white);
+  &:active .tile-icon-wrap {
+    transform: scale(0.92);
+    background: var(--de-gray-light);
   }
 }
 
-.action-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+.tile-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
   background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.15s ease, background 0.15s ease;
 
   ion-icon {
     font-size: 24px;
-    color: var(--de-text-primary);
+    color: var(--de-accent);
   }
 }
 
-.action-label {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--de-text-primary);
-  text-align: center;
-  line-height: 1.2;
-  letter-spacing: 0.3px;
-}
-
-// ─── Parking Cards ─────────────────────────────────────
-.parking-cards-scroll {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scroll-snap-type: x mandatory;
-
-  &::-webkit-scrollbar { display: none; }
-}
-
-.parking-card {
-  min-width: 228px;
-  background: var(--de-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 18px;
-  overflow: hidden;
-  cursor: pointer;
-  scroll-snap-align: start;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-  box-shadow: var(--de-shadow-sm);
-
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.parking-image {
-  position: relative;
-  height: 120px;
-  overflow: hidden;
-}
-
-.parking-image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--de-off-white);
-
-  ion-icon {
-    font-size: 36px;
-    color: var(--de-gray-light);
-  }
-}
-
-.parking-status {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: var(--de-white);
-  border-radius: 20px;
-  padding: 4px 10px;
+.tile-label {
   font-size: 11px;
   font-weight: 600;
   color: var(--de-gray-dark);
-  box-shadow: 0 1px 4px rgba(10, 22, 40, 0.1);
-
-  &.open {
-    color: var(--de-success);
-    .status-dot { background: var(--de-success); }
-  }
+  text-align: center;
 }
 
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--de-gray);
-}
-
-.parking-info {
-  padding: 14px 14px 12px;
-}
-
-.parking-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--de-primary);
-  margin: 0 0 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.parking-location {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 12px;
-
-  ion-icon {
-    font-size: 13px;
-    color: var(--de-gray);
-  }
-
-  span {
-    font-size: 12px;
-    color: var(--de-gray);
-    font-weight: 400;
-  }
-}
-
-.parking-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.parking-price {
-  .price-amount {
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--de-primary);
-  }
-
-  .price-unit {
-    font-size: 12px;
-    color: var(--de-gray);
-    font-weight: 400;
-  }
-}
-
-.go-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--de-primary);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  ion-icon {
-    font-size: 16px;
-    color: var(--de-white);
-  }
+.bottom-pad {
+  height: 16px;
 }
