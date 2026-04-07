@@ -10,6 +10,12 @@ import { CarApiResponse, SellCarRequest, RentListRequest } from '../models/car.m
 })
 export class CarService {
   private apiUrl = `${environment.apiUrl}/cars`;
+  private mediaUrl = environment.mediaUrl;
+
+  imageUrl(filename: string): string {
+    console.log(`${this.mediaUrl}${filename}`);
+    return `${this.mediaUrl}${filename}`;
+  }
 
   constructor(private http: HttpClient) {}
 

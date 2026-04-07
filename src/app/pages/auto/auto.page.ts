@@ -199,7 +199,9 @@ export class AutoPage implements OnInit {
   }
 
   getFirstImage(car: Car): string | null {
-    return car.images && car.images.length > 0 ? car.images[0] : null;
+    return car.images && car.images.length > 0
+      ? this.carService.imageUrl(car.images[0])
+      : null;
   }
 
   formatPrice(price: number): string {
