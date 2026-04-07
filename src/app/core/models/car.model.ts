@@ -3,21 +3,22 @@ export interface Car {
   make: string;
   model: string;
   year: number;
+  vin?: string;
   price: number;
   rentalPrice?: number;
+  condition?: 'new' | 'like-new' | 'used';
+  transmission?: 'automatic' | 'manual';
   mileage?: string;
-  listingType?: 'sale' | 'rent' | 'garage' | 'normal';
+  color?: string;
   forSale?: boolean;
   forRent?: boolean;
-  condition?: 'new' | 'like-new' | 'used';
-  color?: string;
+  inGarage?: boolean;
+  status?: 'available' | 'parked' | 'rented' | 'sold';
   images?: string[];
   description?: string;
   ownerId?: string;
   location?: string;
-  transmission?: 'automatic' | 'manual';
   isAvailable?: boolean;
-  status?: string;
   createdAt?: string;
 }
 
@@ -30,13 +31,14 @@ export interface CreateCarRequest {
   make: string;
   model: string;
   year: number;
+  vin: string;
   price: number;
+  rentalPrice?: number;
+  forSale?: boolean;
+  forRent?: boolean;
+  inGarage?: boolean;
+  status?: 'available' | 'parked' | 'rented' | 'sold';
   description?: string;
-  color?: string;
-  mileage?: string;
-  condition?: string;
-  transmission?: string;
-  listingType?: string;
 }
 
 export interface SellCarRequest {
