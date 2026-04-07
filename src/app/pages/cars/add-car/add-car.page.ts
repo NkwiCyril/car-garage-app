@@ -34,13 +34,14 @@ export class AddCarPage implements OnDestroy {
   make = '';
   model = '';
   yearStr = '';
+  vin = '';
   priceStr = '';
-  condition = '';
-  transmission = '';
-  color = '';
-  mileageStr = '';
+  rentalPriceStr = '';
+  forSale = false;
+  forRent = false;
+  inGarage = false;
+  status = '';
   description = '';
-  listingType = 'normal';
 
   selectedFiles: File[] = [];
   imagePreviews: string[] = [];
@@ -90,12 +91,13 @@ export class AddCarPage implements OnDestroy {
     formData.append('make', this.make.trim());
     formData.append('model', this.model.trim());
     formData.append('year', year.toString());
+    formData.append('vin', this.vin.trim());
     formData.append('price', price.toString());
-    formData.append('condition', this.condition);
-    formData.append('transmission', this.transmission);
-    formData.append('listingType', this.listingType);
-    if (this.color.trim()) formData.append('color', this.color.trim());
-    if (this.mileageStr.trim()) formData.append('mileage', this.mileageStr.trim());
+    formData.append('forSale', String(this.forSale));
+    formData.append('forRent', String(this.forRent));
+    formData.append('inGarage', String(this.inGarage));
+    if (this.forRent && this.rentalPriceStr) formData.append('rentalPrice', this.rentalPriceStr);
+    if (this.status) formData.append('status', this.status);
     if (this.description.trim()) formData.append('description', this.description.trim());
     this.selectedFiles.forEach((f) => formData.append('images', f));
 
@@ -108,6 +110,7 @@ export class AddCarPage implements OnDestroy {
       },
       error: async (err) => {
         this.isLoading = false;
+        console.log(err.message)
         await this.showToast(err.message || 'Failed to add car', 'danger');
       },
     });
@@ -124,12 +127,15 @@ export class AddCarPage implements OnDestroy {
     if (!this.yearStr || isNaN(year) || year < 1950 || year > this.currentYear + 1) {
       return `Please enter a valid year (1950–${this.currentYear + 1})`;
     }
+    if (!this.vin.trim()) return 'Please enter the VIN (Vehicle Identification Number)';
     const price = parseFloat(this.priceStr);
     if (!this.priceStr || isNaN(price) || price <= 0) {
       return 'Please enter a valid price greater than 0';
     }
-    if (!this.condition) return 'Please select the car condition';
-    if (!this.transmission) return 'Please select the transmission type';
+    if (this.forRent && this.rentalPriceStr) {
+      const rentalPrice = parseFloat(this.rentalPriceStr);
+      if (isNaN(rentalPrice) || rentalPrice <= 0) return 'Please enter a valid rental price greater than 0';
+    }
     return null;
   }
 

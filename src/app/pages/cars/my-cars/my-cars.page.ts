@@ -135,7 +135,7 @@ export class MyCarsPage {
       next: (res) => {
         this.showToast(res.message || 'Car listed for sale!', 'success');
         const idx = this.myCars.findIndex((c) => c._id === car._id);
-        if (idx !== -1) this.myCars[idx] = { ...this.myCars[idx], listingType: 'sale', price };
+        if (idx !== -1) this.myCars[idx] = { ...this.myCars[idx], forSale: true, price };
       },
       error: (err) => this.showToast(err.message || 'Failed to list car for sale', 'danger'),
     });
@@ -177,7 +177,7 @@ export class MyCarsPage {
       next: (res) => {
         this.showToast(res.message || 'Car listed for rent!', 'success');
         const idx = this.myCars.findIndex((c) => c._id === car._id);
-        if (idx !== -1) this.myCars[idx] = { ...this.myCars[idx], listingType: 'rent', rentalPrice };
+        if (idx !== -1) this.myCars[idx] = { ...this.myCars[idx], forRent: true, rentalPrice };
       },
       error: (err) => this.showToast(err.message || 'Failed to list car for rent', 'danger'),
     });
@@ -216,27 +216,23 @@ export class MyCarsPage {
   }
 
   getFirstImage(car: Car): string | null {
-    return car.images && car.images.length > 0 ? car.images[0] : null;
+    return car.images && car.images.length > 0
+      ? this.carService.imageUrl(car.images[0])
+      : null;
   }
 
   getStatusLabel(car: Car): string {
-    const map: Record<string, string> = {
-      sale: 'For Sale',
-      rent: 'For Rent',
-      garage: 'In Garage',
-      normal: 'Private',
-    };
-    return car.listingType ? (map[car.listingType] ?? car.listingType) : 'Private';
+    if (car.forSale) return 'For Sale';
+    if (car.forRent) return 'For Rent';
+    if (car.inGarage || car.status === 'parked') return 'In Garage';
+    return 'Private';
   }
 
   getStatusClass(car: Car): string {
-    const map: Record<string, string> = {
-      sale: 'status-sale',
-      rent: 'status-rent',
-      garage: 'status-garage',
-      normal: 'status-normal',
-    };
-    return car.listingType ? (map[car.listingType] ?? 'status-normal') : 'status-normal';
+    if (car.forSale) return 'status-sale';
+    if (car.forRent) return 'status-rent';
+    if (car.inGarage || car.status === 'parked') return 'status-garage';
+    return 'status-normal';
   }
 
   formatPrice(price: number): string {

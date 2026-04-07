@@ -34,9 +34,9 @@ export class ParkCarPage implements OnDestroy {
   make = '';
   model = '';
   yearStr = '';
-  color = '';
-  plateNumber = '';
-  notes = '';
+  vin = '';
+  priceStr = '';
+  description = '';
 
   selectedFiles: File[] = [];
   imagePreviews: string[] = [];
@@ -85,10 +85,9 @@ export class ParkCarPage implements OnDestroy {
     formData.append('make', this.make.trim());
     formData.append('model', this.model.trim());
     formData.append('year', year.toString());
-    formData.append('listingType', 'garage');
-    if (this.color.trim()) formData.append('color', this.color.trim());
-    if (this.plateNumber.trim()) formData.append('plateNumber', this.plateNumber.trim());
-    if (this.notes.trim()) formData.append('description', this.notes.trim());
+    formData.append('vin', this.vin.trim());
+    if (this.priceStr.trim()) formData.append('price', this.priceStr.trim());
+    if (this.description.trim()) formData.append('description', this.description.trim());
     this.selectedFiles.forEach((f) => formData.append('images', f));
 
     this.isLoading = true;
@@ -116,6 +115,7 @@ export class ParkCarPage implements OnDestroy {
     if (!this.yearStr || isNaN(year) || year < 1950 || year > this.currentYear + 1) {
       return `Please enter a valid year (1950–${this.currentYear + 1})`;
     }
+    if (!this.vin.trim()) return 'Please enter the VIN (Vehicle Identification Number)';
     return null;
   }
 

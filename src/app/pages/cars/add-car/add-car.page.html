@@ -44,69 +44,25 @@
       ></ion-input>
     </div>
 
-    <div class="form-row-2">
-      <div class="input-group">
-        <label class="input-label">Year <span class="required">*</span></label>
-        <ion-input
-          class="de-input"
-          type="number"
-          placeholder="e.g. 2020"
-          [(ngModel)]="yearStr"
-          fill="outline"
-          mode="md"
-        ></ion-input>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Color</label>
-        <ion-input
-          class="de-input"
-          type="text"
-          placeholder="e.g. White"
-          [(ngModel)]="color"
-          fill="outline"
-          mode="md"
-        ></ion-input>
-      </div>
-    </div>
-
-    <!-- Specifications -->
-    <p class="section-label">Specifications</p>
-
-    <div class="form-row-2">
-      <div class="input-group">
-        <label class="input-label">Condition <span class="required">*</span></label>
-        <div class="select-wrapper">
-          <select class="de-select" [(ngModel)]="condition">
-            <option value="">Select...</option>
-            <option value="new">New</option>
-            <option value="like-new">Like New</option>
-            <option value="used">Used</option>
-          </select>
-          <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Transmission <span class="required">*</span></label>
-        <div class="select-wrapper">
-          <select class="de-select" [(ngModel)]="transmission">
-            <option value="">Select...</option>
-            <option value="automatic">Automatic</option>
-            <option value="manual">Manual</option>
-          </select>
-          <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
-        </div>
-      </div>
-    </div>
-
     <div class="input-group">
-      <label class="input-label">Mileage (km)</label>
+      <label class="input-label">Year <span class="required">*</span></label>
       <ion-input
         class="de-input"
         type="number"
-        placeholder="e.g. 45000"
-        [(ngModel)]="mileageStr"
+        placeholder="e.g. 2020"
+        [(ngModel)]="yearStr"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">VIN <span class="required">*</span></label>
+      <ion-input
+        class="de-input"
+        type="text"
+        placeholder="e.g. 1HGBH41JXMN109186"
+        [(ngModel)]="vin"
         fill="outline"
         mode="md"
       ></ion-input>
@@ -128,16 +84,48 @@
     </div>
 
     <div class="input-group">
-      <label class="input-label">Listing Type</label>
+      <label class="input-label">Status</label>
       <div class="select-wrapper">
-        <select class="de-select" [(ngModel)]="listingType">
-          <option value="normal">Keep Privately (Not Listed)</option>
-          <option value="sale">List for Sale</option>
-          <option value="rent">List for Rent</option>
+        <select class="de-select" [(ngModel)]="status">
+          <option value="">— Not set —</option>
+          <option value="available">Available</option>
+          <option value="parked">Parked</option>
+          <option value="rented">Rented</option>
+          <option value="sold">Sold</option>
         </select>
         <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
       </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Listing</label>
+      <div class="checkbox-row">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="forSale" />
+          <span>For Sale</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="forRent" />
+          <span>For Rent</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="inGarage" />
+          <span>In Garage</span>
+        </label>
+      </div>
       <p class="field-hint">You can always change this later from My Cars.</p>
+    </div>
+
+    <div class="input-group" *ngIf="forRent">
+      <label class="input-label">Rental Price / day (CFA)</label>
+      <ion-input
+        class="de-input"
+        type="number"
+        placeholder="e.g. 25000"
+        [(ngModel)]="rentalPriceStr"
+        fill="outline"
+        mode="md"
+      ></ion-input>
     </div>
 
     <!-- Description -->

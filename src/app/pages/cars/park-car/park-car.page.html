@@ -55,53 +55,51 @@
       ></ion-input>
     </div>
 
-    <div class="form-row-2">
-      <div class="input-group">
-        <label class="input-label">Year <span class="required">*</span></label>
-        <ion-input
-          class="de-input"
-          type="number"
-          placeholder="e.g. 2021"
-          [(ngModel)]="yearStr"
-          fill="outline"
-          mode="md"
-        ></ion-input>
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Color</label>
-        <ion-input
-          class="de-input"
-          type="text"
-          placeholder="e.g. Black"
-          [(ngModel)]="color"
-          fill="outline"
-          mode="md"
-        ></ion-input>
-      </div>
-    </div>
-
     <div class="input-group">
-      <label class="input-label">Plate Number</label>
+      <label class="input-label">Year <span class="required">*</span></label>
       <ion-input
         class="de-input"
-        type="text"
-        placeholder="e.g. LT 1234 A"
-        [(ngModel)]="plateNumber"
+        type="number"
+        placeholder="e.g. 2021"
+        [(ngModel)]="yearStr"
         fill="outline"
         mode="md"
       ></ion-input>
     </div>
 
-    <!-- Notes -->
-    <p class="section-label">Notes</p>
+    <div class="input-group">
+      <label class="input-label">VIN <span class="required">*</span></label>
+      <ion-input
+        class="de-input"
+        type="text"
+        placeholder="e.g. 1HGBH41JXMN109186"
+        [(ngModel)]="vin"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Estimated Value (CFA)</label>
+      <ion-input
+        class="de-input"
+        type="number"
+        placeholder="e.g. 12000000"
+        [(ngModel)]="priceStr"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+    </div>
+
+    <!-- Description -->
+    <p class="section-label">Description</p>
 
     <div class="input-group">
       <label class="input-label">Additional Notes (optional)</label>
       <textarea
         class="de-textarea"
         placeholder="e.g. Service due in 3 months, needs tyre change..."
-        [(ngModel)]="notes"
+        [(ngModel)]="description"
         rows="3"
       ></textarea>
     </div>

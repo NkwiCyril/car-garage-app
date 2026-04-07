@@ -65,10 +65,10 @@
               <span class="meta-sep" *ngIf="car.color && car.mileage">&bull;</span>
               <span *ngIf="car.mileage">{{ car.mileage }} km</span>
             </div>
-            <div class="car-price" *ngIf="car.listingType === 'sale' && car.price">
+            <div class="car-price" *ngIf="car.forSale && car.price">
               <span>{{ formatPrice(car.price) }} CFA</span>
             </div>
-            <div class="car-price" *ngIf="car.listingType === 'rent' && car.rentalPrice">
+            <div class="car-price" *ngIf="car.forRent && car.rentalPrice">
               <span>{{ formatPrice(car.rentalPrice) }} CFA/day</span>
             </div>
           </div>
@@ -78,7 +78,7 @@
         <div class="card-actions" (click)="$event.stopPropagation()">
           <button
             class="action-chip collect"
-            *ngIf="car.listingType === 'garage'"
+            *ngIf="car.inGarage"
             (click)="onCollectCar(car)"
           >
             <ion-icon name="chevron-forward"></ion-icon>
@@ -87,7 +87,7 @@
 
           <button
             class="action-chip sell"
-            *ngIf="car.listingType !== 'sale'"
+            *ngIf="!car.forSale"
             (click)="onListForSale(car)"
           >
             <ion-icon name="pricetag-outline"></ion-icon>
@@ -96,7 +96,7 @@
 
           <button
             class="action-chip rent"
-            *ngIf="car.listingType !== 'rent'"
+            *ngIf="!car.forRent"
             (click)="onListForRent(car)"
           >
             <ion-icon name="key-outline"></ion-icon>

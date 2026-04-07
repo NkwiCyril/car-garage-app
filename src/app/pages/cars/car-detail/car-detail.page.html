@@ -28,8 +28,8 @@
       </button>
 
       <!-- Listing type badge -->
-      <span class="hero-badge" *ngIf="car.listingType === 'rent'">For Rent</span>
-      <span class="hero-badge hero-badge-buy" *ngIf="car.listingType === 'sale'">For Sale</span>
+      <span class="hero-badge" *ngIf="car.forRent">For Rent</span>
+      <span class="hero-badge hero-badge-buy" *ngIf="car.forSale">For Sale</span>
 
       <!-- Image count indicator -->
       <span class="img-count" *ngIf="getAllImages().length > 1">
@@ -50,11 +50,11 @@
             {{ car.location }}
           </p>
         </div>
-        <div class="price-block" *ngIf="car.listingType === 'rent' && car.rentalPrice">
+        <div class="price-block" *ngIf="car.forRent && car.rentalPrice">
           <span class="price-main">{{ formatPrice(car.rentalPrice) }}</span>
           <span class="price-label">CFA/day</span>
         </div>
-        <div class="price-block" *ngIf="car.listingType !== 'rent' && car.price">
+        <div class="price-block" *ngIf="!car.forRent && car.price">
           <span class="price-main">{{ formatPrice(car.price) }}</span>
           <span class="price-label">CFA</span>
         </div>
@@ -127,8 +127,8 @@
   <!-- ─── Sticky CTA ──────────────────────────────────── -->
   <div class="sticky-cta" *ngIf="car">
     <button class="cta-btn" [ngClass]="ctaClass" (click)="onCta()">
-      <ion-icon name="key-outline" *ngIf="car.listingType === 'rent' && !isOwned"></ion-icon>
-      <ion-icon name="bag-handle-outline" *ngIf="car.listingType === 'sale' && !isOwned"></ion-icon>
+      <ion-icon name="key-outline" *ngIf="car.forRent && !isOwned"></ion-icon>
+      <ion-icon name="bag-handle-outline" *ngIf="car.forSale && !isOwned"></ion-icon>
       <ion-icon name="create-outline" *ngIf="isOwned"></ion-icon>
       {{ ctaLabel }}
     </button>

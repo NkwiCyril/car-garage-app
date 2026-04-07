@@ -20,6 +20,7 @@ import {
   informationCircleOutline,
 } from 'ionicons/icons';
 import { Car } from '../../../core/models/car.model';
+import { CarService } from '../../../core/services/car.service';
 
 @Component({
   selector: 'app-car-detail',
@@ -31,7 +32,7 @@ export class CarDetailPage implements OnInit {
   car: Car | null = null;
   isOwned = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private carService: CarService) {
     addIcons({
       arrowBackOutline,
       locationOutline,
@@ -77,11 +78,13 @@ export class CarDetailPage implements OnInit {
   }
 
   getFirstImage(): string | null {
-    return this.car?.images && this.car.images.length > 0 ? this.car.images[0] : null;
+    return this.car?.images && this.car.images.length > 0
+      ? this.carService.imageUrl(this.car.images[0])
+      : null;
   }
 
   getAllImages(): string[] {
-    return this.car?.images ?? [];
+    return (this.car?.images ?? []).map((f) => this.carService.imageUrl(f));
   }
 
   formatPrice(price: number): string {
@@ -91,15 +94,15 @@ export class CarDetailPage implements OnInit {
 
   get ctaLabel(): string {
     if (this.isOwned) return 'Manage Car';
-    if (this.car?.listingType === 'rent') return 'Book Now';
-    if (this.car?.listingType === 'sale') return 'Buy Now';
+    if (this.car?.forRent) return 'Book Now';
+    if (this.car?.forSale) return 'Buy Now';
     return 'Contact Seller';
   }
 
   get ctaClass(): string {
     if (this.isOwned) return 'cta-manage';
-    if (this.car?.listingType === 'rent') return 'cta-rent';
-    if (this.car?.listingType === 'sale') return 'cta-buy';
+    if (this.car?.forRent) return 'cta-rent';
+    if (this.car?.forSale) return 'cta-buy';
     return 'cta-contact';
   }
 
