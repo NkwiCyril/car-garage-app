@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
 import {
   IonContent,
   IonIcon,
@@ -20,6 +21,7 @@ import {
   refreshOutline,
 } from 'ionicons/icons';
 import { CarService } from '../../../core/services/car.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Car } from '../../../core/models/car.model';
 
 @Component({
@@ -34,14 +36,23 @@ import { Car } from '../../../core/models/car.model';
   ],
 })
 export class MyCarsPage {
-  // TODO: Populate from GET /api/cars/my once the endpoint is available.
-  // Call loadMyCars() and replace the empty array with the API response.
-  myCars: Car[] = [];
+  saleCars: Car[] = [];
+  rentCars: Car[] = [];
   isLoading = false;
+
+  get totalCount(): number {
+    const ids = new Set([...this.saleCars, ...this.rentCars].map(c => c._id));
+    return ids.size;
+  }
+
+  get isEmpty(): boolean {
+    return !this.isLoading && this.saleCars.length === 0 && this.rentCars.length === 0;
+  }
 
   constructor(
     private router: Router,
     private carService: CarService,
+    private authService: AuthService,
     private toastController: ToastController,
     private alertController: AlertController,
   ) {
@@ -54,6 +65,31 @@ export class MyCarsPage {
       homeOutline,
       chevronForward,
       refreshOutline,
+    });
+  }
+
+  ionViewWillEnter(): void {
+    this.loadMyCars();
+  }
+
+  private loadMyCars(): void {
+    const userId = this.authService.currentUser?.id;
+    if (!userId) return;
+
+    this.isLoading = true;
+    forkJoin({
+      sale: this.carService.getUserCarsForSale(userId),
+      rent: this.carService.getUserCarsForRent(userId),
+    }).subscribe({
+      next: ({ sale, rent }) => {
+        this.saleCars = Array.isArray(sale.data) ? sale.data : [];
+        this.rentCars = Array.isArray(rent.data) ? rent.data : [];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showToast(err.message || 'Failed to load your cars', 'danger');
+      },
     });
   }
 
@@ -93,7 +129,7 @@ export class MyCarsPage {
     this.carService.collectCar(car._id).subscribe({
       next: (res) => {
         this.showToast(res.message || 'Car collected successfully!', 'success');
-        this.myCars = this.myCars.filter((c) => c._id !== car._id);
+        this.removeFromLists(car._id);
       },
       error: (err) => this.showToast(err.message || 'Failed to collect car', 'danger'),
     });
@@ -134,8 +170,11 @@ export class MyCarsPage {
     this.carService.sellCar(car._id, price).subscribe({
       next: (res) => {
         this.showToast(res.message || 'Car listed for sale!', 'success');
-        const idx = this.myCars.findIndex((c) => c._id === car._id);
-        if (idx !== -1) this.myCars[idx] = { ...this.myCars[idx], forSale: true, price };
+        const updated = { ...car, forSale: true, price };
+        this.patchInLists(car._id, updated);
+        if (!this.saleCars.find((c) => c._id === car._id)) {
+          this.saleCars = [updated, ...this.saleCars];
+        }
       },
       error: (err) => this.showToast(err.message || 'Failed to list car for sale', 'danger'),
     });
@@ -176,8 +215,11 @@ export class MyCarsPage {
     this.carService.listCarForRent(car._id, rentalPrice).subscribe({
       next: (res) => {
         this.showToast(res.message || 'Car listed for rent!', 'success');
-        const idx = this.myCars.findIndex((c) => c._id === car._id);
-        if (idx !== -1) this.myCars[idx] = { ...this.myCars[idx], forRent: true, rentalPrice };
+        const updated = { ...car, forRent: true, rentalPrice };
+        this.patchInLists(car._id, updated);
+        if (!this.rentCars.find((c) => c._id === car._id)) {
+          this.rentCars = [updated, ...this.rentCars];
+        }
       },
       error: (err) => this.showToast(err.message || 'Failed to list car for rent', 'danger'),
     });
@@ -203,10 +245,23 @@ export class MyCarsPage {
     this.carService.deleteCar(car._id).subscribe({
       next: (res) => {
         this.showToast(res.message || 'Car removed successfully', 'success');
-        this.myCars = this.myCars.filter((c) => c._id !== car._id);
+        this.removeFromLists(car._id);
       },
       error: (err) => this.showToast(err.message || 'Failed to delete car', 'danger'),
     });
+  }
+
+  // ─── List helpers ─────────────────────────────────────
+
+  private removeFromLists(id: string): void {
+    this.saleCars = this.saleCars.filter((c) => c._id !== id);
+    this.rentCars = this.rentCars.filter((c) => c._id !== id);
+  }
+
+  private patchInLists(id: string, updated: Car): void {
+    const patch = (arr: Car[]) => arr.map((c) => c._id === id ? updated : c);
+    this.saleCars = patch(this.saleCars);
+    this.rentCars = patch(this.rentCars);
   }
 
   // ─── Helpers ─────────────────────────────────────────

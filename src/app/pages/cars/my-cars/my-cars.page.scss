@@ -350,3 +350,12 @@ ion-content {
   gap: 12px;
   margin-top: 8px;
 }
+
+.section-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--de-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 20px 0 10px;
+}

@@ -35,7 +35,6 @@ export class ParkCarPage implements OnDestroy {
   model = '';
   yearStr = '';
   vin = '';
-  priceStr = '';
   description = '';
 
   selectedFiles: File[] = [];
@@ -86,7 +85,6 @@ export class ParkCarPage implements OnDestroy {
     formData.append('model', this.model.trim());
     formData.append('year', year.toString());
     formData.append('vin', this.vin.trim());
-    if (this.priceStr.trim()) formData.append('price', this.priceStr.trim());
     if (this.description.trim()) formData.append('description', this.description.trim());
     this.selectedFiles.forEach((f) => formData.append('images', f));
 

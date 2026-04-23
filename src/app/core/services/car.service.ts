@@ -37,6 +37,20 @@ export class CarService {
       );
   }
 
+  // GET /api/cars/user/:userId/sale — list the user's own cars for sale
+  getUserCarsForSale(userId: string): Observable<CarApiResponse> {
+    return this.http
+      .get<CarApiResponse>(`${this.apiUrl}/user/${userId}/sale`)
+      .pipe(catchError(this.handleError));
+  }
+
+  // GET /api/cars/user/:userId/rent — list the user's own cars for rent
+  getUserCarsForRent(userId: string): Observable<CarApiResponse> {
+    return this.http
+      .get<CarApiResponse>(`${this.apiUrl}/user/${userId}/rent`)
+      .pipe(catchError(this.handleError));
+  }
+
   // POST /api/cars — create a new car (for sale/rent/normal) with images
   addCar(formData: FormData): Observable<CarApiResponse> {
     return this.http
