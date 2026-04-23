@@ -1,7 +1,9 @@
 # API Integration Documentation - DriveEase
 
 ## Overview
-This document describes the API integration implemented for the authentication screens (Login and Registration) in the DriveEase mobile application.
+This document describes the API integrations implemented for the DriveEase mobile application.
+
+---
 
 ## Backend API Details
 
@@ -9,10 +11,25 @@ This document describes the API integration implemented for the authentication s
 - **Development**: `http://localhost:3000/api`
 - **Production**: Update in `src/environments/environment.prod.ts`
 
-### Available Endpoints
+---
 
-#### 1. User Registration
+## Authentication
+
+### JWT Interceptor
+All protected API calls automatically attach the JWT token via an HTTP interceptor:
+- **File**: `src/app/core/interceptors/auth.interceptor.ts`
+- **Registered in**: `src/main.ts` via `withInterceptors([authInterceptor])`
+- **Header added**: `Authorization: Bearer <token>`
+
+The interceptor fires on every outgoing HTTP request. If no token is stored it passes the request through unchanged (used for login/register calls).
+
+---
+
+## Implemented Endpoints
+
+### 1. User Registration
 - **Endpoint**: `POST /api/users/register`
+- **Auth required**: No
 - **Request Body**:
 ```json
 {
@@ -24,32 +41,18 @@ This document describes the API integration implemented for the authentication s
 ```
 - **Success Response** (201):
 ```json
-{
-  "success": true,
-  "data": {
-    "id": "user_id",
-    "name": "user_name",
-    "phone": "user_phone"
-  }
-}
+{ "success": true, "data": { "id": "...", "name": "...", "phone": "..." } }
 ```
-- **Error Response** (400):
-```json
-{
-  "success": false,
-  "message": "Error message",
-  "errors": [...]
-}
-```
+- **Implemented In**: `AuthService.register()` → `RegisterPage`
 
-#### 2. User Login
+---
+
+### 2. User Login
 - **Endpoint**: `POST /api/users/login`
+- **Auth required**: No
 - **Request Body**:
 ```json
-{
-  "phone": "string (required)",
-  "password": "string (required)"
-}
+{ "phone": "string", "password": "string" }
 ```
 - **Success Response** (200):
 ```json
@@ -57,213 +60,235 @@ This document describes the API integration implemented for the authentication s
   "success": true,
   "message": "Login successful",
   "token": "jwt_token",
-  "user": {
-    "id": "user_id",
-    "name": "user_name",
-    "phone": "user_phone"
-  }
+  "user": { "id": "...", "name": "...", "phone": "..." }
 }
 ```
-- **Error Response** (400):
+- **Implemented In**: `AuthService.login()` → `LoginPage`
+
+---
+
+### 3. Get Available Cars
+- **Endpoint**: `GET /api/cars/available`
+- **Auth required**: Yes (JWT)
+- **Description**: Returns all cars currently listed for sale or rent
+- **Success Response** (200):
 ```json
 {
-  "success": false,
-  "message": "Invalid credentials"
+  "success": true,
+  "data": [
+    {
+      "_id": "...",
+      "make": "Toyota", "model": "Corolla", "year": 2022,
+      "price": 18000000,
+      "rentalPrice": 25000,
+      "listingType": "sale | rent",
+      "condition": "new | like-new | used",
+      "transmission": "automatic | manual",
+      "mileage": "45000",
+      "location": "Yaoundé",
+      "images": ["url1", "url2"]
+    }
+  ]
 }
 ```
+- **Implemented In**: `CarService.getAvailableCars()` → `AutoPage` (Rent & Buy tabs)
+- **Filtering**: Client-side — `listingType === 'rent'` → Rent tab, `listingType === 'sale'` → Buy tab
 
-## Frontend Implementation
+---
 
-### Files Modified
+### 4. Rent a Car
+- **Endpoint**: `POST /api/cars/rent/:id`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `{}` (empty)
+- **Success Response** (200):
+```json
+{ "success": true, "message": "Car rented successfully", "data": { ... } }
+```
+- **Implemented In**: `CarService.rentCar(id)` → `AutoPage` Rent tab (Rent button + confirmation alert)
 
-1. **Environment Configuration**
-   - `src/environments/environment.ts` - Added `apiUrl: 'http://localhost:3000/api'`
-   - `src/environments/environment.prod.ts` - Added production API URL placeholder
+---
 
-2. **Main Application Bootstrap**
-   - `src/main.ts` - Added `provideHttpClient()` to enable HTTP requests
+### 5. Buy a Car
+- **Endpoint**: `POST /api/cars/buy/:id`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `{}` (empty)
+- **Success Response** (200):
+```json
+{ "success": true, "message": "Car purchased successfully", "data": { ... } }
+```
+- **Implemented In**: `CarService.buyCar(id)` → `AutoPage` Buy tab (Buy button + confirmation alert)
 
-3. **Auth Service**
-   - `src/app/core/services/auth.service.ts`
-   - Implemented real HTTP calls for `login()` and `register()`
-   - Added token and user storage in localStorage
-   - Implemented error handling with proper error messages
-   - Added authentication state management with BehaviorSubjects
+---
 
-4. **Login Page**
-   - `src/app/pages/auth/login/login.page.ts`
-   - Integrated AuthService
-   - Added loading state and spinner
-   - Implemented toast notifications for success/error feedback
-   - Added form validation
+### 6. Add a New Car
+- **Endpoint**: `POST /api/cars`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `FormData` with car details + image files
+- **Status**: `CarService.addCar(formData)` wired — **screen needed** (see below)
 
-5. **Register Page**
-   - `src/app/pages/auth/register/register.page.ts`
-   - Integrated AuthService
-   - Added client-side validation (password match, length, required fields)
-   - Added loading state and spinner
-   - Implemented toast notifications
-   - **Redirects to login page after successful registration** (no auto-login)
+---
 
-6. **Home Page**
-   - `src/app/pages/home/home.page.ts` and `home.page.html`
-   - Added logout button in header
-   - Displays logged-in user's name
-   - Calls AuthService.logout() and redirects to login
+### 7. Park Car in Garage
+- **Endpoint**: `POST /api/cars/park`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `FormData` with car details + image files
+- **Status**: `CarService.parkCar(formData)` wired — **screen needed** (see below)
 
-7. **Route Guards**
-   - `src/app/core/guards/guest.guard.ts` - Prevents logged-in users from accessing auth/onboarding screens
-   - `src/app/core/guards/auth.guard.ts` - Protects home route, requires authentication
-   - `src/app/core/guards/initial-redirect.guard.ts` - Smart routing on app launch based on auth status
+---
 
-### Authentication Flow
+### 8. Collect Car from Garage
+- **Endpoint**: `POST /api/cars/collect/:id`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `{}` (empty)
+- **Status**: `CarService.collectCar(id)` wired — **screen needed** (see below)
 
-#### Registration Flow
-1. User fills in: Full Name, Phone Number, Password, Confirm Password
-2. Client-side validation:
-   - All fields required
-   - Password minimum 6 characters
-   - Passwords must match
-3. API call to `/api/users/register`
-4. On success: Show success toast → Navigate to `/auth/login`
-5. On error: Show error toast with server message
+---
 
-#### Login Flow
-1. User fills in: Phone Number, Password
-2. Client-side validation: Both fields required
-3. API call to `/api/users/login`
-4. On success:
-   - Store JWT token in localStorage (`authToken`)
-   - Store user data in localStorage (`currentUser`)
-   - Update authentication state
-   - Show success toast → Navigate to `/home`
-5. On error: Show error toast with server message
+### 9. List Car for Sale
+- **Endpoint**: `POST /api/cars/sell/:id`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `{ "price": number }`
+- **Status**: `CarService.sellCar(id, price)` wired — **screen needed** (see below)
 
-#### Logout Flow
-1. User clicks "Logout" button in home page header
-2. AuthService clears:
-   - JWT token from localStorage
-   - User data from localStorage
-   - Authentication state
-3. Navigate to `/auth/login`
+---
 
-### Data Storage
+### 10. List Car for Rent
+- **Endpoint**: `POST /api/cars/rent-list/:id`
+- **Auth required**: Yes (JWT)
+- **Request Body**: `{ "rentalPrice": number }`
+- **Status**: `CarService.listCarForRent(id, rentalPrice)` wired — **screen needed** (see below)
 
-The following data is stored in localStorage:
-- `authToken`: JWT token received from login
-- `currentUser`: User object `{ id, name, phone }`
-- `hasOnboarded`: Boolean flag for onboarding completion
+---
 
-### Error Handling
+### 11. Update a Car
+- **Endpoint**: `PUT /api/cars/:id`
+- **Auth required**: Yes (JWT)
+- **Request Body**: Partial car fields to update
+- **Status**: `CarService.updateCar(id, data)` wired — **screen needed** (see below)
 
-The AuthService includes comprehensive error handling:
-- Network errors
-- Server validation errors
-- HTTP status errors
-- Custom error messages from backend
+---
 
-Error messages are displayed to users via Ionic Toast notifications.
+### 12. Delete a Car
+- **Endpoint**: `DELETE /api/cars/:id`
+- **Auth required**: Yes (JWT)
+- **Status**: `CarService.deleteCar(id)` wired — **screen needed** (see below)
 
-## Testing Instructions
+---
+
+## Stub Endpoints (Not Yet Implemented)
+
+| Endpoint | Service Method | Notes |
+|----------|----------------|-------|
+| `POST /api/users/forgot-password` | `AuthService.forgotPassword()` | Throws error stub |
+| `POST /api/users/verify-otp` | `AuthService.verifyOtp()` | Throws error stub |
+| `POST /api/users/reset-password` | `AuthService.resetPassword()` | Throws error stub |
+
+---
+
+## Screens Needed to Complete Car Integration
+
+The following screens do not yet exist and are required to fully expose the remaining car endpoints:
+
+| Screen | Endpoint(s) | Description |
+|--------|-------------|-------------|
+| **Add Car** | `POST /api/cars` | Form with make, model, year, price, condition, transmission, description + image upload. Accessible from the Sell tab "Add a New Car" button. |
+| **Park Car** | `POST /api/cars/park` | Form to park/store a car in the garage with images. Accessible from the Garage tab "Park a Car" button. |
+| **My Cars / Car Detail** | `PUT /api/cars/:id`, `DELETE /api/cars/:id`, `POST /api/cars/sell/:id`, `POST /api/cars/rent-list/:id`, `POST /api/cars/collect/:id` | A screen listing the authenticated user's own cars where they can edit, delete, list for sale/rent, or collect from garage. **Requires a GET endpoint for user's own cars** (e.g. `GET /api/cars/my` — not yet in the API). |
+
+> **Note:** The `GET /api/cars/available` endpoint only returns cars listed by other users. A `GET /api/cars/my` (or similar) endpoint is needed to display the current user's own cars in the Garage tab and to allow them to select a car to sell/rent-list.
+
+---
+
+## Frontend Files Modified / Created
+
+| File | Change |
+|------|--------|
+| `src/main.ts` | Switched from `withInterceptorsFromDi()` to `withInterceptors([authInterceptor])` |
+| `src/app/core/interceptors/auth.interceptor.ts` | **New** — functional JWT interceptor |
+| `src/app/core/models/car.model.ts` | Updated with `_id`, `listingType`, `images`, `transmission`, `location`, `rentalPrice`; added `CreateCarRequest`, `SellCarRequest`, `RentListRequest`, `CarApiResponse` |
+| `src/app/core/services/car.service.ts` | **New** — unified service for all `/api/cars` endpoints |
+| `src/app/pages/auto/auto.page.ts` | Replaced all placeholder data with `CarService`; added loading states, `rentCars`/`buyCars` arrays, confirmation alerts, toast feedback |
+| `src/app/pages/auto/auto.page.html` | Real data bindings; loading spinners; empty states; real car image support; Garage tab CTA; Sell tab now has Add + List buttons |
+| `src/app/pages/auto/auto.page.scss` | Added `.loading-state`, `.empty-state`, `.action-btn`, `.car-img`, `.sell-cta-outline` |
+
+---
+
+## Authentication Flow (recap)
+
+### Registration
+1. Fill name, phone, password, confirm password
+2. Client-side validation
+3. `POST /api/users/register`
+4. Success → redirect to login
+
+### Login
+1. Fill phone, password
+2. `POST /api/users/login`
+3. Store JWT (`authToken`) + user (`currentUser`) in localStorage
+4. Update `AuthService` state → navigate to `/tabs/home`
+
+### Protected Requests
+- Interceptor reads `authToken` from localStorage
+- Attaches `Authorization: Bearer <token>` to every request automatically
+
+### Logout
+- Clear `authToken` + `currentUser` from localStorage
+- Reset `AuthService` BehaviorSubjects → navigate to `/auth/login`
+
+---
+
+## Data Storage
+
+| Key | Type | Set By |
+|-----|------|--------|
+| `authToken` | `string` (JWT) | `AuthService.login()` |
+| `currentUser` | `{ id, name, phone }` | `AuthService.login()` |
+| `hasOnboarded` | `boolean` | `StorageService.setOnboarded()` |
+
+---
+
+## Testing
 
 ### Prerequisites
-1. Ensure backend server is running at `http://localhost:3000`
-2. MongoDB connection is active
-3. Frontend dev server is running at `http://localhost:4200`
+1. Backend running at `http://localhost:3000`
+2. MongoDB connected
+3. Frontend dev server at `http://localhost:4200`
 
-### Test Registration
-1. Navigate to `/auth/register` or click "Sign Up" from login page
-2. Fill in the form:
-   - Full Name: "Test User"
-   - Phone: "237651234567" (9-15 digits)
-   - Password: "password123" (min 6 chars)
-   - Confirm Password: "password123"
-3. Click "Sign Up"
-4. Expected: Success toast → Redirect to login page
+### Test Available Cars
+1. Login with valid credentials
+2. Navigate to Auto tab → Rent or Buy segments
+3. If the backend has cars with `listingType: 'rent'` or `listingType: 'sale'` they will appear
+4. Empty state shows if none are available
 
-### Test Login
-1. Navigate to `/auth/login`
-2. Fill in credentials from registration
-3. Click "Login"
-4. Expected: Success toast → Redirect to home page
-5. Check localStorage for `authToken` and `currentUser`
+### Test Rent a Car
+1. Ensure at least one car with `listingType: 'rent'` exists in the backend
+2. Navigate to Auto → Rent tab
+3. Tap the "Rent" button on a car
+4. Confirm in the alert dialog
+5. Expected: success toast with backend message
 
-### Test Error Cases
+### Test Buy a Car
+1. Ensure at least one car with `listingType: 'sale'` exists in the backend
+2. Navigate to Auto → Buy tab
+3. Tap the "Buy" button on a car
+4. Confirm in the alert dialog
+5. Expected: success toast with backend message
 
-**Registration Errors:**
-- Empty fields → "Please fill in all fields"
-- Password mismatch → "Passwords do not match"
-- Short password → "Password must be at least 6 characters"
-- Duplicate phone → Server error: "Phone already registered"
+### Test JWT Interceptor
+1. Login and observe `authToken` in localStorage
+2. Open DevTools Network tab
+3. Any API request to `/api/cars/*` should have `Authorization: Bearer <token>` header
 
-**Login Errors:**
-- Empty fields → "Please enter phone and password"
-- Wrong credentials → Server error: "Invalid credentials"
-
-## CORS Configuration
-
-The backend already has CORS enabled in `app.js`:
-```javascript
-app.use(cors());
-```
-
-This allows the frontend (localhost:4200) to make requests to the backend (localhost:3000).
-
-## Future Enhancements
-
-The following authentication features are stubbed but not yet implemented:
-- Google OAuth (`loginWithGoogle()`)
-- Apple Sign In (`loginWithApple()`)
-- Forgot Password flow (`forgotPassword()`, `verifyOtp()`, `resetPassword()`)
-
-These will require additional backend endpoints to be implemented.
+---
 
 ## Security Notes
-
-1. **Token Storage**: Currently using localStorage. Consider using httpOnly cookies for production.
-2. **Password Validation**: Backend validates minimum 6 characters. Consider stronger requirements.
-3. **Phone Validation**: Backend validates 9-15 digits. Ensure proper phone format validation.
-4. **HTTPS**: Use HTTPS in production for secure token transmission.
-
-## Troubleshooting
-
-### Common Issues
-
-**Issue**: CORS errors
-- **Solution**: Ensure backend has `cors()` middleware enabled
-
-**Issue**: Network error / Connection refused
-- **Solution**: Verify backend server is running on port 3000
-
-**Issue**: 401 Unauthorized on protected routes
-- **Solution**: Check if token is being sent in request headers (implement HTTP interceptor)
-
-**Issue**: Registration succeeds but user can't login
-- **Solution**: Verify password is being hashed correctly in backend
-
-## Route Protection
-
-### Guest Guard
-Prevents authenticated users from accessing:
-- Onboarding screens (`/onboarding/*`)
-- Auth screens (`/auth/*`)
-
-If a logged-in user tries to access these routes, they are redirected to `/home`.
-
-### Auth Guard
-Protects the home route (`/home`) - requires authentication.
-If an unauthenticated user tries to access, they are redirected to `/auth/login`.
-
-### Initial Redirect Guard
-Smart routing on app launch (`/`):
-- If logged in → Redirect to `/home`
-- If not logged in but onboarded → Redirect to `/auth/login`
-- If not logged in and not onboarded → Redirect to `/onboarding/splash`
+1. Token stored in localStorage — consider httpOnly cookies for production
+2. HTTPS required in production
+3. Token refresh not implemented
 
 ## Next Steps
-
-1. Implement HTTP interceptor to attach JWT token to protected API requests
-2. Add token refresh mechanism
-3. Implement forgot password flow when backend endpoints are ready
-4. Add more protected routes (parking, rental, buy/sell features)
-5. Implement profile management
+1. Implement `GET /api/users/forgot-password`, `verify-otp`, `reset-password` flows
+2. Build Add Car screen (`POST /api/cars`)
+3. Build Park Car screen (`POST /api/cars/park`)
+4. Build My Cars / Car Detail screen (needs `GET /api/cars/my` from backend)
+5. Wire up Edit (`PUT`), Delete (`DELETE`), Sell listing, Rent listing from Car Detail screen
