@@ -1,32 +1,75 @@
-.bookings-container {
-  padding: 0 24px 32px;
-  padding-top: calc(env(safe-area-inset-top) + 20px);
+.bookings-wrap {
   background: var(--de-white);
   min-height: 100%;
+  padding-bottom: 32px;
 }
 
 // ─── Header ────────────────────────────────────────────
 .bookings-header {
-  margin-bottom: 20px;
+  padding: calc(env(safe-area-inset-top) + 20px) 24px 20px;
+}
 
-  .page-title {
-    font-size: 24px;
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--de-text-primary);
+  margin: 0 0 3px;
+  letter-spacing: -0.4px;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: var(--de-gray);
+  margin: 0;
+  font-weight: 400;
+}
+
+// ─── Summary Cards ─────────────────────────────────────
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 24px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  border-radius: 16px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  .summary-val {
+    font-size: 22px;
     font-weight: 800;
     color: var(--de-text-primary);
-    margin: 0 0 4px;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.5px;
   }
 
-  .page-subtitle {
-    font-size: 13px;
+  .summary-label {
+    font-size: 11px;
     color: var(--de-gray);
-    margin: 0;
-    font-weight: 400;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  &.active-card {
+    .summary-val { color: var(--de-primary); }
+  }
+
+  &.done-card {
+    .summary-val { color: var(--de-success); }
   }
 }
 
-// ─── Segment ───────────────────────────────────────────
-.segment-wrapper {
+// ─── Filter Segment ────────────────────────────────────
+.filter-wrap {
+  padding: 0 24px;
   margin-bottom: 24px;
 
   ion-segment {
@@ -36,7 +79,7 @@
 
     ion-segment-button {
       --color: var(--de-gray);
-      --color-checked: var(--de-primary);
+      --color-checked: var(--de-white);
       --indicator-color: var(--de-primary);
       --indicator-box-shadow: none;
       --border-radius: 9px;
@@ -49,8 +92,9 @@
   }
 }
 
-// ─── Bookings List ─────────────────────────────────────
-.bookings-list {
+// ─── Booking List ──────────────────────────────────────
+.booking-list {
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -61,23 +105,23 @@
   gap: 14px;
   background: var(--de-white);
   border: 1.5px solid var(--de-gray-light);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 16px;
-  cursor: pointer;
   box-shadow: var(--de-shadow-sm);
+  cursor: pointer;
   transition: transform 0.15s ease;
 
   &:active { transform: scale(0.98); }
 }
 
-.booking-icon-col {
+.booking-left {
   flex-shrink: 0;
 }
 
-.booking-type-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+.booking-type-ico {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   background: var(--de-off-white);
   border: 1.5px solid var(--de-gray-light);
   display: flex;
@@ -85,24 +129,29 @@
   justify-content: center;
 
   ion-icon {
-    font-size: 20px;
+    font-size: 22px;
     color: var(--de-primary);
   }
 
-  // Both types use brand-consistent styling
-  &.parking,
+  &.parking {
+    background: rgba(46, 204, 113, 0.08);
+    border-color: rgba(46, 204, 113, 0.2);
+    ion-icon { color: var(--de-success); }
+  }
+
   &.rental {
-    background: var(--de-off-white);
+    background: rgba(26, 115, 232, 0.08);
+    border-color: rgba(26, 115, 232, 0.2);
     ion-icon { color: var(--de-primary); }
   }
 }
 
-.booking-details {
+.booking-body {
   flex: 1;
   min-width: 0;
 }
 
-.booking-top-row {
+.booking-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -120,37 +169,37 @@
   text-overflow: ellipsis;
 }
 
-.booking-status {
-  display: flex;
+.status-pill {
+  display: inline-flex;
   align-items: center;
   gap: 3px;
   font-size: 10px;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
+  padding: 4px 9px;
+  border-radius: 20px;
   flex-shrink: 0;
   text-transform: uppercase;
   letter-spacing: 0.4px;
 
-  ion-icon { font-size: 12px; }
+  ion-icon { font-size: 11px; }
 
   &.active {
-    color: var(--de-accent);
-    background: rgba(26, 115, 232, 0.08);
+    color: var(--de-primary);
+    background: rgba(26, 115, 232, 0.1);
   }
 
   &.completed {
     color: var(--de-success);
-    background: rgba(46, 204, 113, 0.08);
+    background: rgba(46, 204, 113, 0.1);
   }
 
   &.cancelled {
     color: var(--de-danger);
-    background: rgba(231, 76, 60, 0.08);
+    background: rgba(231, 76, 60, 0.1);
   }
 }
 
-.booking-info-row {
+.booking-meta {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -165,6 +214,9 @@
   span {
     font-size: 12px;
     color: var(--de-gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -180,39 +232,40 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 64px 24px;
   text-align: center;
-
-  .empty-icon {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: var(--de-off-white);
-    border: 1.5px solid var(--de-gray-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-
-    ion-icon {
-      font-size: 28px;
-      color: var(--de-gray);
-    }
-  }
+  padding: 56px 24px 24px;
+  gap: 6px;
 
   h3 {
     font-size: 18px;
     font-weight: 700;
     color: var(--de-text-primary);
-    margin: 0 0 8px;
+    margin: 0;
     letter-spacing: -0.2px;
   }
 
   p {
     font-size: 14px;
     color: var(--de-gray);
-    margin: 0;
     line-height: 1.5;
+    max-width: 260px;
+    margin: 0;
+  }
+}
+
+.empty-ico {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--de-off-white);
+  border: 1.5px solid var(--de-gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+
+  ion-icon {
+    font-size: 30px;
+    color: var(--de-gray);
   }
 }

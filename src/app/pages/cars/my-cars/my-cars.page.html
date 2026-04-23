@@ -1,0 +1,139 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="my-cars-container">
+
+    <!-- Header -->
+    <div class="page-header">
+      <button class="back-btn" (click)="goBack()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <div class="header-title-wrap">
+        <h1 class="page-title">My Cars</h1>
+        <span class="car-count" *ngIf="totalCount > 0">{{ totalCount }}</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="isLoading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading your cars...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="isEmpty">
+      <div class="empty-icon">
+        <ion-icon name="car-outline"></ion-icon>
+      </div>
+      <h2>No cars yet</h2>
+      <p>Your vehicles will appear here. Add a new car or park one in your garage to get started.</p>
+
+      <div class="empty-actions">
+        <button class="cta-btn" (click)="goToAddCar()">
+          <ion-icon name="add-outline"></ion-icon>
+          <span>Add a New Car</span>
+        </button>
+        <button class="cta-btn cta-outline" (click)="goToParkCar()">
+          <ion-icon name="home-outline"></ion-icon>
+          <span>Park a Car</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- For Sale -->
+    <ng-container *ngIf="!isLoading && saleCars.length > 0">
+      <p class="section-label">For Sale</p>
+      <div class="car-list">
+        <div class="car-card" *ngFor="let car of saleCars" (click)="openCarDetail(car)">
+          <div class="card-top">
+            <div class="car-thumbnail">
+              <img *ngIf="getFirstImage(car)" [src]="getFirstImage(car)!" alt="Car" class="car-img" />
+              <div class="thumb-placeholder" *ngIf="!getFirstImage(car)">
+                <ion-icon name="car-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="car-info">
+              <div class="car-name-row">
+                <h3 class="car-name">{{ getCarName(car) }}</h3>
+                <span class="status-badge status-sale">For Sale</span>
+              </div>
+              <div class="car-meta">
+                <span *ngIf="car.color">{{ car.color }}</span>
+                <span class="meta-sep" *ngIf="car.color && car.mileage">&bull;</span>
+                <span *ngIf="car.mileage">{{ car.mileage }} km</span>
+              </div>
+              <div class="car-price" *ngIf="car.price">
+                <span>{{ formatPrice(car.price) }} CFA</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions" (click)="$event.stopPropagation()">
+            <button class="action-chip rent" *ngIf="!car.forRent" (click)="onListForRent(car)">
+              <ion-icon name="key-outline"></ion-icon>
+              Rent Out
+            </button>
+            <button class="action-chip delete" (click)="onDeleteCar(car)">
+              <ion-icon name="trash-outline"></ion-icon>
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- For Rent -->
+    <ng-container *ngIf="!isLoading && rentCars.length > 0">
+      <p class="section-label">For Rent</p>
+      <div class="car-list">
+        <div class="car-card" *ngFor="let car of rentCars" (click)="openCarDetail(car)">
+          <div class="card-top">
+            <div class="car-thumbnail">
+              <img *ngIf="getFirstImage(car)" [src]="getFirstImage(car)!" alt="Car" class="car-img" />
+              <div class="thumb-placeholder" *ngIf="!getFirstImage(car)">
+                <ion-icon name="car-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="car-info">
+              <div class="car-name-row">
+                <h3 class="car-name">{{ getCarName(car) }}</h3>
+                <span class="status-badge status-rent">For Rent</span>
+              </div>
+              <div class="car-meta">
+                <span *ngIf="car.color">{{ car.color }}</span>
+                <span class="meta-sep" *ngIf="car.color && car.mileage">&bull;</span>
+                <span *ngIf="car.mileage">{{ car.mileage }} km</span>
+              </div>
+              <div class="car-price" *ngIf="car.rentalPrice">
+                <span>{{ formatPrice(car.rentalPrice) }} CFA/day</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions" (click)="$event.stopPropagation()">
+            <button class="action-chip sell" *ngIf="!car.forSale" (click)="onListForSale(car)">
+              <ion-icon name="pricetag-outline"></ion-icon>
+              Sell
+            </button>
+            <button class="action-chip delete" (click)="onDeleteCar(car)">
+              <ion-icon name="trash-outline"></ion-icon>
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Bottom CTAs -->
+    <div class="bottom-actions" *ngIf="!isLoading && !isEmpty">
+      <button class="cta-btn" (click)="goToAddCar()">
+        <ion-icon name="add-outline"></ion-icon>
+        <span>Add a New Car</span>
+      </button>
+      <button class="cta-btn cta-outline" (click)="goToParkCar()">
+        <ion-icon name="home-outline"></ion-icon>
+        <span>Park a Car</span>
+      </button>
+    </div>
+
+  </div>
+</ion-content>

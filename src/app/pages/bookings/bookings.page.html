@@ -1,14 +1,30 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="bookings-container">
+  <div class="bookings-wrap">
 
-    <!-- Header -->
+    <!-- ─── Header ──────────────────────────────────────── -->
     <div class="bookings-header">
-      <h1 class="page-title">Bookings</h1>
-      <p class="page-subtitle">Your activity history</p>
+      <h1 class="page-title">Activity</h1>
+      <p class="page-subtitle">Your bookings &amp; history</p>
     </div>
 
-    <!-- Filter Segment -->
-    <div class="segment-wrapper">
+    <!-- ─── Summary Row ─────────────────────────────────── -->
+    <div class="summary-row">
+      <div class="summary-card">
+        <span class="summary-val">{{ bookings.length }}</span>
+        <span class="summary-label">Total</span>
+      </div>
+      <div class="summary-card active-card">
+        <span class="summary-val">{{ countByStatus('active') }}</span>
+        <span class="summary-label">Active</span>
+      </div>
+      <div class="summary-card done-card">
+        <span class="summary-val">{{ countByStatus('completed') }}</span>
+        <span class="summary-label">Done</span>
+      </div>
+    </div>
+
+    <!-- ─── Filter Tabs ──────────────────────────────────── -->
+    <div class="filter-wrap">
       <ion-segment [value]="activeFilter" (ionChange)="onFilterChange($event)" mode="md">
         <ion-segment-button value="all">
           <ion-label>All</ion-label>
@@ -17,7 +33,7 @@
           <ion-label>Active</ion-label>
         </ion-segment-button>
         <ion-segment-button value="completed">
-          <ion-label>Completed</ion-label>
+          <ion-label>Done</ion-label>
         </ion-segment-button>
         <ion-segment-button value="cancelled">
           <ion-label>Cancelled</ion-label>
@@ -25,44 +41,42 @@
       </ion-segment>
     </div>
 
-    <!-- Bookings List -->
-    <div class="bookings-list" *ngIf="filteredBookings.length > 0">
+    <!-- ─── Bookings List ────────────────────────────────── -->
+    <div class="booking-list" *ngIf="filteredBookings.length > 0">
       <div class="booking-card" *ngFor="let booking of filteredBookings">
-        <div class="booking-icon-col">
-          <div class="booking-type-icon" [class.parking]="booking.type === 'parking'" [class.rental]="booking.type === 'rental'">
+        <div class="booking-left">
+          <div class="booking-type-ico" [class.parking]="booking.type === 'parking'" [class.rental]="booking.type === 'rental'">
             <ion-icon [name]="getTypeIcon(booking.type)"></ion-icon>
           </div>
         </div>
-        <div class="booking-details">
-          <div class="booking-top-row">
+        <div class="booking-body">
+          <div class="booking-top">
             <h3 class="booking-title">{{ booking.title }}</h3>
-            <div class="booking-status" [class]="booking.status">
+            <span class="status-pill" [class]="booking.status">
               <ion-icon [name]="getStatusIcon(booking.status)"></ion-icon>
-              <span>{{ booking.status | titlecase }}</span>
-            </div>
+              {{ booking.status | titlecase }}
+            </span>
           </div>
-          <div class="booking-info-row">
+          <div class="booking-meta">
             <ion-icon name="location-outline"></ion-icon>
             <span>{{ booking.location }}</span>
           </div>
-          <div class="booking-info-row">
+          <div class="booking-meta">
             <ion-icon name="calendar-outline"></ion-icon>
             <span>{{ booking.date }} &bull; {{ booking.time }}</span>
           </div>
-          <div class="booking-price">
-            {{ formatPrice(booking.price) }} CFA
-          </div>
+          <div class="booking-price">{{ formatPrice(booking.price) }} CFA</div>
         </div>
       </div>
     </div>
 
-    <!-- Empty State -->
+    <!-- ─── Empty State ──────────────────────────────────── -->
     <div class="empty-state" *ngIf="filteredBookings.length === 0">
-      <div class="empty-icon">
+      <div class="empty-ico">
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
-      <h3>No bookings found</h3>
-      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} bookings yet.</p>
+      <h3>No bookings yet</h3>
+      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} bookings. Start by renting or parking a vehicle.</p>
     </div>
 
   </div>
