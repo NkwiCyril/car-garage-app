@@ -1,0 +1,19 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 411 901" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Background Elements for Editorial Feel" clip-path="url(#clip0_0_4)">
+<g id="Subtle Grid Pattern" opacity="0.05">
+</g>
+<g id="Overlay+Blur" filter="url(#filter0_f_0_4)">
+<rect x="-39" y="689.39" width="300" height="300" rx="150" fill="var(--fill-0, #0B1B2B)" fill-opacity="0.05"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_4" x="-119" y="609.39" width="460" height="460" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="40" result="effect1_foregroundBlur_0_4"/>
+</filter>
+<clipPath id="clip0_0_4">
+<rect width="411" height="901" fill="white"/>
+</clipPath>
+</defs>
+</svg>
