@@ -1,52 +1,58 @@
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #9ca3af;
+$gray-light: #e2e4e9;
+$white: #ffffff;
+
+$bp-tablet: 768px;
+
 ion-tab-bar {
-  --background: var(--de-white);
-  border-top: 1px solid var(--de-gray-light);
+  --background: #{$white};
+  border-top: 1px solid $gray-light;
   padding-bottom: env(safe-area-inset-bottom);
-  height: 68px;
-  box-shadow: 0 -4px 20px rgba(10, 22, 40, 0.06);
+  height: 64px;
+  box-shadow: 0 -4px 16px rgba(11, 27, 43, 0.05);
+
+  // Keep full width, but visually center the buttons
+  @media (min-width: $bp-tablet) {
+    justify-content: center;
+  }
 
   ion-tab-button {
-    --color: var(--de-gray);
-    --color-selected: var(--de-primary);
-    --padding-top: 10px;
+    --color: #{$gray};
+    --color-selected: #{$accent};
+    --padding-top: 8px;
     --padding-bottom: 6px;
-    font-family: var(--de-font-family);
+    --ripple-color: transparent;
+    font-family: inherit;
     position: relative;
+    transition: opacity 0.15s ease;
+
+    // Cap each button's width on desktop so they don't stretch
+    @media (min-width: $bp-tablet) {
+      max-width: 160px;
+    }
 
     ion-icon {
       font-size: 22px;
-      margin-bottom: 3px;
-      transition: transform 0.2s ease;
+      margin-bottom: 4px;
     }
 
     ion-label {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2px;
-      text-transform: none;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
     }
 
     &.tab-selected {
       ion-icon {
-        color: var(--de-primary);
-        transform: scale(1.1);
+        color: $accent;
       }
 
       ion-label {
-        color: var(--de-primary);
+        color: $accent;
         font-weight: 700;
-      }
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 28px;
-        height: 3px;
-        background: var(--de-primary);
-        border-radius: 0 0 4px 4px;
       }
     }
   }

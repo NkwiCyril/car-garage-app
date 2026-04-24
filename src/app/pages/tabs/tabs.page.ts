@@ -10,8 +10,8 @@ import { addIcons } from 'ionicons';
 import {
   homeOutline,
   home,
-  carSportOutline,
-  carSport,
+  storefrontOutline,
+  storefront,
   calendarOutline,
   calendar,
   personOutline,
@@ -35,8 +35,8 @@ export class TabsPage {
     addIcons({
       homeOutline,
       home,
-      carSportOutline,
-      carSport,
+      storefrontOutline,
+      storefront,
       calendarOutline,
       calendar,
       personOutline,
