@@ -7,8 +7,11 @@ import {
   IonInput,
   IonInputPasswordToggle,
   IonSpinner,
+  IonIcon,
   ToastController,
 } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { arrowForwardOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -21,6 +24,7 @@ import { AuthService } from '../../../core/services/auth.service';
     IonInput,
     IonInputPasswordToggle,
     IonSpinner,
+    IonIcon,
     FormsModule,
   ],
 })
@@ -35,7 +39,9 @@ export class RegisterPage {
     private router: Router,
     private authService: AuthService,
     private toastController: ToastController
-  ) {}
+  ) {
+    addIcons({ arrowForwardOutline });
+  }
 
   async register(): Promise<void> {
     if (!this.fullName || !this.phone || !this.password || !this.confirmPassword) {
