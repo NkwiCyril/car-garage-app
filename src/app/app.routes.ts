@@ -20,6 +20,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/onboarding/step-two/step-two.page').then((m) => m.StepTwoPage),
     canActivate: [guestGuard],
   },
+  {
+    path: 'onboarding/step-three',
+    loadComponent: () => import('./pages/onboarding/step-three/step-three.page').then((m) => m.StepThreePage),
+    canActivate: [guestGuard],
+  },
 
   // Auth
   {
