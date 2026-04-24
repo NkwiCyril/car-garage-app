@@ -5,17 +5,20 @@ import {
   IonContent,
   IonInput,
   IonInputPasswordToggle,
+  IonSpinner,
+  IonIcon
 } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.page.html',
   styleUrls: ['./reset-password.page.scss'],
-  imports: [IonContent, IonInput, IonInputPasswordToggle, FormsModule],
+  imports: [IonContent, IonSpinner, IonIcon, IonInput, IonInputPasswordToggle, FormsModule],
 })
 export class ResetPasswordPage {
   newPassword: string = '';
   repeatPassword: string = '';
+  isLoading: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -26,5 +29,9 @@ export class ResetPasswordPage {
 
   goBack(): void {
     this.router.navigate(['/auth/verify-otp']);
+  }
+
+  contactSupport(): void {
+    console.log("Redirected to WhatsApp chat...")
   }
 }
