@@ -1,41 +1,39 @@
 <ion-content [fullscreen]="true" [scrollY]="false">
-  <div class="onboarding-container">
-    <!-- Skip button -->
-    <div class="skip-bar">
-      <button class="skip-btn" (click)="skip()">Skip</button>
-    </div>
+  <div class="step">
+    <span class="step__blob step__blob--tr"></span>
+    <span class="step__blob step__blob--bl"></span>
 
-    <!-- Image area -->
-    <div class="image-area">
-      <div class="image-placeholder">
-        <img src="assets/images/onboarding-parking.jpg" alt="Find Perfect Parking" onerror="this.style.display='none'; this.parentElement.classList.add('fallback')" />
+    <div class="step__body">
+      <div class="step__hero">
+        <div class="step__device">
+          <img
+            class="step__device-photo"
+            src="assets/images/onboarding/car-mockup.png"
+            alt="Car preview"
+          />
+        </div>
+      </div>
+
+      <div class="step__content">
+        <p class="step__eyebrow">STEP 01</p>
+        <h1 class="step__title">
+          Finding the<br />
+          <span class="step__title--accent">Perfect</span> Spot.
+        </h1>
       </div>
     </div>
 
-    <!-- Content area -->
-    <div class="content-area">
-      <h2 class="title">Find Perfect Parking</h2>
-      <p class="description">
-        Book secure spots in seconds anywhere in the city. Save time and never worry about parking again.
-      </p>
-    </div>
-
-    <!-- Bottom area -->
-    <div class="bottom-area">
-      <!-- Dots indicator -->
-      <div class="dots">
-        <span class="dot"></span>
-        <span class="dot active"></span>
-        <span class="dot"></span>
+    <div class="step__footer">
+      <div class="step__dots" aria-hidden="true">
+        <span class="step__dot step__dot--active"></span>
+        <span class="step__dot"></span>
+        <span class="step__dot"></span>
       </div>
 
-      <!-- Next Button -->
-      <button class="next-btn" (click)="goToNext()">
-        Next
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </button>
+      <div class="step__actions">
+        <button type="button" class="step__primary" (click)="goToNext()">Next Step</button>
+        <button type="button" class="step__secondary" (click)="skip()">Skip Introduction</button>
+      </div>
     </div>
   </div>
 </ion-content>
