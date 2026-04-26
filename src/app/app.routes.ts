@@ -82,6 +82,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/cars/car-detail/car-detail.page').then((m) => m.CarDetailPage),
   },
 
+  // Bookings (protected full-screen pages, no tab bar)
+  {
+    path: 'bookings/detail',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/bookings/booking-detail/booking-detail.page').then((m) => m.BookingDetailPage),
+  },
+
   // Legacy home redirect
   {
     path: 'home',

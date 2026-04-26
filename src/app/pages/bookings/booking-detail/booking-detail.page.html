@@ -1,0 +1,130 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+
+  <!-- No booking fallback -->
+  <div class="bd__no-data" *ngIf="!booking">
+    <div class="bd__no-data-icon">
+      <ion-icon name="car-outline"></ion-icon>
+    </div>
+    <h3>Booking not found</h3>
+    <p>No booking data was passed to this screen.</p>
+    <button class="bd__no-data-btn" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      Go Back
+    </button>
+  </div>
+
+  <div class="bd" *ngIf="booking">
+
+    <!-- ─── Top Nav ─────────────────────────────────────── -->
+    <div class="bd__nav">
+      <button class="bd__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="bd__nav-title">Booking Detail</span>
+      <div class="bd__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Hero Image ───────────────────────────────────── -->
+    <div class="bd__hero">
+      <img
+        *ngIf="booking.image"
+        [src]="booking.image"
+        class="bd__hero-img"
+        alt="Car"
+      />
+      <div class="bd__hero-placeholder" *ngIf="!booking.image">
+        <ion-icon name="car-outline"></ion-icon>
+      </div>
+      <span class="bd__hero-badge" [class]="'bd__hero-badge--' + booking.status">
+        {{ getStatusLabel() }}
+      </span>
+    </div>
+
+    <!-- ─── Content ──────────────────────────────────────── -->
+    <div class="bd__content">
+
+      <!-- Booking ID -->
+      <div class="bd__id-block">
+        <span class="bd__id-label">Booking ID</span>
+        <h1 class="bd__id-value">#{{ booking.bookingCode }}</h1>
+      </div>
+
+      <!-- Status note card -->
+      <div class="bd__note" [class]="'bd__note--' + booking.status">
+        <p class="bd__note-text">
+          Your <span class="bd__note-car">{{ booking.title }}</span> {{ getStatusNote() }}.
+        </p>
+      </div>
+
+      <!-- ─── Timeline ──────────────────────────────────── -->
+      <div class="bd__section">
+        <h2 class="bd__section-label">Timeline</h2>
+        <div class="bd__timeline">
+          <div
+            class="bd__tl-item"
+            *ngFor="let ev of booking.timeline; let last = last"
+            [class]="'bd__tl-item--' + ev.state"
+          >
+            <div class="bd__tl-track">
+              <div class="bd__tl-dot">
+                <ion-icon
+                  *ngIf="ev.state === 'completed'"
+                  name="checkmark-outline"
+                ></ion-icon>
+              </div>
+              <div class="bd__tl-line" *ngIf="!last"></div>
+            </div>
+            <div class="bd__tl-body">
+              <span class="bd__tl-label">{{ ev.label }}</span>
+              <span class="bd__tl-date">{{ ev.date }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Financial Overview ───────────────────────── -->
+      <div class="bd__financial">
+        <div class="bd__financial-card">
+          <h2 class="bd__financial-title">Financial Overview</h2>
+          <div
+            class="bd__financial-row"
+            *ngIf="booking.type === 'rental' && booking.totalDays"
+          >
+            <span class="bd__financial-label">
+              Rental Fee ({{ booking.totalDays }} {{ booking.totalDays === 1 ? 'Day' : 'Days' }})
+            </span>
+            <span class="bd__financial-val">
+              {{ formatPrice(booking.price) }} FCFA &times; {{ booking.totalDays }}
+            </span>
+          </div>
+          <div
+            class="bd__financial-divider"
+            *ngIf="booking.type === 'rental' && booking.totalDays"
+          ></div>
+          <div class="bd__financial-row bd__financial-row--total">
+            <span class="bd__financial-label bd__financial-label--bold">Total Amount</span>
+            <span class="bd__financial-total">{{ formatPrice(totalAmount) }} FCFA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Actions ───────────────────────────────────── -->
+      <div class="bd__actions">
+        <button class="bd__btn bd__btn--receipt" (click)="openReceipt()">
+          <ion-icon name="document-text-outline"></ion-icon>
+          Receipt
+        </button>
+        <button class="bd__btn bd__btn--support" (click)="openSupport()">
+          <ion-icon name="chatbubble-outline"></ion-icon>
+          Support
+        </button>
+        <button class="bd__btn bd__btn--extend" (click)="extendBooking()">
+          <ion-icon name="calendar-outline"></ion-icon>
+          Extend
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</ion-content>
