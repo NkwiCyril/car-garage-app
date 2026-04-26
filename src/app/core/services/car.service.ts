@@ -13,7 +13,6 @@ export class CarService {
   private mediaUrl = environment.mediaUrl;
 
   imageUrl(filename: string): string {
-    console.log(`${this.mediaUrl}${filename}`);
     return `${this.mediaUrl}${filename}`;
   }
 
@@ -27,12 +26,10 @@ export class CarService {
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.limit !== undefined) params = params.set('limit', String(filters.limit));
 
-    console.log('[CarService] GET /cars/available — params:', params.toString());
-
     return this.http
       .get<any>(`${this.apiUrl}/available`, { params })
       .pipe(
-        tap((response) => console.log('[CarService] /cars/available raw response:', JSON.stringify(response))),
+        // tap((response) => console.log('[CarService] /cars/available raw response:', JSON.stringify(response))),
         catchError(this.handleError)
       );
   }
