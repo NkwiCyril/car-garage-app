@@ -1,83 +1,119 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="bookings-wrap">
+  <div class="bk">
 
-    <!-- ─── Header ──────────────────────────────────────── -->
-    <div class="bookings-header">
-      <h1 class="page-title">Activity</h1>
-      <p class="page-subtitle">Your bookings &amp; history</p>
+    <!-- ─── Header ─────────────────────────────────────── -->
+    <div class="bk__header">
+      <h1 class="bk__title">Activity</h1>
+      <p class="bk__subtitle">Your bookings and history</p>
     </div>
 
-    <!-- ─── Summary Row ─────────────────────────────────── -->
-    <div class="summary-row">
-      <div class="summary-card">
-        <span class="summary-val">{{ bookings.length }}</span>
-        <span class="summary-label">Total</span>
+    <!-- ─── Summary Grid ──────────────────────────────── -->
+    <div class="bk__summary">
+      <div class="bk__stat">
+        <span class="bk__stat-label">TOTAL</span>
+        <span class="bk__stat-val">{{ padNum(bookings.length) }}</span>
       </div>
-      <div class="summary-card active-card">
-        <span class="summary-val">{{ countByStatus('active') }}</span>
-        <span class="summary-label">Active</span>
+      <div class="bk__stat bk__stat--active">
+        <span class="bk__stat-label">ACTIVE</span>
+        <span class="bk__stat-val">{{ padNum(countByStatus('active')) }}</span>
       </div>
-      <div class="summary-card done-card">
-        <span class="summary-val">{{ countByStatus('completed') }}</span>
-        <span class="summary-label">Done</span>
+      <div class="bk__stat bk__stat--done">
+        <span class="bk__stat-label">COMPLETED</span>
+        <span class="bk__stat-val">{{ padNum(countByStatus('completed')) }}</span>
+      </div>
+      <div class="bk__stat bk__stat--cancel">
+        <span class="bk__stat-label">CANCELLED</span>
+        <span class="bk__stat-val">{{ padNum(countByStatus('cancelled')) }}</span>
       </div>
     </div>
 
-    <!-- ─── Filter Tabs ──────────────────────────────────── -->
-    <div class="filter-wrap">
-      <ion-segment [value]="activeFilter" (ionChange)="onFilterChange($event)" mode="md">
-        <ion-segment-button value="all">
-          <ion-label>All</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="active">
-          <ion-label>Active</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="completed">
-          <ion-label>Done</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="cancelled">
-          <ion-label>Cancelled</ion-label>
-        </ion-segment-button>
-      </ion-segment>
+    <!-- ─── Filter Pills ──────────────────────────────── -->
+    <div class="bk__filters">
+      <button
+        class="bk__pill"
+        *ngFor="let f of filters"
+        [class.bk__pill--active]="activeFilter === f.value"
+        (click)="activeFilter = f.value"
+      >
+        {{ f.label }}
+      </button>
     </div>
 
-    <!-- ─── Bookings List ────────────────────────────────── -->
-    <div class="booking-list" *ngIf="filteredBookings.length > 0">
-      <div class="booking-card" *ngFor="let booking of filteredBookings">
-        <div class="booking-left">
-          <div class="booking-type-ico" [class.parking]="booking.type === 'parking'" [class.rental]="booking.type === 'rental'">
-            <ion-icon [name]="getTypeIcon(booking.type)"></ion-icon>
+    <!-- ─── Booking Cards ─────────────────────────────── -->
+    <div class="bk__list" *ngIf="filteredBookings.length > 0">
+      <div class="bk__card" *ngFor="let b of filteredBookings" (click)="onBookingAction(b)">
+
+        <!-- Car image -->
+        <div class="bk__card-img-wrap">
+          <img
+            *ngIf="b.image"
+            [src]="b.image"
+            [alt]="b.title"
+            class="bk__card-img"
+          />
+          <div class="bk__card-img-placeholder" *ngIf="!b.image">
+            <ion-icon name="car-sport-outline"></ion-icon>
           </div>
         </div>
-        <div class="booking-body">
-          <div class="booking-top">
-            <h3 class="booking-title">{{ booking.title }}</h3>
-            <span class="status-pill" [class]="booking.status">
-              <ion-icon [name]="getStatusIcon(booking.status)"></ion-icon>
-              {{ booking.status | titlecase }}
+
+        <!-- Card body -->
+        <div class="bk__card-body">
+          <!-- Type + Status row -->
+          <div class="bk__card-tags">
+            <span class="bk__type-badge" [class]="'bk__type-badge--' + b.type">
+              <ion-icon [name]="getTypeIcon(b.type)"></ion-icon>
+              {{ getTypeLabel(b.type) | uppercase }}
+            </span>
+            <span class="bk__status-badge" [class]="'bk__status-badge--' + b.status">
+              {{ getStatusLabel(b.status) | uppercase }}
             </span>
           </div>
-          <div class="booking-meta">
-            <ion-icon name="location-outline"></ion-icon>
-            <span>{{ booking.location }}</span>
+
+          <!-- Car name -->
+          <h3 class="bk__card-name">{{ b.title }}</h3>
+
+          <!-- Details row -->
+          <div class="bk__card-details">
+            <div class="bk__card-detail" *ngIf="b.dates">
+              <span class="bk__detail-label">DATES</span>
+              <span class="bk__detail-val">{{ b.dates }}</span>
+            </div>
+            <div class="bk__card-detail" *ngIf="b.statusNote">
+              <span class="bk__detail-label">STATUS</span>
+              <span class="bk__detail-val">{{ b.statusNote }}</span>
+            </div>
+            <div class="bk__card-detail" *ngIf="b.price">
+              <span class="bk__detail-label">{{ b.type === 'rental' ? 'PRICE' : 'TOTAL PRICE' }}</span>
+              <span class="bk__detail-val">{{ formatPrice(b.price) }} FCFA{{ b.type === 'rental' ? '/day' : '' }}</span>
+            </div>
           </div>
-          <div class="booking-meta">
-            <ion-icon name="calendar-outline"></ion-icon>
-            <span>{{ booking.date }} &bull; {{ booking.time }}</span>
-          </div>
-          <div class="booking-price">{{ formatPrice(booking.price) }} CFA</div>
+
+          <!-- Action button -->
+          <button
+            class="bk__card-btn"
+            [class]="'bk__card-btn--' + b.status"
+            (click)="onBookingAction(b); $event.stopPropagation()"
+          >
+            {{ getActionLabel(b) }}
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ─── Empty State ──────────────────────────────────── -->
-    <div class="empty-state" *ngIf="filteredBookings.length === 0">
-      <div class="empty-ico">
+    <!-- ─── Empty State ───────────────────────────────── -->
+    <div class="bk__empty" *ngIf="filteredBookings.length === 0">
+      <div class="bk__empty-icon">
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
       <h3>No bookings yet</h3>
-      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} bookings. Start by renting or parking a vehicle.</p>
+      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} bookings. Start by renting or purchasing a vehicle.</p>
     </div>
 
+    <!-- ─── WhatsApp FAB ───────────────────────────────── -->
+    <button class="bk__whatsapp" (click)="openWhatsApp()">
+      <ion-icon name="logo-whatsapp"></ion-icon>
+    </button>
+
+    <div class="bk__bottom-pad"></div>
   </div>
 </ion-content>
