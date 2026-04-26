@@ -1,8 +1,26 @@
+$bg: #f5f5f3;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$white: #ffffff;
+$radius: 14px;
+$success: #16a34a;
+
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
 ion-content {
+  --background: #{$bg};
   --padding-bottom: 100px;
 }
 
-// ─── No Car Fallback ───────────────────────────────────
+// ─── No Car Fallback ─────────────────────────────────
 .no-car {
   display: flex;
   flex-direction: column;
@@ -15,23 +33,23 @@ ion-content {
   h3 {
     font-size: 18px;
     font-weight: 700;
-    color: var(--de-text-primary);
+    color: $primary;
     margin: 0;
   }
 
   p {
     font-size: 14px;
-    color: var(--de-gray);
+    color: $gray;
     margin: 0 0 16px;
   }
 }
 
-.no-car-ico {
+.no-car__icon {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
+  background: $white;
+  border: 1.5px solid $gray-light;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,302 +57,689 @@ ion-content {
 
   ion-icon {
     font-size: 30px;
-    color: var(--de-gray);
+    color: $gray;
   }
 }
 
-.back-pill {
+.no-car__btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--de-primary);
-  color: var(--de-white);
+  background: $primary;
+  color: $white;
   border: none;
   border-radius: 12px;
   padding: 11px 20px;
-  font-family: var(--de-font-family);
+  font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 }
 
-// ─── Detail Wrap ───────────────────────────────────────
-.detail-wrap {
-  background: var(--de-white);
+// ─── Detail Wrapper ──────────────────────────────────
+.cd {
   min-height: 100%;
+
+  @media (min-width: $bp-tablet) {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: $bp-desktop) {
+    max-width: 860px;
+  }
 }
 
-// ─── Hero Image ────────────────────────────────────────
-.hero-img-wrap {
+// ─── Top Nav ─────────────────────────────────────────
+.cd__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + 12px) clamp(16px, 5vw, 24px) 12px;
+  background: $bg;
+
+  @media (min-width: $bp-tablet) {
+    padding: 20px 32px 14px;
+  }
+}
+
+.cd__nav-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active {
+    background: darken($bg, 3%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:hover {
+      background: darken($bg, 3%);
+    }
+  }
+}
+
+.cd__nav-title {
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.2px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 18px;
+  }
+}
+
+// ─── Hero Image ──────────────────────────────────────
+.cd__hero {
   position: relative;
-  width: 100%;
-  height: 300px;
-  background: var(--de-off-white);
+  width: calc(100% - clamp(32px, 8vw, 48px));
+  margin: 0 auto clamp(20px, 4dvh, 28px);
+  aspect-ratio: 16 / 10;
+  border-radius: clamp(20px, 5vw, 28px);
+  overflow: hidden;
+  background: darken($bg, 3%);
+
+  @media (min-width: $bp-tablet) {
+    width: calc(100% - 64px);
+    aspect-ratio: 16 / 9;
+    border-radius: 28px;
+    margin-bottom: 32px;
+  }
 }
 
-.hero-img {
+.cd__hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.hero-placeholder {
+.cd__hero-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--de-off-white) 0%, var(--de-gray-light) 100%);
+  background: linear-gradient(135deg, darken($bg, 2%) 0%, $gray-light 100%);
 
   ion-icon {
-    font-size: 80px;
-    color: var(--de-gray-light);
+    font-size: 72px;
+    color: $gray-light;
     opacity: 0.6;
   }
 }
 
-.hero-back-btn {
+.cd__verified {
   position: absolute;
-  top: calc(env(safe-area-inset-top) + 16px);
-  left: 16px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(10, 22, 40, 0.55);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-
-  ion-icon {
-    font-size: 22px;
-    color: var(--de-white);
-  }
-}
-
-.hero-badge {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  background: var(--de-primary);
-  color: var(--de-white);
-  font-size: 11px;
-  font-weight: 700;
-  padding: 5px 12px;
-  border-radius: 20px;
-  letter-spacing: 0.3px;
-
-  &.hero-badge-buy {
-    background: var(--de-success);
-  }
-}
-
-.img-count {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
+  top: clamp(12px, 3vw, 18px);
+  left: clamp(12px, 3vw, 18px);
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(10, 22, 40, 0.55);
-  color: var(--de-white);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 20px;
-  backdrop-filter: blur(4px);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: $success;
+  text-transform: uppercase;
 
-  ion-icon { font-size: 13px; }
+  ion-icon {
+    font-size: 14px;
+    color: $success;
+  }
 }
 
-// ─── Content ───────────────────────────────────────────
-.detail-content {
-  padding: 24px 24px 32px;
+.cd__hero-dots {
+  position: absolute;
+  bottom: clamp(10px, 2.5vw, 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
 }
 
-// ─── Name + Price ──────────────────────────────────────
-.name-price-row {
+.cd__hero-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s ease, width 0.2s ease;
+
+  &--active {
+    width: 22px;
+    border-radius: 9999px;
+    background: $white;
+  }
+}
+
+// ─── Info Card ───────────────────────────────────────
+.cd__info {
+  background: $white;
+  border-radius: clamp(24px, 6vw, 32px) clamp(24px, 6vw, 32px) 0 0;
+  padding: clamp(24px, 6vw, 32px);
+  margin-top: -16px;
+  position: relative;
+  z-index: 2;
+  min-height: 50dvh;
+
+  @media (min-width: $bp-tablet) {
+    border-radius: 32px 32px 0 0;
+    padding: 36px 40px;
+    margin-top: -24px;
+  }
+}
+
+// ─── Name & Price ────────────────────────────────────
+.cd__title-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: clamp(6px, 1.5dvh, 10px);
 }
 
-.name-block {
+.cd__title-block {
   flex: 1;
   min-width: 0;
 }
 
-.car-name {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--de-text-primary);
-  margin: 0 0 5px;
+.cd__name {
+  margin: 0 0 4px;
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 700;
+  color: $primary;
   letter-spacing: -0.4px;
-  line-height: 1.2;
+  line-height: 1.15;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 28px;
+  }
 }
 
-.car-location {
+.cd__location {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  color: var(--de-gray);
+  gap: 3px;
+  font-size: clamp(12px, 3.2vw, 13px);
+  color: $gray;
   margin: 0;
-
-  ion-icon { font-size: 14px; }
-}
-
-.price-block {
-  text-align: right;
-  flex-shrink: 0;
-
-  .price-main {
-    display: block;
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--de-text-primary);
-    letter-spacing: -0.3px;
-  }
-
-  .price-label {
-    font-size: 12px;
-    color: var(--de-gray);
-    font-weight: 500;
-  }
-}
-
-// ─── Spec Chips ────────────────────────────────────────
-.spec-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 28px;
-}
-
-.spec-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 20px;
-  padding: 7px 14px;
 
   ion-icon {
-    font-size: 15px;
-    color: var(--de-primary);
+    font-size: 14px;
   }
 
-  span {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--de-text-primary);
+  @media (min-width: $bp-tablet) {
+    font-size: 14px;
   }
 }
 
-// ─── Sections ──────────────────────────────────────────
-.detail-section {
-  margin-bottom: 28px;
+.cd__price-block {
+  flex-shrink: 0;
+  text-align: right;
 }
 
-.section-title {
-  font-size: 16px;
+.cd__price {
+  display: block;
+  font-size: clamp(20px, 5.5vw, 26px);
   font-weight: 800;
-  color: var(--de-text-primary);
-  margin: 0 0 12px;
+  color: $primary;
+  letter-spacing: -0.3px;
+  line-height: 1.1;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 26px;
+  }
+}
+
+.cd__price-unit {
+  font-size: clamp(10px, 2.8vw, 12px);
+  font-weight: 600;
+  color: $gray;
+  letter-spacing: 0.3px;
+}
+
+// ─── Spec Grid ───────────────────────────────────────
+.cd__specs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(10px, 2.5vw, 14px);
+  margin-top: clamp(18px, 4dvh, 24px);
+  margin-bottom: clamp(20px, 4dvh, 28px);
+
+  @media (min-width: $bp-tablet) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+    margin-bottom: 28px;
+  }
+}
+
+.cd__spec {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 14px);
+  padding: clamp(14px, 3.5vw, 18px);
+  background: $bg;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(14px, 3.5vw, 18px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 16px;
+    border-radius: 18px;
+  }
+}
+
+.cd__spec-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 17px;
+    color: $primary;
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.cd__spec-data {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cd__spec-label {
+  font-size: clamp(9px, 2.5vw, 10px);
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+.cd__spec-value {
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 700;
+  color: $primary;
   letter-spacing: -0.2px;
-}
-
-.description-text {
-  font-size: 14px;
-  color: var(--de-gray-dark);
-  line-height: 1.65;
-  margin: 0;
-}
-
-// ─── Details Table ─────────────────────────────────────
-.detail-table {
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 16px;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 16px;
+  }
 }
 
-.detail-row {
+// ─── Dealer Card ─────────────────────────────────────
+.cd__dealer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--de-gray-light);
+  gap: 12px;
+  padding: clamp(16px, 4vw, 20px);
+  background: $bg;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(16px, 4vw, 20px);
+  margin-bottom: clamp(12px, 2.5dvh, 16px);
 
-  &:last-child { border-bottom: none; }
+  @media (min-width: $bp-tablet) {
+    padding: 20px 24px;
+    border-radius: 20px;
+  }
 }
 
-.detail-label {
-  font-size: 13px;
-  color: var(--de-gray);
+.cd__dealer-left {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.5vw, 14px);
+  min-width: 0;
+}
+
+.cd__dealer-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+}
+
+.cd__dealer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cd__dealer-name {
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cd__dealer-loc {
+  font-size: clamp(11px, 3vw, 12px);
+  color: $gray;
+  font-weight: 400;
+}
+
+.cd__dealer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: $success;
+  text-transform: uppercase;
+
+  ion-icon {
+    font-size: 11px;
+    color: $success;
+  }
+}
+
+.cd__dealer-right {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.cd__dealer-rt-label {
+  display: block;
+  font-size: clamp(10px, 2.6vw, 11px);
+  color: $gray;
   font-weight: 500;
+  margin-bottom: 2px;
 }
 
-.detail-val {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--de-text-primary);
+.cd__dealer-rt-value {
+  font-size: clamp(13px, 3.4vw, 14px);
+  font-weight: 700;
+  color: $primary;
 }
 
-// ─── Sticky CTA ────────────────────────────────────────
-.sticky-cta {
+.cd__view-dealer-btn {
+  width: 100%;
+  height: clamp(46px, 6.5dvh, 52px);
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  background: $white;
+  color: $primary;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: clamp(28px, 5dvh, 36px);
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:active {
+    background: darken($bg, 2%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    height: 50px;
+    font-size: 15px;
+
+    &:hover {
+      background: darken($bg, 2%);
+      border-color: darken($gray-light, 8%);
+    }
+  }
+}
+
+// ─── Similar Vehicles ────────────────────────────────
+.cd__similar {
+  margin-bottom: 16px;
+}
+
+.cd__similar-title {
+  margin: 0 0 clamp(14px, 3dvh, 20px);
+  font-size: clamp(18px, 5vw, 20px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.3px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+.cd__similar-scroll {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.cd__similar-card {
+  flex: 0 0 clamp(180px, 48vw, 220px);
+  background: $bg;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(16px, 4vw, 20px);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @media (min-width: $bp-tablet) {
+    flex: 0 0 220px;
+    border-radius: 20px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -6px rgba(11, 27, 43, 0.14);
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+
+.cd__similar-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: darken($bg, 2%);
+  overflow: hidden;
+}
+
+.cd__similar-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+
+  @media (min-width: $bp-tablet) {
+    .cd__similar-card:hover & {
+      transform: scale(1.04);
+    }
+  }
+}
+
+.cd__similar-year {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6px);
+  font-size: 11px;
+  font-weight: 700;
+  color: $primary;
+}
+
+.cd__similar-info {
+  padding: clamp(10px, 2.5vw, 14px);
+}
+
+.cd__similar-name {
+  margin: 0 0 3px;
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 700;
+  color: $primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cd__similar-price {
+  margin: 0;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 800;
+  color: $accent;
+  letter-spacing: -0.2px;
+}
+
+// ─── Sticky CTA ──────────────────────────────────────
+.cd__cta {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px 24px calc(env(safe-area-inset-bottom) + 16px);
-  background: var(--de-white);
-  border-top: 1px solid var(--de-gray-light);
-  box-shadow: 0 -4px 20px rgba(10, 22, 40, 0.08);
+  display: flex;
+  gap: clamp(10px, 2.5vw, 14px);
+  padding: 14px clamp(20px, 5vw, 28px) calc(env(safe-area-inset-bottom) + 14px);
+  background: $white;
+  border-top: 1px solid $gray-light;
+  box-shadow: 0 -4px 20px rgba(11, 27, 43, 0.06);
   z-index: 100;
+
+  @media (min-width: $bp-tablet) {
+    max-width: 720px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 20px 20px 0 0;
+    padding: 16px 32px calc(env(safe-area-inset-bottom) + 16px);
+  }
+
+  @media (min-width: $bp-desktop) {
+    max-width: 860px;
+  }
 }
 
-.cta-btn {
-  width: 100%;
+.cd__cta-secondary {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
+  height: clamp(50px, 7dvh, 56px);
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  background: $white;
+  color: $primary;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    background: darken($bg, 2%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    height: 54px;
+    font-size: 15px;
+    border-radius: 16px;
+
+    &:hover {
+      background: darken($bg, 2%);
+    }
+  }
+}
+
+.cd__cta-primary {
+  flex: 1.4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: clamp(50px, 7dvh, 56px);
   border: none;
-  border-radius: 14px;
-  padding: 16px;
-  font-family: var(--de-font-family);
-  font-size: 16px;
+  border-radius: $radius;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
   font-weight: 700;
   cursor: pointer;
-  letter-spacing: 0.2px;
+  box-shadow:
+    0 8px 20px -6px rgba(0, 67, 235, 0.35),
+    0 4px 8px -4px rgba(0, 67, 235, 0.15);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-  ion-icon { font-size: 20px; }
-
-  &:active { opacity: 0.88; }
-
-  &.cta-rent {
-    background: var(--de-primary);
-    color: var(--de-white);
+  ion-icon {
+    font-size: 18px;
   }
 
-  &.cta-buy {
-    background: var(--de-success);
-    color: var(--de-white);
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 10px -4px rgba(0, 67, 235, 0.3);
   }
 
-  &.cta-manage {
-    background: var(--de-accent);
-    color: var(--de-white);
-  }
+  @media (min-width: $bp-tablet) {
+    height: 54px;
+    font-size: 15px;
+    border-radius: 16px;
 
-  &.cta-contact {
-    background: var(--de-gray-dark);
-    color: var(--de-white);
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 24px -6px rgba(0, 67, 235, 0.4),
+        0 6px 12px -4px rgba(0, 67, 235, 0.2);
+    }
   }
 }
