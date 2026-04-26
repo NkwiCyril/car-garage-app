@@ -20,9 +20,19 @@ import {
   heartOutline,
   heart,
   logoWhatsapp,
+  shieldCheckmarkOutline,
+  cameraOutline,
+  documentTextOutline,
+  pricetagOutline,
 } from 'ionicons/icons';
 import { CarService } from '../../core/services/car.service';
 import { Car } from '../../core/models/car.model';
+
+interface SellStep {
+  title: string;
+  desc: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-auto',
@@ -31,7 +41,7 @@ import { Car } from '../../core/models/car.model';
   imports: [CommonModule, IonContent, IonIcon, IonSpinner],
 })
 export class AutoPage implements OnInit {
-  activeTab: 'buy' | 'rent' = 'rent';
+  activeTab: 'buy' | 'rent' | 'sell' = 'buy';
   activeFilterIndex: number = -1;
 
   isLoadingAvailable = false;
@@ -40,6 +50,29 @@ export class AutoPage implements OnInit {
   favoritedIds: Set<string> = new Set();
 
   filterOptions = ['SUV', 'Sedan', 'Luxury', 'Sports', 'Pickup'];
+
+  sellSteps: SellStep[] = [
+    {
+      title: 'Car Details',
+      desc: 'VIN, mileage, and specific technical features.',
+      icon: 'car-outline',
+    },
+    {
+      title: 'Photos',
+      desc: 'High-resolution exterior and interior gallery.',
+      icon: 'camera-outline',
+    },
+    {
+      title: 'Documents',
+      desc: 'Registration and service history verification.',
+      icon: 'document-text-outline',
+    },
+    {
+      title: 'Price & Description',
+      desc: 'Market analysis and your personal storytelling.',
+      icon: 'pricetag-outline',
+    },
+  ];
 
   constructor(
     private router: Router,
@@ -58,6 +91,10 @@ export class AutoPage implements OnInit {
       heartOutline,
       heart,
       logoWhatsapp,
+      shieldCheckmarkOutline,
+      cameraOutline,
+      documentTextOutline,
+      pricetagOutline,
     });
   }
 
@@ -67,6 +104,10 @@ export class AutoPage implements OnInit {
 
   get currentCars(): Car[] {
     return this.activeTab === 'rent' ? this.rentCars : this.buyCars;
+  }
+
+  padStep(n: number): string {
+    return n.toString().padStart(2, '0');
   }
 
   loadAvailableCars(): void {
@@ -107,14 +148,13 @@ export class AutoPage implements OnInit {
     return [];
   }
 
-  onTabChange(tab: 'buy' | 'rent'): void {
+  onTabChange(tab: 'buy' | 'rent' | 'sell'): void {
     this.activeTab = tab;
     this.activeFilterIndex = -1;
   }
 
   selectFilter(index: number): void {
     this.activeFilterIndex = this.activeFilterIndex === index ? -1 : index;
-    // TODO: filter cars by category
   }
 
   openFilters(): void {
@@ -136,11 +176,19 @@ export class AutoPage implements OnInit {
   }
 
   openCarDetail(car: Car): void {
-    sessionStorage.setItem('pendingCarNav', JSON.stringify({ car, isOwned: false, fromRoute: '/tabs/auto' }));
+    sessionStorage.setItem(
+      'pendingCarNav',
+      JSON.stringify({ car, isOwned: false, fromRoute: '/tabs/auto' }),
+    );
     this.router.navigate(['/cars/detail']);
   }
+
   onAddCar(): void {
     this.router.navigate(['/cars/add']);
+  }
+
+  onStartListing(): void {
+    this.router.navigate(['/cars/sell']);
   }
 
   getCarName(car: Car): string {

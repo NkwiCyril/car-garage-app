@@ -538,3 +538,259 @@ ion-content {
     height: 24px;
   }
 }
+
+// ═══════════════════════════════════════════════════════
+// SELL VIEW
+// ═══════════════════════════════════════════════════════
+
+.sell {
+  padding: 0 clamp(20px, 6vw, 32px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+}
+
+// ── Badge ──
+.sell__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  background: $accent;
+  color: $white;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: clamp(20px, 4dvh, 28px);
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+// ── Hero text ──
+.sell__hero {
+  margin-bottom: clamp(32px, 6dvh, 44px);
+}
+
+.sell__hero-title {
+  margin: 0 0 clamp(12px, 2.5dvh, 18px);
+  font-size: clamp(30px, 8vw, 42px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.8px;
+  line-height: 1.08;
+
+  em {
+    font-style: italic;
+    font-weight: 800;
+  }
+
+  @media (min-width: $bp-tablet) {
+    font-size: 38px;
+  }
+}
+
+.sell__hero-sub {
+  margin: 0;
+  font-size: clamp(13px, 3.6vw, 15px);
+  line-height: 1.6;
+  color: $gray;
+  max-width: 340px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 15px;
+    max-width: none;
+  }
+}
+
+// ── Journey ──
+.sell__journey {
+  margin-bottom: clamp(28px, 5dvh, 40px);
+}
+
+.sell__journey-title {
+  margin: 0 0 clamp(18px, 3.5dvh, 24px);
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.3px;
+  text-align: center;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 22px;
+    margin-bottom: 28px;
+  }
+}
+
+// ── Steps ──
+.sell__steps {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2.5dvh, 16px);
+
+  @media (min-width: $bp-tablet) {
+    gap: 16px;
+  }
+}
+
+.sell__step {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 3.5vw, 18px);
+  padding: clamp(18px, 4.5vw, 24px);
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(18px, 4.5vw, 22px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &--accent {
+    background: rgba(0, 67, 235, 0.04);
+    border-color: rgba(0, 67, 235, 0.12);
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 22px 26px;
+    border-radius: 22px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -6px rgba(11, 27, 43, 0.1);
+    }
+  }
+}
+
+.sell__step-left {
+  flex-shrink: 0;
+}
+
+.sell__step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(40px, 10vw, 48px);
+  height: clamp(40px, 10vw, 48px);
+  border-radius: 50%;
+  font-size: clamp(16px, 4.2vw, 20px);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+
+  .sell__step--accent & {
+    background: rgba(0, 67, 235, 0.1);
+    color: $accent;
+  }
+
+  .sell__step:not(.sell__step--accent) & {
+    background: rgba(11, 27, 43, 0.06);
+    color: $primary;
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+.sell__step-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.sell__step-title {
+  margin: 0 0 3px;
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.2px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 16px;
+  }
+}
+
+.sell__step-desc {
+  margin: 0;
+  font-size: clamp(11px, 3vw, 13px);
+  color: $gray;
+  line-height: 1.4;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 13px;
+  }
+}
+
+.sell__step-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 17px;
+    color: $primary;
+  }
+
+  .sell__step--accent & {
+    border-color: rgba(0, 67, 235, 0.15);
+
+    ion-icon {
+      color: $accent;
+    }
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+// ── CTA ──
+.sell__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: clamp(52px, 7.5dvh, 60px);
+  border: none;
+  border-radius: 9999px;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 12px 24px -8px rgba(0, 67, 235, 0.4),
+    0 4px 10px -4px rgba(0, 67, 235, 0.2);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 6px 12px -4px rgba(0, 67, 235, 0.35);
+  }
+
+  @media (min-width: $bp-tablet) {
+    height: 56px;
+    font-size: 15px;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 16px 28px -8px rgba(0, 67, 235, 0.45),
+        0 6px 14px -4px rgba(0, 67, 235, 0.25);
+    }
+  }
+}

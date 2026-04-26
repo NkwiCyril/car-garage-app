@@ -12,7 +12,7 @@
       </button>
     </div>
 
-    <!-- ─── Purchase / Rent Toggle ─────────────────────── -->
+    <!-- ─── Purchase / Rent / Sell Toggle ──────────────── -->
     <div class="mp__toggle-wrap">
       <div class="mp__toggle">
         <button
@@ -29,81 +29,137 @@
         >
           Rent
         </button>
+        <button
+          class="mp__toggle-btn"
+          [class.mp__toggle-btn--active]="activeTab === 'sell'"
+          (click)="onTabChange('sell')"
+        >
+          Sell
+        </button>
       </div>
     </div>
 
-    <!-- ─── Filter Pills ──────────────────────────────── -->
-    <div class="mp__filters">
-      <button class="mp__filter mp__filter--main" (click)="openFilters()">
-        <ion-icon name="options-outline"></ion-icon>
-        Filters
-      </button>
-      <button
-        class="mp__filter"
-        *ngFor="let f of filterOptions; let i = index"
-        [class.mp__filter--active]="activeFilterIndex === i"
-        (click)="selectFilter(i)"
-      >
-        {{ f }}
-      </button>
-    </div>
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- ─── Buy / Rent View ────────────────────────────── -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <ng-container *ngIf="activeTab !== 'sell'">
 
-    <!-- ─── Loading ────────────────────────────────────── -->
-    <div class="mp__loading" *ngIf="isLoadingAvailable">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Loading vehicles…</p>
-    </div>
-
-    <!-- ─── Empty ──────────────────────────────────────── -->
-    <div class="mp__empty" *ngIf="!isLoadingAvailable && currentCars.length === 0">
-      <div class="mp__empty-icon">
-        <ion-icon [name]="activeTab === 'rent' ? 'key-outline' : 'bag-handle-outline'"></ion-icon>
+      <!-- Filter Pills -->
+      <div class="mp__filters">
+        <button class="mp__filter mp__filter--main" (click)="openFilters()">
+          <ion-icon name="options-outline"></ion-icon>
+          Filters
+        </button>
+        <button
+          class="mp__filter"
+          *ngFor="let f of filterOptions; let i = index"
+          [class.mp__filter--active]="activeFilterIndex === i"
+          (click)="selectFilter(i)"
+        >
+          {{ f }}
+        </button>
       </div>
-      <h3>No Vehicles Found</h3>
-      <p>No cars currently available. Check back soon.</p>
-      <button class="mp__refresh-btn" (click)="loadAvailableCars()">
-        <ion-icon name="refresh-outline"></ion-icon>
-        Refresh
-      </button>
-    </div>
 
-    <!-- ─── Car Grid ───────────────────────────────────── -->
-    <div class="mp__grid" *ngIf="!isLoadingAvailable && currentCars.length > 0">
-      <div
-        class="mp__card"
-        *ngFor="let car of currentCars"
-        (click)="openCarDetail(car)"
-      >
-        <div class="mp__card-img-wrap">
-          <img
-            *ngIf="getFirstImage(car)"
-            [src]="getFirstImage(car)!"
-            class="mp__card-img"
-            alt="Car"
-          />
-          <div class="mp__card-placeholder" *ngIf="!getFirstImage(car)">
-            <ion-icon name="car-sport-outline"></ion-icon>
-          </div>
+      <!-- Loading -->
+      <div class="mp__loading" *ngIf="isLoadingAvailable">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading vehicles…</p>
+      </div>
+
+      <!-- Empty -->
+      <div class="mp__empty" *ngIf="!isLoadingAvailable && currentCars.length === 0">
+        <div class="mp__empty-icon">
+          <ion-icon [name]="activeTab === 'rent' ? 'key-outline' : 'bag-handle-outline'"></ion-icon>
         </div>
-        <div class="mp__card-body">
-          <h3 class="mp__card-name">{{ getCarName(car) }}</h3>
-          <p class="mp__card-meta">
-            {{ car.year }}<span *ngIf="car.transmission"> &bull; {{ getTransmission(car) }}</span>
-          </p>
-          <div class="mp__card-bottom">
-            <p class="mp__card-price">
-              <span class="mp__card-price-val">{{ formatPrice(activeTab === 'rent' ? (car.rentalPrice ?? 0) : car.price) }}</span>
-              <span class="mp__card-price-cur"> XAF</span>
+        <h3>No Vehicles Found</h3>
+        <p>No cars currently available. Check back soon.</p>
+        <button class="mp__refresh-btn" (click)="loadAvailableCars()">
+          <ion-icon name="refresh-outline"></ion-icon>
+          Refresh
+        </button>
+      </div>
+
+      <!-- Car Grid -->
+      <div class="mp__grid" *ngIf="!isLoadingAvailable && currentCars.length > 0">
+        <div
+          class="mp__card"
+          *ngFor="let car of currentCars"
+          (click)="openCarDetail(car)"
+        >
+          <div class="mp__card-img-wrap">
+            <img
+              *ngIf="getFirstImage(car)"
+              [src]="getFirstImage(car)!"
+              class="mp__card-img"
+              alt="Car"
+            />
+            <div class="mp__card-placeholder" *ngIf="!getFirstImage(car)">
+              <ion-icon name="car-sport-outline"></ion-icon>
+            </div>
+          </div>
+          <div class="mp__card-body">
+            <h3 class="mp__card-name">{{ getCarName(car) }}</h3>
+            <p class="mp__card-meta">
+              {{ car.year }}<span *ngIf="car.transmission"> &bull; {{ getTransmission(car) }}</span>
             </p>
-            <button
-              class="mp__card-fav"
-              (click)="toggleFavorite(car); $event.stopPropagation()"
-            >
-              <ion-icon [name]="isFavorited(car) ? 'heart' : 'heart-outline'"></ion-icon>
-            </button>
+            <div class="mp__card-bottom">
+              <p class="mp__card-price">
+                <span class="mp__card-price-val">{{ formatPrice(activeTab === 'rent' ? (car.rentalPrice ?? 0) : car.price) }}</span>
+                <span class="mp__card-price-cur"> XAF</span>
+              </p>
+              <button
+                class="mp__card-fav"
+                (click)="toggleFavorite(car); $event.stopPropagation()"
+              >
+                <ion-icon [name]="isFavorited(car) ? 'heart' : 'heart-outline'"></ion-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+    </ng-container>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- ─── Sell View ──────────────────────────────────── -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="sell" *ngIf="activeTab === 'sell'">
+      <!-- Hero text -->
+      <div class="sell__hero">
+        <h2 class="sell__hero-title">
+          Sell Your Car<br/>with <em>Confidence</em>
+        </h2>
+        <p class="sell__hero-sub">
+          Your vehicle will be reviewed by our experts to ensure the highest
+          standards of quality and trust for our premium buyers.
+        </p>
+      </div>
+
+      <!-- Journey -->
+      <div class="sell__journey">
+        <div class="sell__steps">
+          <div
+            class="sell__step"
+            *ngFor="let step of sellSteps; let i = index"
+            [class.sell__step--accent]="i % 2 === 0"
+          >
+            <div class="sell__step-left">
+              <span class="sell__step-num">{{ padStep(i + 1) }}</span>
+            </div>
+            <div class="sell__step-body">
+              <h4 class="sell__step-title">{{ step.title }}</h4>
+              <p class="sell__step-desc">{{ step.desc }}</p>
+            </div>
+            <div class="sell__step-icon">
+              <ion-icon [name]="step.icon"></ion-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button class="sell__cta" (click)="onStartListing()">
+        START LISTING
+      </button>
     </div>
 
     <!-- ─── WhatsApp FAB ───────────────────────────────── -->
