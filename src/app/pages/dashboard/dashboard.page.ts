@@ -26,14 +26,18 @@ import {
   bodyOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
+import { Car } from '../../core/models/car.model';
 
 interface FeaturedCar {
   id: string;
+  make: string;
+  model: string;
   name: string;
   image: string;
   km: string;
   year: number;
   price: string;
+  priceValue: number;
   isFavorite: boolean;
 }
 
@@ -113,38 +117,50 @@ export class DashboardPage implements OnInit, OnDestroy {
   featuredCars: FeaturedCar[] = [
     {
       id: '1',
+      make: 'BMW',
+      model: 'M5 Competition',
       name: 'BMW M5 Competition',
       image: 'assets/images/dashboard/car-bmw-m5.jpg',
       km: '12,500',
       year: 2022,
       price: '45.5M',
+      priceValue: 45_500_000,
       isFavorite: false,
     },
     {
       id: '2',
+      make: 'Toyota',
+      model: 'Land Cruiser',
       name: 'Toyota Land Cruiser',
       image: 'assets/images/dashboard/car-toyota-lc.jpg',
       km: '4,200',
       year: 2023,
       price: '72.0M',
+      priceValue: 72_000_000,
       isFavorite: false,
     },
     {
       id: '3',
+      make: 'BMW',
+      model: 'M5 Competition',
       name: 'BMW M5 Competition',
       image: 'assets/images/dashboard/car-bmw-m5.jpg',
       km: '12,500',
       year: 2022,
       price: '45.5M',
+      priceValue: 45_500_000,
       isFavorite: false,
     },
     {
       id: '4',
+      make: 'Toyota',
+      model: 'Land Cruiser',
       name: 'Toyota Land Cruiser',
       image: 'assets/images/dashboard/car-toyota-lc.jpg',
       km: '4,200',
       year: 2023,
       price: '72.0M',
+      priceValue: 72_000_000,
       isFavorite: false,
     },
   ];
@@ -264,7 +280,18 @@ onPromoScroll(): void {
   }
 
   openCarDetail(car: FeaturedCar): void {
-    this.router.navigate(['/cars/detail', car.id]);
+    const carData: Car = {
+      _id: car.id,
+      make: car.make,
+      model: car.model,
+      year: car.year,
+      price: car.priceValue,
+      mileage: `${car.km} km`,
+      condition: 'used',
+      images: [],
+    };
+    sessionStorage.setItem('pendingCarNav', JSON.stringify({ car: carData, isOwned: false, fromRoute: '/tabs/home' }));
+    this.router.navigate(['/cars/detail']);
   }
 
   navigateTo(route: string): void {
