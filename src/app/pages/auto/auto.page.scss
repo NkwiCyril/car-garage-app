@@ -1,234 +1,234 @@
-.auto-wrap {
-  background: var(--de-white);
+$bg: #f5f5f3;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$white: #ffffff;
+$radius: 14px;
+$whatsapp: #25d366;
+
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$mp-max: 960px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$bg};
+}
+
+.mp {
   min-height: 100%;
   padding-bottom: 32px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $mp-max;
+    margin: 0 auto;
+    padding-bottom: 48px;
+  }
 }
 
-// ─── Header ────────────────────────────────────────────
-.auto-header {
-  padding: calc(env(safe-area-inset-top) + 20px) 24px 0;
-}
-
-.header-row {
+// ─── Header ──────────────────────────────────────────
+.mp__header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  padding: calc(env(safe-area-inset-top) + 20px) clamp(20px, 6vw, 32px) 20px;
+
+  @media (min-width: $bp-tablet) {
+    padding: 28px 40px 22px;
+    align-items: center;
+  }
 }
 
-.page-title {
-  font-size: 26px;
+.mp__header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.mp__title {
+  margin: 0 0 4px;
+  font-size: clamp(26px, 7vw, 34px);
   font-weight: 800;
-  color: var(--de-text-primary);
-  margin: 0 0 3px;
-  letter-spacing: -0.4px;
+  color: $primary;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 32px;
+    br { display: none; }
+  }
 }
 
-.page-subtitle {
-  font-size: 13px;
-  color: var(--de-gray);
+.mp__subtitle {
   margin: 0;
+  font-size: clamp(12px, 3.4vw, 14px);
+  color: $gray;
   font-weight: 400;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 14px;
+  }
 }
 
-.header-add-btn {
-  width: 40px;
-  height: 40px;
+.mp__add-btn {
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: var(--de-primary);
+  background: $accent;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  box-shadow:
+    0 6px 16px -4px rgba(0, 67, 235, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
   ion-icon {
-    font-size: 22px;
-    color: var(--de-white);
+    font-size: 24px;
+    color: $white;
   }
-}
 
-// ─── Segment ───────────────────────────────────────────
-.segment-wrap {
-  padding: 0 24px;
-  margin-bottom: 24px;
+  &:active {
+    transform: scale(0.93);
+  }
 
-  ion-segment {
-    --background: var(--de-off-white);
-    border-radius: 12px;
-    padding: 3px;
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
+  @media (min-width: $bp-tablet) {
+    width: 48px;
+    height: 48px;
 
-    ion-segment-button {
-      --color: var(--de-gray);
-      --color-checked: var(--de-primary);
-      --indicator-color: var(--de-primary);
-      --indicator-box-shadow: none;
-      --border-radius: 9px;
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: 0;
-      min-height: 38px;
-      text-transform: none;
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 8px 20px -4px rgba(0, 67, 235, 0.4);
     }
   }
 }
 
-// ─── Tab Body ──────────────────────────────────────────
-.tab-body {
-  padding: 0 24px;
-  animation: fadeUp 0.18s ease;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-// ─── Car Grid ──────────────────────────────────────────
-.car-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.car-card {
-  background: var(--de-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 20px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--de-shadow-sm);
-  transition: transform 0.15s ease;
-
-  &:active { transform: scale(0.985); }
-}
-
-.card-img-wrap {
-  position: relative;
-  width: 100%;
-  height: 170px;
-  background: var(--de-off-white);
-}
-
-.card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.card-img-placeholder {
-  width: 100%;
-  height: 100%;
+// ─── Toggle ──────────────────────────────────────────
+.mp__toggle-wrap {
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(16px, 3dvh, 22px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--de-off-white);
 
-  ion-icon {
-    font-size: 52px;
-    color: var(--de-gray-light);
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    margin-bottom: 22px;
   }
 }
 
-.card-badge-top {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(10, 22, 40, 0.65);
-  color: var(--de-white);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 20px;
-  letter-spacing: 0.3px;
-  backdrop-filter: blur(4px);
+.mp__toggle {
+  display: inline-flex;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 2px;
 }
 
-.card-body {
-  padding: 14px 16px 16px;
+.mp__toggle-btn {
+  padding: 10px clamp(22px, 6vw, 32px);
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  font-family: inherit;
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 600;
+  color: $gray;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+
+  &--active {
+    background: $primary;
+    color: $white;
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 10px 36px;
+    font-size: 14px;
+
+    &:not(.mp__toggle-btn--active):hover {
+      color: $primary;
+    }
+  }
 }
 
-.card-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--de-text-primary);
-  margin: 0 0 8px;
-  letter-spacing: -0.2px;
-}
-
-.card-chips {
+// ─── Filter Pills ────────────────────────────────────
+.mp__filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 8px;
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(18px, 3.5dvh, 26px);
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    gap: 10px;
+    margin-bottom: 26px;
+  }
 }
 
-.chip {
+.mp__filter {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  background: var(--de-off-white);
-  border: 1px solid var(--de-gray-light);
-  border-radius: 20px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--de-gray-dark);
-
-  ion-icon { font-size: 11px; }
-
-  &.loc { color: var(--de-gray); }
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
-}
-
-.card-price {
-  .price-amount {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--de-text-primary);
-    letter-spacing: -0.3px;
-  }
-
-  .price-cur {
-    font-size: 12px;
-    color: var(--de-gray);
-    font-weight: 500;
-  }
-
-  .price-per {
-    font-size: 11px;
-    color: var(--de-gray);
-    font-weight: 400;
-  }
-}
-
-.card-cta {
-  background: var(--de-primary);
-  color: var(--de-white);
-  border: none;
-  border-radius: 10px;
-  padding: 9px 20px;
-  font-size: 13px;
-  font-weight: 700;
-  font-family: var(--de-font-family);
+  gap: 5px;
+  padding: 9px 16px;
+  border: 1.5px solid $gray-light;
+  border-radius: 9999px;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(12px, 3.2vw, 13px);
+  font-weight: 600;
+  color: $gray;
   cursor: pointer;
-  letter-spacing: 0.2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
-  &:active { opacity: 0.85; }
+  ion-icon {
+    font-size: 15px;
+  }
+
+  &--main {
+    background: $white;
+    border-color: $primary;
+    color: $primary;
+  }
+
+  &--active {
+    background: $primary;
+    border-color: $primary;
+    color: $white;
+  }
+
+  &:active {
+    background: darken($bg, 3%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 10px 20px;
+    font-size: 13px;
+
+    &:not(.mp__filter--active):not(.mp__filter--main):hover {
+      border-color: darken($gray-light, 10%);
+      color: $primary;
+    }
+  }
 }
 
-// ─── Loading / Empty ───────────────────────────────────
-.loading-state {
+// ─── Loading / Empty ─────────────────────────────────
+.mp__loading {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,16 +236,19 @@
   padding: 64px 0 32px;
   gap: 12px;
 
-  ion-spinner { color: var(--de-primary); --color: var(--de-primary); }
+  ion-spinner {
+    color: $accent;
+    --color: #{$accent};
+  }
 
   p {
     font-size: 14px;
-    color: var(--de-gray);
+    color: $gray;
     margin: 0;
   }
 }
 
-.empty-state {
+.mp__empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -256,183 +259,282 @@
   h3 {
     font-size: 17px;
     font-weight: 700;
-    color: var(--de-text-primary);
+    color: $primary;
     margin: 0;
   }
 
   p {
     font-size: 13px;
-    color: var(--de-gray);
+    color: $gray;
     line-height: 1.5;
     max-width: 260px;
     margin: 0 0 12px;
   }
 }
 
-.empty-ico {
+.mp__empty-icon {
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
+  background: $white;
+  border: 1.5px solid $gray-light;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 12px;
 
-  ion-icon { font-size: 28px; color: var(--de-gray); }
+  ion-icon {
+    font-size: 28px;
+    color: $gray;
+  }
 }
 
-.empty-btns {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-// ─── Pill Buttons ──────────────────────────────────────
-.pill-btn {
+.mp__refresh-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  background: var(--de-primary);
-  color: var(--de-white);
-  border: none;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1.5px solid $primary;
   border-radius: 12px;
-  padding: 11px 20px;
-  font-family: var(--de-font-family);
+  background: $white;
+  color: $primary;
+  font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 
-  ion-icon { font-size: 17px; }
-
-  &.pill-outline {
-    background: var(--de-white);
-    color: var(--de-primary);
-    border: 1.5px solid var(--de-primary);
-  }
-
-  &.full {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 10px;
-  }
-
-  &:active { opacity: 0.85; }
-}
-
-// ─── Sell Section ──────────────────────────────────────
-.sell-hero-card {
-  background: linear-gradient(135deg, var(--de-accent) 0%, #1c3659 100%);
-  border-radius: 20px;
-  padding: 28px 24px;
-  text-align: center;
-  margin-bottom: 24px;
-
-  h2 {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--de-white);
-    margin: 16px 0 8px;
-    letter-spacing: -0.3px;
-  }
-
-  p {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.75);
-    line-height: 1.5;
-    max-width: 260px;
-    margin: 0 auto;
+  ion-icon {
+    font-size: 16px;
   }
 }
 
-.sell-hero-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+// ─── Car Grid ────────────────────────────────────────
+.mp__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 3.5vw, 16px);
+  padding: 0 clamp(20px, 6vw, 32px);
+
+  @media (min-width: $bp-tablet) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    padding: 0 40px;
+  }
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+.mp__card {
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(16px, 4vw, 20px);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @media (min-width: $bp-tablet) {
+    border-radius: 20px;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px -8px rgba(11, 27, 43, 0.16);
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+
+.mp__card-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: darken($bg, 2%);
+  overflow: hidden;
+}
+
+.mp__card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+
+  @media (min-width: $bp-tablet) {
+    .mp__card:hover & {
+      transform: scale(1.04);
+    }
+  }
+}
+
+.mp__card-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
 
   ion-icon {
-    font-size: 26px;
-    color: var(--de-white);
+    font-size: 48px;
+    color: $gray-light;
   }
 }
 
-.sell-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 24px;
+.mp__card-body {
+  padding: clamp(10px, 3vw, 14px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 14px 16px;
+  }
 }
 
-.sell-step {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 14px;
-  padding: 14px 16px;
-}
-
-.step-num {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--de-primary);
-  color: var(--de-white);
-  font-size: 12px;
+.mp__card-name {
+  margin: 0 0 2px;
+  font-size: clamp(13px, 3.5vw, 14px);
   font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  color: $primary;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 15px;
+  }
 }
 
-.step-ico {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--de-white);
-  border: 1px solid var(--de-gray-light);
+.mp__card-meta {
+  margin: 0 0 clamp(6px, 1.5dvh, 10px);
+  font-size: clamp(10px, 2.8vw, 11px);
+  color: $gray;
+  font-weight: 400;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+}
+
+.mp__card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mp__card-price {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.mp__card-price-val {
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 800;
+  color: $accent;
+  letter-spacing: -0.2px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 17px;
+  }
+}
+
+.mp__card-price-cur {
+  font-size: clamp(10px, 2.6vw, 11px);
+  font-weight: 600;
+  color: $accent;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 12px;
+  }
+}
+
+.mp__card-fav {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   flex-shrink: 0;
+  transition: transform 0.15s ease;
 
   ion-icon {
     font-size: 18px;
-    color: var(--de-primary);
+    color: $gray;
+  }
+
+  &:active {
+    transform: scale(0.85);
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 34px;
+    height: 34px;
+
+    &:hover {
+      transform: scale(1.1);
+    }
   }
 }
 
-.step-text {
-  h4 {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--de-text-primary);
-    margin: 0 0 2px;
+// ─── WhatsApp FAB ────────────────────────────────────
+.mp__whatsapp {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 80px);
+  right: clamp(20px, 6vw, 32px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: $whatsapp;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 8px 20px -4px rgba(37, 211, 102, 0.45),
+    0 4px 8px -2px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-icon {
+    font-size: 28px;
+    color: $white;
   }
 
-  p {
-    font-size: 12px;
-    color: var(--de-gray);
-    margin: 0;
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @media (min-width: $bp-tablet) {
+    bottom: 32px;
+    right: calc(50% - #{$mp-max} / 2 + 40px);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 24px -4px rgba(37, 211, 102, 0.5),
+        0 6px 10px -2px rgba(0, 0, 0, 0.12);
+    }
   }
 }
 
-.sell-actions {
-  padding-top: 4px;
-}
+.mp__bottom-pad {
+  height: 16px;
 
-.sell-note {
-  font-size: 12px;
-  color: var(--de-gray);
-  text-align: center;
-  margin: 4px 0 0;
+  @media (min-width: $bp-tablet) {
+    height: 24px;
+  }
 }

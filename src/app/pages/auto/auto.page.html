@@ -1,201 +1,116 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="auto-wrap">
+  <div class="mp">
 
-    <!-- ─── Header ──────────────────────────────────────── -->
-    <div class="auto-header">
-      <div class="header-row">
-        <div>
-          <h1 class="page-title">Auto</h1>
-          <p class="page-subtitle">Rent, buy &amp; park vehicles</p>
-        </div>
-        <button class="header-add-btn" (click)="onAddCar()">
-          <ion-icon name="add-outline"></ion-icon>
+    <!-- ─── Header ─────────────────────────────────────── -->
+    <div class="mp__header">
+      <div class="mp__header-left">
+        <h1 class="mp__title">ParkEase<br/>Official</h1>
+        <p class="mp__subtitle">Your bookings and history</p>
+      </div>
+      <button class="mp__add-btn" (click)="onAddCar()">
+        <ion-icon name="add-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- ─── Purchase / Rent Toggle ─────────────────────── -->
+    <div class="mp__toggle-wrap">
+      <div class="mp__toggle">
+        <button
+          class="mp__toggle-btn"
+          [class.mp__toggle-btn--active]="activeTab === 'buy'"
+          (click)="onTabChange('buy')"
+        >
+          Purchase
+        </button>
+        <button
+          class="mp__toggle-btn"
+          [class.mp__toggle-btn--active]="activeTab === 'rent'"
+          (click)="onTabChange('rent')"
+        >
+          Rent
         </button>
       </div>
     </div>
 
-    <!-- ─── Segment ──────────────────────────────────────── -->
-    <div class="segment-wrap">
-      <ion-segment [value]="activeTab" (ionChange)="onTabChange($event)" mode="md">
-        <ion-segment-button value="garage">
-          <ion-label>Garage</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="rent">
-          <ion-label>Rent</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="buy">
-          <ion-label>Buy</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="sell">
-          <ion-label>Sell</ion-label>
-        </ion-segment-button>
-      </ion-segment>
+    <!-- ─── Filter Pills ──────────────────────────────── -->
+    <div class="mp__filters">
+      <button class="mp__filter mp__filter--main" (click)="openFilters()">
+        <ion-icon name="options-outline"></ion-icon>
+        Filters
+      </button>
+      <button
+        class="mp__filter"
+        *ngFor="let f of filterOptions; let i = index"
+        [class.mp__filter--active]="activeFilterIndex === i"
+        (click)="selectFilter(i)"
+      >
+        {{ f }}
+      </button>
     </div>
 
-    <!-- ─── Garage Tab ─── -->
-    <div class="tab-body" *ngIf="activeTab === 'garage'">
-      <div class="empty-state">
-        <div class="empty-ico">
-          <ion-icon name="home-outline"></ion-icon>
-        </div>
-        <h3>Your Garage</h3>
-        <p>Park or store your car securely. All your vehicles are managed here.</p>
-        <div class="empty-btns">
-          <button class="pill-btn" (click)="onParkCar()">
-            <ion-icon name="add-outline"></ion-icon>
-            Park a Car
-          </button>
-          <button class="pill-btn pill-outline" (click)="onListForSale()">
+    <!-- ─── Loading ────────────────────────────────────── -->
+    <div class="mp__loading" *ngIf="isLoadingAvailable">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading vehicles…</p>
+    </div>
+
+    <!-- ─── Empty ──────────────────────────────────────── -->
+    <div class="mp__empty" *ngIf="!isLoadingAvailable && currentCars.length === 0">
+      <div class="mp__empty-icon">
+        <ion-icon [name]="activeTab === 'rent' ? 'key-outline' : 'bag-handle-outline'"></ion-icon>
+      </div>
+      <h3>No Vehicles Found</h3>
+      <p>No cars currently available. Check back soon.</p>
+      <button class="mp__refresh-btn" (click)="loadAvailableCars()">
+        <ion-icon name="refresh-outline"></ion-icon>
+        Refresh
+      </button>
+    </div>
+
+    <!-- ─── Car Grid ───────────────────────────────────── -->
+    <div class="mp__grid" *ngIf="!isLoadingAvailable && currentCars.length > 0">
+      <div
+        class="mp__card"
+        *ngFor="let car of currentCars"
+        (click)="openCarDetail(car)"
+      >
+        <div class="mp__card-img-wrap">
+          <img
+            *ngIf="getFirstImage(car)"
+            [src]="getFirstImage(car)!"
+            class="mp__card-img"
+            alt="Car"
+          />
+          <div class="mp__card-placeholder" *ngIf="!getFirstImage(car)">
             <ion-icon name="car-sport-outline"></ion-icon>
-            My Cars
-          </button>
+          </div>
+        </div>
+        <div class="mp__card-body">
+          <h3 class="mp__card-name">{{ getCarName(car) }}</h3>
+          <p class="mp__card-meta">
+            {{ car.year }}<span *ngIf="car.transmission"> &bull; {{ getTransmission(car) }}</span>
+          </p>
+          <div class="mp__card-bottom">
+            <p class="mp__card-price">
+              <span class="mp__card-price-val">{{ formatPrice(activeTab === 'rent' ? (car.rentalPrice ?? 0) : car.price) }}</span>
+              <span class="mp__card-price-cur"> XAF</span>
+            </p>
+            <button
+              class="mp__card-fav"
+              (click)="toggleFavorite(car); $event.stopPropagation()"
+            >
+              <ion-icon [name]="isFavorited(car) ? 'heart' : 'heart-outline'"></ion-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── Rent Tab ─── -->
-    <div class="tab-body" *ngIf="activeTab === 'rent'">
+    <!-- ─── WhatsApp FAB ───────────────────────────────── -->
+    <button class="mp__whatsapp" (click)="openWhatsApp()">
+      <ion-icon name="logo-whatsapp"></ion-icon>
+    </button>
 
-      <!-- Loading -->
-      <div class="loading-state" *ngIf="isLoadingAvailable">
-        <ion-spinner name="crescent"></ion-spinner>
-        <p>Finding rental cars…</p>
-      </div>
-
-      <!-- Empty -->
-      <div class="empty-state" *ngIf="!isLoadingAvailable && rentCars.length === 0">
-        <div class="empty-ico">
-          <ion-icon name="key-outline"></ion-icon>
-        </div>
-        <h3>No Rentals Found</h3>
-        <p>No cars are currently available for rent. Check back soon.</p>
-        <button class="pill-btn pill-outline" (click)="loadAvailableCars()">
-          <ion-icon name="refresh-outline"></ion-icon>
-          Refresh
-        </button>
-      </div>
-
-      <!-- Car Grid -->
-      <div class="car-grid" *ngIf="!isLoadingAvailable && rentCars.length > 0">
-        <div class="car-card" *ngFor="let car of rentCars" (click)="openCarDetail(car)">
-          <div class="card-img-wrap">
-            <img *ngIf="getFirstImage(car)" [src]="getFirstImage(car)!" class="card-img" alt="Car" />
-            <div class="card-img-placeholder" *ngIf="!getFirstImage(car)">
-              <ion-icon name="car-sport-outline"></ion-icon>
-            </div>
-            <span class="card-badge-top" *ngIf="getTransmission(car)">{{ getTransmission(car) }}</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-name">{{ getCarName(car) }}</h3>
-            <div class="card-chips">
-              <span class="chip" *ngIf="car.condition">{{ getCondition(car) }}</span>
-              <span class="chip" *ngIf="car.mileage">{{ car.mileage }} km</span>
-              <span class="chip loc" *ngIf="car.location">
-                <ion-icon name="location-outline"></ion-icon>{{ car.location }}
-              </span>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">
-                <span class="price-amount">{{ formatPrice(car.rentalPrice ?? 0) }}</span>
-                <span class="price-cur"> CFA<span class="price-per">/day</span></span>
-              </div>
-              <button class="card-cta" (click)="openCarDetail(car); $event.stopPropagation()">View</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ─── Buy Tab ─── -->
-    <div class="tab-body" *ngIf="activeTab === 'buy'">
-
-      <!-- Loading -->
-      <div class="loading-state" *ngIf="isLoadingAvailable">
-        <ion-spinner name="crescent"></ion-spinner>
-        <p>Loading cars for sale…</p>
-      </div>
-
-      <!-- Empty -->
-      <div class="empty-state" *ngIf="!isLoadingAvailable && buyCars.length === 0">
-        <div class="empty-ico">
-          <ion-icon name="bag-handle-outline"></ion-icon>
-        </div>
-        <h3>No Cars Listed</h3>
-        <p>No cars are currently listed for sale. Check back soon.</p>
-        <button class="pill-btn pill-outline" (click)="loadAvailableCars()">
-          <ion-icon name="refresh-outline"></ion-icon>
-          Refresh
-        </button>
-      </div>
-
-      <!-- Car Grid -->
-      <div class="car-grid" *ngIf="!isLoadingAvailable && buyCars.length > 0">
-        <div class="car-card" *ngFor="let car of buyCars" (click)="openCarDetail(car)">
-          <div class="card-img-wrap">
-            <img *ngIf="getFirstImage(car)" [src]="getFirstImage(car)!" class="card-img" alt="Car" />
-            <div class="card-img-placeholder" *ngIf="!getFirstImage(car)">
-              <ion-icon name="car-sport-outline"></ion-icon>
-            </div>
-            <span class="card-badge-top" *ngIf="getCondition(car)">{{ getCondition(car) }}</span>
-          </div>
-          <div class="card-body">
-            <h3 class="card-name">{{ getCarName(car) }}</h3>
-            <div class="card-chips">
-              <span class="chip" *ngIf="getTransmission(car)">{{ getTransmission(car) }}</span>
-              <span class="chip" *ngIf="car.mileage">{{ car.mileage }} km</span>
-              <span class="chip loc" *ngIf="car.location">
-                <ion-icon name="location-outline"></ion-icon>{{ car.location }}
-              </span>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">
-                <span class="price-amount">{{ formatPrice(car.price) }}</span>
-                <span class="price-cur"> CFA</span>
-              </div>
-              <button class="card-cta" (click)="openCarDetail(car); $event.stopPropagation()">View</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ─── Sell Tab ─── -->
-    <div class="tab-body" *ngIf="activeTab === 'sell'">
-      <div class="sell-hero-card">
-        <div class="sell-hero-icon">
-          <ion-icon name="pricetag-outline"></ion-icon>
-        </div>
-        <h2>{{ sellPlaceholder.title }}</h2>
-        <p>{{ sellPlaceholder.subtitle }}</p>
-      </div>
-
-      <div class="sell-steps">
-        <div class="sell-step" *ngFor="let step of sellPlaceholder.steps; let i = index">
-          <div class="step-num">{{ i + 1 }}</div>
-          <div class="step-ico">
-            <ion-icon [name]="step.icon"></ion-icon>
-          </div>
-          <div class="step-text">
-            <h4>{{ step.label }}</h4>
-            <p>{{ step.desc }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="sell-actions">
-        <button class="pill-btn full" (click)="onAddCar()">
-          <ion-icon name="add-outline"></ion-icon>
-          Add a New Car
-        </button>
-        <button class="pill-btn pill-outline full" (click)="onListForSale()">
-          <ion-icon name="pricetag-outline"></ion-icon>
-          List Existing Car
-        </button>
-        <p class="sell-note">Free to list your first vehicle</p>
-      </div>
-    </div>
-
+    <div class="mp__bottom-pad"></div>
   </div>
 </ion-content>
