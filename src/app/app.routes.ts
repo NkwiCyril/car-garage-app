@@ -82,6 +82,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/cars/car-detail/car-detail.page').then((m) => m.CarDetailPage),
   },
 
+  {
+    path: 'cars/sell',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/sell-car/sell-car.page').then((m) => m.SellCarPage),
+  },
+
   // Bookings (protected full-screen pages, no tab bar)
   {
     path: 'bookings/detail',
