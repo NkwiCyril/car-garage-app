@@ -7,6 +7,7 @@ $white: #ffffff;
 $radius: 14px;
 $success: #16a34a;
 
+$bp-sm: 480px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
 
@@ -90,74 +91,13 @@ ion-content {
   }
 }
 
-// ─── Top Nav ─────────────────────────────────────────
-.cd__nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(env(safe-area-inset-top) + 12px) clamp(16px, 5vw, 24px) 12px;
-  background: $bg;
-
-  @media (min-width: $bp-tablet) {
-    padding: 20px 32px 14px;
-  }
-}
-
-.cd__nav-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1.5px solid $gray-light;
-  background: $white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease;
-
-  ion-icon {
-    font-size: 20px;
-    color: $primary;
-  }
-
-  &:active {
-    background: darken($bg, 3%);
-  }
-
-  @media (min-width: $bp-tablet) {
-    &:hover {
-      background: darken($bg, 3%);
-    }
-  }
-}
-
-.cd__nav-title {
-  font-size: clamp(15px, 4vw, 17px);
-  font-weight: 700;
-  color: $primary;
-  letter-spacing: -0.2px;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 18px;
-  }
-}
-
-// ─── Hero Image ──────────────────────────────────────
+// ─── Hero ────────────────────────────────────────────
 .cd__hero {
   position: relative;
-  width: calc(100% - clamp(32px, 8vw, 48px));
-  margin: 0 auto clamp(20px, 4dvh, 28px);
-  aspect-ratio: 16 / 10;
-  border-radius: clamp(20px, 5vw, 28px);
+  width: 100%;
+  height: clamp(280px, 55dvh, 460px);
   overflow: hidden;
   background: darken($bg, 3%);
-
-  @media (min-width: $bp-tablet) {
-    width: calc(100% - 64px);
-    aspect-ratio: 16 / 9;
-    border-radius: 28px;
-    margin-bottom: 32px;
-  }
 }
 
 .cd__hero-img {
@@ -175,49 +115,122 @@ ion-content {
   background: linear-gradient(135deg, darken($bg, 2%) 0%, $gray-light 100%);
 
   ion-icon {
-    font-size: 72px;
+    font-size: 80px;
     color: $gray-light;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 }
 
+.cd__hero-grad {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(11, 27, 43, 0.55) 100%);
+  pointer-events: none;
+}
+
+// ─── Floating Nav ────────────────────────────────────
+.cd__nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + 12px) clamp(16px, 5vw, 24px) 12px;
+  z-index: 10;
+}
+
+.cd__nav-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: $white;
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+  }
+}
+
+// ─── Verified badge ──────────────────────────────────
 .cd__verified {
   position: absolute;
-  top: clamp(12px, 3vw, 18px);
-  left: clamp(12px, 3vw, 18px);
+  top: calc(env(safe-area-inset-top) + 66px);
+  left: clamp(16px, 4vw, 24px);
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 6px 14px;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(8px);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.8px;
   color: $success;
   text-transform: uppercase;
+  z-index: 5;
 
   ion-icon {
-    font-size: 14px;
+    font-size: 13px;
     color: $success;
   }
 }
 
+// ─── Image counter ───────────────────────────────────
+.cd__img-counter {
+  position: absolute;
+  bottom: clamp(48px, 8dvh, 60px);
+  right: clamp(16px, 4vw, 20px);
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  font-size: 12px;
+  font-weight: 600;
+  color: $white;
+  letter-spacing: 0.3px;
+  z-index: 5;
+}
+
+// ─── Dot indicators ──────────────────────────────────
 .cd__hero-dots {
   position: absolute;
-  bottom: clamp(10px, 2.5vw, 16px);
+  bottom: clamp(16px, 3dvh, 22px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 6px;
+  z-index: 5;
 }
 
 .cd__hero-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.45);
   cursor: pointer;
   transition: background 0.2s ease, width 0.2s ease;
 
@@ -232,26 +245,26 @@ ion-content {
 .cd__info {
   background: $white;
   border-radius: clamp(24px, 6vw, 32px) clamp(24px, 6vw, 32px) 0 0;
-  padding: clamp(24px, 6vw, 32px);
-  margin-top: -16px;
+  padding: clamp(24px, 6vw, 32px) clamp(20px, 5vw, 28px) 0;
+  margin-top: clamp(-32px, -5dvh, -24px);
   position: relative;
   z-index: 2;
   min-height: 50dvh;
 
   @media (min-width: $bp-tablet) {
     border-radius: 32px 32px 0 0;
-    padding: 36px 40px;
-    margin-top: -24px;
+    padding: 36px 40px 0;
+    margin-top: -36px;
   }
 }
 
-// ─── Name & Price ────────────────────────────────────
+// ─── Title row ───────────────────────────────────────
 .cd__title-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: clamp(6px, 1.5dvh, 10px);
+  margin-bottom: clamp(14px, 2.8dvh, 18px);
 }
 
 .cd__title-block {
@@ -259,12 +272,21 @@ ion-content {
   min-width: 0;
 }
 
-.cd__name {
-  margin: 0 0 4px;
-  font-size: clamp(22px, 6vw, 28px);
+.cd__year-tag {
+  margin: 0 0 3px;
+  font-size: clamp(11px, 3vw, 12px);
   font-weight: 700;
+  color: $accent;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.cd__name {
+  margin: 0 0 5px;
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 800;
   color: $primary;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.5px;
   line-height: 1.15;
 
   @media (min-width: $bp-tablet) {
@@ -276,16 +298,12 @@ ion-content {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: clamp(12px, 3.2vw, 13px);
+  font-size: clamp(12px, 3vw, 13px);
   color: $gray;
   margin: 0;
 
   ion-icon {
-    font-size: 14px;
-  }
-
-  @media (min-width: $bp-tablet) {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
@@ -294,17 +312,13 @@ ion-content {
   text-align: right;
 }
 
-.cd__price {
+.cd__price-value {
   display: block;
   font-size: clamp(20px, 5.5vw, 26px);
   font-weight: 800;
   color: $primary;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
   line-height: 1.1;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 26px;
-  }
 }
 
 .cd__price-unit {
@@ -314,43 +328,102 @@ ion-content {
   letter-spacing: 0.3px;
 }
 
-// ─── Spec Grid ───────────────────────────────────────
+.cd__price-per {
+  display: block;
+  font-size: 11px;
+  color: $gray;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+// ─── Tags ────────────────────────────────────────────
+.cd__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: clamp(22px, 4.5dvh, 30px);
+}
+
+.cd__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: clamp(10px, 2.8vw, 11px);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+
+  ion-icon {
+    font-size: 12px;
+  }
+
+  &--condition {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+  }
+
+  &--sale {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+
+  &--rent {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+  }
+
+  &--both {
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+  }
+}
+
+// ─── Section Title ────────────────────────────────────
+.cd__section-title {
+  font-size: clamp(15px, 4vw, 17px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.2px;
+  margin: 0 0 clamp(12px, 2.5dvh, 16px);
+}
+
+// ─── Specs Grid ───────────────────────────────────────
 .cd__specs {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(10px, 2.5vw, 14px);
-  margin-top: clamp(18px, 4dvh, 24px);
-  margin-bottom: clamp(20px, 4dvh, 28px);
+  gap: clamp(10px, 2.5vw, 12px);
+  margin-bottom: clamp(22px, 4.5dvh, 30px);
+
+  @media (min-width: $bp-sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   @media (min-width: $bp-tablet) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-top: 24px;
-    margin-bottom: 28px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
   }
 }
 
 .cd__spec {
   display: flex;
   align-items: center;
-  gap: clamp(10px, 2.5vw, 14px);
-  padding: clamp(14px, 3.5vw, 18px);
+  gap: clamp(10px, 2.5vw, 12px);
+  padding: clamp(13px, 3.2vw, 16px);
   background: $bg;
   border: 1.5px solid $gray-light;
-  border-radius: clamp(14px, 3.5vw, 18px);
-
-  @media (min-width: $bp-tablet) {
-    padding: 16px;
-    border-radius: 18px;
-  }
+  border-radius: clamp(14px, 3.5vw, 16px);
 }
 
 .cd__spec-icon {
   width: 38px;
   height: 38px;
-  border-radius: 50%;
-  background: $white;
-  border: 1.5px solid $gray-light;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,13 +431,14 @@ ion-content {
 
   ion-icon {
     font-size: 17px;
-    color: $primary;
   }
 
-  @media (min-width: $bp-tablet) {
-    width: 40px;
-    height: 40px;
-  }
+  &--blue   { background: #dbeafe; ion-icon { color: #2563eb; } }
+  &--green  { background: #dcfce7; ion-icon { color: #16a34a; } }
+  &--purple { background: #ede9fe; ion-icon { color: #7c3aed; } }
+  &--amber  { background: #fef3c7; ion-icon { color: #d97706; } }
+  &--rose   { background: #ffe4e6; ion-icon { color: #e11d48; } }
+  &--teal   { background: #ccfbf1; ion-icon { color: #0d9488; } }
 }
 
 .cd__spec-data {
@@ -375,25 +449,63 @@ ion-content {
 }
 
 .cd__spec-label {
-  font-size: clamp(9px, 2.5vw, 10px);
+  font-size: clamp(9px, 2.3vw, 10px);
   font-weight: 600;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.7px;
   color: $gray;
   text-transform: uppercase;
 }
 
 .cd__spec-value {
-  font-size: clamp(14px, 3.8vw, 16px);
+  font-size: clamp(13px, 3.5vw, 15px);
   font-weight: 700;
   color: $primary;
   letter-spacing: -0.2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
 
-  @media (min-width: $bp-tablet) {
-    font-size: 16px;
-  }
+// ─── Description ─────────────────────────────────────
+.cd__description {
+  font-size: clamp(13px, 3.5vw, 15px);
+  line-height: 1.7;
+  color: $gray;
+  margin: 0 0 clamp(22px, 4.5dvh, 30px);
+}
+
+// ─── VIN ─────────────────────────────────────────────
+.cd__vin {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(13px, 3.2vw, 16px) clamp(16px, 4vw, 20px);
+  background: $bg;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(14px, 3.5vw, 16px);
+  margin-bottom: clamp(22px, 4.5dvh, 30px);
+}
+
+.cd__vin-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: $gray;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  padding: 4px 10px;
+  background: $white;
+  border: 1px solid $gray-light;
+  border-radius: 6px;
+}
+
+.cd__vin-value {
+  font-size: clamp(12px, 3.2vw, 13px);
+  font-weight: 600;
+  color: $primary;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.5px;
+  word-break: break-all;
 }
 
 // ─── Dealer Card ─────────────────────────────────────
@@ -406,7 +518,7 @@ ion-content {
   background: $bg;
   border: 1.5px solid $gray-light;
   border-radius: clamp(16px, 4vw, 20px);
-  margin-bottom: clamp(12px, 2.5dvh, 16px);
+  margin-bottom: clamp(12px, 2.5dvh, 14px);
 
   @media (min-width: $bp-tablet) {
     padding: 20px 24px;
@@ -422,26 +534,28 @@ ion-content {
 }
 
 .cd__dealer-avatar {
-  width: 44px;
-  height: 44px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: $white;
-  border: 1.5px solid $gray-light;
+  background: linear-gradient(135deg, $accent 0%, lighten($accent, 20%) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px -2px rgba(0, 67, 235, 0.3);
 
-  ion-icon {
+  span {
     font-size: 20px;
-    color: $primary;
+    font-weight: 800;
+    color: $white;
+    line-height: 1;
   }
 }
 
 .cd__dealer-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
@@ -455,9 +569,15 @@ ion-content {
 }
 
 .cd__dealer-loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-size: clamp(11px, 3vw, 12px);
   color: $gray;
-  font-weight: 400;
+
+  ion-icon {
+    font-size: 12px;
+  }
 }
 
 .cd__dealer-badge {
@@ -479,14 +599,21 @@ ion-content {
 .cd__dealer-right {
   flex-shrink: 0;
   text-align: right;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: 12px;
+  padding: 8px 14px;
 }
 
 .cd__dealer-rt-label {
   display: block;
-  font-size: clamp(10px, 2.6vw, 11px);
+  font-size: clamp(9px, 2.4vw, 10px);
   color: $gray;
   font-weight: 500;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .cd__dealer-rt-value {
@@ -506,7 +633,7 @@ ion-content {
   font-size: clamp(14px, 3.8vw, 15px);
   font-weight: 700;
   cursor: pointer;
-  margin-bottom: clamp(28px, 5dvh, 36px);
+  margin-bottom: clamp(22px, 4.5dvh, 30px);
   transition: background 0.15s ease, border-color 0.15s ease;
 
   &:active {
@@ -515,7 +642,6 @@ ion-content {
 
   @media (min-width: $bp-tablet) {
     height: 50px;
-    font-size: 15px;
 
     &:hover {
       background: darken($bg, 2%);
@@ -525,28 +651,12 @@ ion-content {
 }
 
 // ─── Similar Vehicles ────────────────────────────────
-.cd__similar {
-  margin-bottom: 16px;
-}
-
-.cd__similar-title {
-  margin: 0 0 clamp(14px, 3dvh, 20px);
-  font-size: clamp(18px, 5vw, 20px);
-  font-weight: 700;
-  color: $primary;
-  letter-spacing: -0.3px;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-}
-
 .cd__similar-scroll {
   display: flex;
-  gap: clamp(12px, 3vw, 16px);
+  gap: clamp(12px, 3vw, 14px);
   overflow-x: auto;
   padding-bottom: 4px;
+  margin-bottom: clamp(8px, 2dvh, 12px);
 
   &::-webkit-scrollbar {
     display: none;
@@ -554,10 +664,10 @@ ion-content {
 }
 
 .cd__similar-card {
-  flex: 0 0 clamp(180px, 48vw, 220px);
+  flex: 0 0 clamp(160px, 44vw, 200px);
   background: $bg;
   border: 1.5px solid $gray-light;
-  border-radius: clamp(16px, 4vw, 20px);
+  border-radius: clamp(16px, 4vw, 18px);
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -567,8 +677,7 @@ ion-content {
   }
 
   @media (min-width: $bp-tablet) {
-    flex: 0 0 220px;
-    border-radius: 20px;
+    flex: 0 0 200px;
 
     &:hover {
       transform: translateY(-2px);
@@ -605,8 +714,8 @@ ion-content {
 
 .cd__similar-year {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   padding: 4px 10px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.88);
@@ -617,12 +726,12 @@ ion-content {
 }
 
 .cd__similar-info {
-  padding: clamp(10px, 2.5vw, 14px);
+  padding: clamp(10px, 2.5vw, 12px);
 }
 
 .cd__similar-name {
   margin: 0 0 3px;
-  font-size: clamp(13px, 3.5vw, 14px);
+  font-size: clamp(12px, 3.2vw, 13px);
   font-weight: 700;
   color: $primary;
   white-space: nowrap;
@@ -632,10 +741,15 @@ ion-content {
 
 .cd__similar-price {
   margin: 0;
-  font-size: clamp(14px, 3.8vw, 15px);
+  font-size: clamp(13px, 3.5vw, 14px);
   font-weight: 800;
   color: $accent;
   letter-spacing: -0.2px;
+}
+
+// ─── Bottom Pad ──────────────────────────────────────
+.cd__bottom-pad {
+  height: 32px;
 }
 
 // ─── Sticky CTA ──────────────────────────────────────
@@ -692,7 +806,6 @@ ion-content {
 
   @media (min-width: $bp-tablet) {
     height: 54px;
-    font-size: 15px;
     border-radius: 16px;
 
     &:hover {
@@ -732,7 +845,6 @@ ion-content {
 
   @media (min-width: $bp-tablet) {
     height: 54px;
-    font-size: 15px;
     border-radius: 16px;
 
     &:hover {

@@ -24,6 +24,7 @@ import {
   checkmarkCircleOutline,
   bookmarkOutline,
   bookmark,
+  pricetagOutline,
 } from 'ionicons/icons';
 import { Car } from '../../../core/models/car.model';
 import { CarService } from '../../../core/services/car.service';
@@ -72,6 +73,7 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
       checkmarkCircleOutline,
       bookmarkOutline,
       bookmark,
+      pricetagOutline,
     });
   }
 
