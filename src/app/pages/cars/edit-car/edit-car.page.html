@@ -1,0 +1,204 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="ec">
+
+    <!-- ─── Nav ──────────────────────────────────────────── -->
+    <div class="ec__nav">
+      <button class="ec__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="ec__nav-title">Edit Listing</span>
+      <button class="ec__nav-delete" (click)="confirmDeleteListing()" *ngIf="car">
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
+      <div class="ec__nav-spacer" *ngIf="!car"></div>
+    </div>
+
+
+    <!-- ─── Form ─────────────────────────────────────────── -->
+    <div class="ec__form">
+
+      <!-- SECTION: Basic Details -->
+      <div class="ec__section">
+        <p class="ec__section-head">Basic Details</p>
+        <div class="ec__section-card">
+
+          <div class="ec__row">
+            <div class="ec__field">
+              <label class="ec__label">Make</label>
+              <input type="text" class="ec__input" [(ngModel)]="form.make" placeholder="e.g. Toyota" />
+            </div>
+            <div class="ec__field">
+              <label class="ec__label">Model</label>
+              <input type="text" class="ec__input" [(ngModel)]="form.model" placeholder="e.g. Camry" />
+            </div>
+          </div>
+
+          <div class="ec__row">
+            <div class="ec__field">
+              <label class="ec__label">Year</label>
+              <input type="number" class="ec__input" [(ngModel)]="form.year"
+                placeholder="2020" inputmode="numeric" min="1990" max="2030" />
+            </div>
+            <div class="ec__field">
+              <label class="ec__label">Color</label>
+              <input type="text" class="ec__input" [(ngModel)]="form.color" placeholder="e.g. Pearl White" />
+            </div>
+          </div>
+
+          <div class="ec__field">
+            <label class="ec__label">Mileage</label>
+            <div class="ec__input-affix-wrap">
+              <input type="text" class="ec__input ec__input--suffix"
+                [(ngModel)]="form.mileage" placeholder="e.g. 45 000"
+                inputmode="numeric" />
+              <span class="ec__affix ec__affix--right">KM</span>
+            </div>
+          </div>
+
+          <div class="ec__field">
+            <label class="ec__label">VIN / Chassis Number</label>
+            <input type="text" class="ec__input" [(ngModel)]="form.vin"
+              placeholder="17-character VIN" maxlength="17" autocomplete="off" />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION: Specifications -->
+      <div class="ec__section">
+        <p class="ec__section-head">Specifications</p>
+        <div class="ec__section-card">
+
+          <div class="ec__field">
+            <label class="ec__label">Condition</label>
+            <div class="ec__chip-group">
+              <button *ngFor="let c of conditions" type="button" class="ec__chip"
+                [class.ec__chip--active]="form.condition === c.value"
+                (click)="form.condition = c.value">{{ c.label }}</button>
+            </div>
+          </div>
+
+          <div class="ec__field">
+            <label class="ec__label">Transmission</label>
+            <div class="ec__chip-group">
+              <button *ngFor="let t of transmissions" type="button" class="ec__chip"
+                [class.ec__chip--active]="form.transmission === t.value"
+                (click)="form.transmission = t.value">{{ t.label }}</button>
+            </div>
+          </div>
+
+          <div class="ec__field">
+            <label class="ec__label">Fuel Type</label>
+            <div class="ec__chip-group">
+              <button *ngFor="let f of fuelTypes" type="button" class="ec__chip"
+                [class.ec__chip--active]="form.fuelType === f.value"
+                (click)="form.fuelType = f.value">{{ f.label }}</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION: Listing Type -->
+      <div class="ec__section">
+        <p class="ec__section-head">Listing Type</p>
+        <div class="ec__section-card ec__section-card--flush">
+
+          <div class="ec__toggle-item" (click)="form.forSale = !form.forSale">
+            <div class="ec__toggle-body">
+              <p class="ec__toggle-title">For Sale</p>
+              <p class="ec__toggle-desc">List this vehicle for purchase</p>
+            </div>
+            <div class="ec__switch" [class.ec__switch--on]="form.forSale">
+              <div class="ec__switch-thumb"></div>
+            </div>
+          </div>
+
+          <div class="ec__toggle-divider"></div>
+
+          <div class="ec__toggle-item" (click)="form.forRent = !form.forRent">
+            <div class="ec__toggle-body">
+              <p class="ec__toggle-title">For Rent</p>
+              <p class="ec__toggle-desc">List this vehicle for rental</p>
+            </div>
+            <div class="ec__switch" [class.ec__switch--on]="form.forRent">
+              <div class="ec__switch-thumb"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SECTION: Pricing -->
+      <div class="ec__section">
+        <p class="ec__section-head">Pricing</p>
+        <div class="ec__section-card">
+
+          <div class="ec__row" *ngIf="form.forSale || form.forRent; else noPricing">
+            <div class="ec__field" *ngIf="form.forSale">
+              <label class="ec__label">Sale Price</label>
+              <div class="ec__input-affix-wrap">
+                <span class="ec__affix ec__affix--left">XAF</span>
+                <input type="number" class="ec__input ec__input--prefix"
+                  [(ngModel)]="form.price" placeholder="0"
+                  inputmode="numeric" min="0" />
+              </div>
+            </div>
+            <div class="ec__field" *ngIf="form.forRent">
+              <label class="ec__label">Rental / Day</label>
+              <div class="ec__input-affix-wrap">
+                <span class="ec__affix ec__affix--left">XAF</span>
+                <input type="number" class="ec__input ec__input--prefix"
+                  [(ngModel)]="form.rentalPrice" placeholder="0"
+                  inputmode="numeric" min="0" />
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noPricing>
+            <div class="ec__info-note">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>Enable For Sale or For Rent above to set a price.</span>
+            </div>
+          </ng-template>
+
+        </div>
+      </div>
+
+      <!-- SECTION: Additional Info -->
+      <div class="ec__section">
+        <p class="ec__section-head">Additional Info</p>
+        <div class="ec__section-card">
+
+          <div class="ec__field">
+            <label class="ec__label">Location</label>
+            <input type="text" class="ec__input" [(ngModel)]="form.location"
+              placeholder="e.g. Douala, Bonanjo" />
+          </div>
+
+          <div class="ec__field">
+            <label class="ec__label">Description</label>
+            <textarea class="ec__textarea" [(ngModel)]="form.description"
+              placeholder="Describe the vehicle's condition, history, features..."
+              rows="4" maxlength="600"></textarea>
+            <span class="ec__char-count">{{ descLength }} / 600</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ec__bottom-pad"></div>
+  </div>
+
+  <!-- ─── Fixed Footer ─────────────────────────────────── -->
+  <div class="ec__footer">
+    <button class="ec__save-btn" (click)="saveChanges()"
+      [class.ec__save-btn--saving]="isSaving" [disabled]="isSaving">
+      <ion-icon name="checkmark-outline" *ngIf="!isSaving"></ion-icon>
+      <span>{{ isSaving ? 'Saving…' : 'Save Changes' }}</span>
+    </button>
+  </div>
+
+</ion-content>
