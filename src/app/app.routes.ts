@@ -87,6 +87,23 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/cars/sell-car/sell-car.page').then((m) => m.SellCarPage),
   },
+  {
+    path: 'cars/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/edit-car/edit-car.page').then((m) => m.EditCarPage),
+  },
+
+  // Profile sub-pages (full-screen, no tab bar)
+  {
+    path: 'profile/personal-info',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/personal-info/personal-info.page').then((m) => m.PersonalInfoPage),
+  },
+  {
+    path: 'profile/verification',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/verification/verification.page').then((m) => m.VerificationPage),
+  },
 
   // Bookings (protected full-screen pages, no tab bar)
   {
