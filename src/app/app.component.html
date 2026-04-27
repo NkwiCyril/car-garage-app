@@ -1,3 +1,89 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+
+  <!-- ─── Side Menu ──────────────────────────────────────── -->
+  <ion-menu contentId="main-content" menuId="main-menu" side="start" type="overlay" [swipeGesture]="true">
+    <ion-content>
+      <div class="sm">
+
+        <!-- Header -->
+        <div class="sm__header">
+          <button class="sm__close" (click)="closeMenu()">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+          <div class="sm__user">
+            <div class="sm__avatar">{{ userInitial }}</div>
+            <div class="sm__user-body">
+              <p class="sm__user-name">{{ userName }}</p>
+              <p class="sm__user-sub" *ngIf="userPhone">{{ maskedPhone }}</p>
+            </div>
+            <div class="sm__badge" *ngIf="isVerified">
+              <ion-icon name="shield-checkmark-outline"></ion-icon>
+              Verified
+            </div>
+          </div>
+        </div>
+
+        <!-- Nav sections -->
+        <div class="sm__body">
+
+          <div class="sm__section">
+            <p class="sm__section-label">Navigate</p>
+            <button class="sm__item" *ngFor="let item of navItems" (click)="navigate(item.route)">
+              <div class="sm__item-icon" [style.background]="item.bg">
+                <ion-icon [name]="item.icon" [style.color]="item.color"></ion-icon>
+              </div>
+              <span class="sm__item-label">{{ item.label }}</span>
+              <ion-icon name="chevron-forward-outline" class="sm__item-arrow"></ion-icon>
+            </button>
+          </div>
+
+          <div class="sm__section">
+            <p class="sm__section-label">Quick Actions</p>
+            <button class="sm__item" *ngFor="let item of actionItems" (click)="navigate(item.route)">
+              <div class="sm__item-icon" [style.background]="item.bg">
+                <ion-icon [name]="item.icon" [style.color]="item.color"></ion-icon>
+              </div>
+              <span class="sm__item-label">{{ item.label }}</span>
+              <ion-icon name="chevron-forward-outline" class="sm__item-arrow"></ion-icon>
+            </button>
+          </div>
+
+          <div class="sm__section">
+            <p class="sm__section-label">Account</p>
+            <button class="sm__item" *ngFor="let item of accountItems" (click)="navigate(item.route)">
+              <div class="sm__item-icon" [style.background]="item.bg">
+                <ion-icon [name]="item.icon" [style.color]="item.color"></ion-icon>
+              </div>
+              <span class="sm__item-label">{{ item.label }}</span>
+              <ion-icon name="chevron-forward-outline" class="sm__item-arrow"></ion-icon>
+            </button>
+          </div>
+
+          <div class="sm__section">
+            <p class="sm__section-label">Support</p>
+            <button class="sm__item" (click)="openWhatsApp()">
+              <div class="sm__item-icon" style="background: #dcfce7">
+                <ion-icon name="logo-whatsapp" style="color: #16a34a"></ion-icon>
+              </div>
+              <span class="sm__item-label">Contact via WhatsApp</span>
+              <ion-icon name="chevron-forward-outline" class="sm__item-arrow"></ion-icon>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Logout -->
+        <div class="sm__footer">
+          <button class="sm__logout" (click)="confirmLogout()">
+            <ion-icon name="log-out-outline"></ion-icon>
+            Sign Out
+          </button>
+        </div>
+
+      </div>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+
 </ion-app>
