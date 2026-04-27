@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonIcon, IonSpinner, MenuController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   locationOutline,
@@ -24,6 +24,9 @@ import {
   logoWhatsapp,
   gridOutline,
   bodyOutline,
+  bagHandleOutline,
+  keyOutline,
+  pricetagOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
 import { Car } from '../../core/models/car.model';
@@ -114,6 +117,20 @@ export class DashboardPage implements OnInit, OnDestroy {
     { icon: 'body-outline', label: 'Luxury' },
   ];
 
+  quickActions = [
+    { icon: 'bag-handle-outline', label: 'Buy Car',  route: '/tabs/auto',     bg: '#dbeafe', color: '#2563eb' },
+    { icon: 'key-outline',        label: 'Rent',     route: '/tabs/auto',     bg: '#dcfce7', color: '#16a34a' },
+    { icon: 'pricetag-outline',   label: 'Sell',     route: '/cars/sell',     bg: '#ede9fe', color: '#7c3aed' },
+    { icon: 'car-outline',        label: 'My Cars',  route: '/cars/my',       bg: '#fef3c7', color: '#d97706' },
+  ];
+
+  get greeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  }
+
   featuredCars: FeaturedCar[] = [
     {
       id: '1',
@@ -168,6 +185,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private menuController: MenuController,
   ) {
     addIcons({
       locationOutline,
@@ -184,6 +202,9 @@ export class DashboardPage implements OnInit, OnDestroy {
       logoWhatsapp,
       gridOutline,
       bodyOutline,
+      bagHandleOutline,
+      keyOutline,
+      pricetagOutline,
     });
 
     // Set countdown target 4h 12m 45s from now
@@ -292,6 +313,10 @@ onPromoScroll(): void {
     };
     sessionStorage.setItem('pendingCarNav', JSON.stringify({ car: carData, isOwned: false, fromRoute: '/tabs/home' }));
     this.router.navigate(['/cars/detail']);
+  }
+
+  openMenu(): void {
+    this.menuController.open('main-menu');
   }
 
   navigateTo(route: string): void {

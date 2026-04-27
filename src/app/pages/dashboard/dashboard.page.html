@@ -1,13 +1,15 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
   <div class="dash">
+
     <!-- ─── Header ─────────────────────────────────────── -->
     <div class="dash__header">
-      <div class="dash__header-left" (click)="navigateTo('/tabs/profile')">
+      <div class="dash__header-left" (click)="openMenu()">
         <div class="dash__avatar">
           <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
         </div>
         <div class="dash__greeting">
-          <p class="dash__greeting-text">Hello, {{ userName || 'Driver' }}</p>
+          <p class="dash__greeting-time">{{ greeting }}</p>
+          <p class="dash__greeting-name">{{ userName || 'Driver' }}</p>
           <div class="dash__location">
             <ion-icon name="location-outline"></ion-icon>
             <span>{{ currentLocation }}</span>
@@ -25,7 +27,11 @@
 
     <!-- ─── Promo Slider ───────────────────────────────── -->
     <div class="dash__promo">
-      <div class="dash__promo-track" #promoTrack (scroll)="onPromoScroll()">
+      <div
+        class="dash__promo-track"
+        #promoTrack
+        (scroll)="onPromoScroll()"
+      >
         <div
           class="dash__promo-card"
           *ngFor="let promo of promos; let i = index"
@@ -56,15 +62,6 @@
         </div>
       </div>
 
-      <!-- Dots -->
-      <div class="dash__promo-dots" *ngIf="promos.length > 1">
-        <span
-          class="dash__promo-dot"
-          *ngFor="let promo of promos; let i = index"
-          [class.dash__promo-dot--active]="activePromoIndex === i"
-          (click)="scrollToPromo(i)"
-        ></span>
-      </div>
     </div>
 
     <!-- ─── Search Bar ─────────────────────────────────── -->
@@ -91,6 +88,22 @@
       </button>
     </div>
 
+    <!-- ─── Quick Actions ─────────────────────────────── -->
+    <div class="dash__quick-wrap">
+      <div class="dash__quick">
+        <button
+          class="dash__action"
+          *ngFor="let a of quickActions"
+          (click)="navigateTo(a.route)"
+        >
+          <div class="dash__action-icon" [style.background]="a.bg">
+            <ion-icon [name]="a.icon" [style.color]="a.color"></ion-icon>
+          </div>
+          <span class="dash__action-label">{{ a.label }}</span>
+        </button>
+      </div>
+    </div>
+
     <!-- ─── Featured Premium ───────────────────────────── -->
     <div class="dash__section">
       <div class="dash__section-header">
@@ -104,26 +117,27 @@
           *ngFor="let car of featuredCars"
           (click)="openCarDetail(car)"
         >
-          <div class="dash__car-img-wrap">
+          <!-- Image + overlays -->
+          <div class="dash__car-media">
             <img class="dash__car-img" [src]="car.image" [alt]="car.name" />
+            <div class="dash__car-media-grad"></div>
+            <button
+              class="dash__car-fav"
+              [class.dash__car-fav--active]="car.isFavorite"
+              (click)="toggleFavorite(car); $event.stopPropagation()"
+            >
+              <ion-icon [name]="car.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+            </button>
+            <span class="dash__car-year">{{ car.year }}</span>
           </div>
+          <!-- Info -->
           <div class="dash__car-info">
             <h3 class="dash__car-name">{{ car.name }}</h3>
-            <p class="dash__car-meta">{{ car.km }} KM &bull; {{ car.year }}</p>
-            <div class="dash__car-bottom">
-              <p class="dash__car-price">
-                <span class="dash__car-price-value">{{ car.price }}</span>
-                <span class="dash__car-price-currency">XAF</span>
-              </p>
-              <button
-                class="dash__car-fav"
-                (click)="toggleFavorite(car); $event.stopPropagation()"
-              >
-                <ion-icon
-                  [name]="car.isFavorite ? 'heart' : 'heart-outline'"
-                ></ion-icon>
-              </button>
-            </div>
+            <p class="dash__car-meta">{{ car.km }} KM</p>
+            <p class="dash__car-price">
+              <span class="dash__car-price-value">{{ car.price }}</span>
+              <span class="dash__car-price-currency"> XAF</span>
+            </p>
           </div>
         </div>
       </div>
