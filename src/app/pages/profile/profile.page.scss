@@ -1,229 +1,459 @@
-.profile-wrap {
-  background: var(--de-off-white);
-  min-height: 100%;
-  padding-bottom: 40px;
-}
+$bg: #f5f5f3;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$white: #ffffff;
+$radius: 14px;
+$success: #16a34a;
+$danger: #e74c3c;
+$whatsapp: #25d366;
 
-// ─── Hero Banner ───────────────────────────────────────
-.profile-hero {
-  position: relative;
-  background: linear-gradient(150deg, var(--de-accent) 0%, #1c3659 100%);
-  padding: calc(env(safe-area-inset-top) + 24px) 24px 48px;
-}
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$pf-max: 960px;
 
-.hero-content {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  position: relative;
-  z-index: 1;
-}
-
-.avatar-ring {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 3px;
-  flex-shrink: 0;
-}
-
-.avatar-inner {
-  width: 100%;
+:host {
+  display: block;
   height: 100%;
-  border-radius: 50%;
-  background: var(--de-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
 
-  span {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--de-white);
-    letter-spacing: -0.5px;
+ion-content {
+  --background: #{$bg};
+}
+
+.pf {
+  min-height: 100%;
+  padding-bottom: 32px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $pf-max;
+    margin: 0 auto;
+    padding-bottom: 48px;
   }
 }
 
-.hero-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.hero-name {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--de-white);
-  margin: 0 0 3px;
-  letter-spacing: -0.3px;
-  white-space: nowrap;
+// ─── Hero Header ─────────────────────────────────────
+.pf__hero {
+  position: relative;
+  background: linear-gradient(155deg, #0b1b2b 0%, #0f2642 55%, #0b1b2b 100%);
+  padding: calc(env(safe-area-inset-top) + clamp(40px, 8dvh, 56px)) clamp(20px, 6vw, 32px) clamp(36px, 7dvh, 52px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow: hidden;
-  text-overflow: ellipsis;
+
+  // Radial glow backdrop
+  &::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 67, 235, 0.2) 0%, transparent 68%);
+    pointer-events: none;
+  }
+
+  // Bottom edge fade so stats card overlaps cleanly
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    background: linear-gradient(to bottom, transparent, rgba(11, 27, 43, 0.06));
+    pointer-events: none;
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding-top: 56px;
+    padding-bottom: 52px;
+  }
 }
 
-.hero-phone {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0;
-  font-weight: 400;
+// ─── Avatar ──────────────────────────────────────────
+.pf__avatar-wrap {
+  position: relative;
+  margin-bottom: clamp(16px, 3.5dvh, 22px);
+  z-index: 1;
 }
 
-.edit-btn {
-  width: 38px;
-  height: 38px;
+.pf__avatar {
+  width: clamp(88px, 24vw, 108px);
+  height: clamp(88px, 24vw, 108px);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 100%);
+  border: 3.5px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.07),
+    0 16px 40px -8px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  span {
+    font-size: clamp(32px, 8.5vw, 40px);
+    font-weight: 800;
+    color: $white;
+    letter-spacing: -0.5px;
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 108px;
+    height: 108px;
+  }
+}
+
+.pf__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf__avatar-edit {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid #0b1b2b;
+  background: $white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 
   ion-icon {
-    font-size: 18px;
-    color: var(--de-white);
+    font-size: 14px;
+    color: $primary;
+  }
+
+  &:active { opacity: 0.75; }
+}
+
+// ─── Hero text ───────────────────────────────────────
+.pf__hero-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+}
+
+.pf__hero-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pf__name {
+  margin: 0;
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 800;
+  color: $white;
+  letter-spacing: -0.5px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 28px;
   }
 }
 
-// ─── Stats Band ────────────────────────────────────────
-.stats-band {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--de-white);
-  border-radius: 20px;
-  margin: -24px 20px 0;
-  padding: 20px 8px;
-  box-shadow: 0 4px 20px rgba(10, 22, 40, 0.1);
-  position: relative;
-  z-index: 2;
+.pf__hero-verified {
+  font-size: 22px;
+  color: #4ade80;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.5));
 }
 
-.stat-item {
+.pf__phone {
+  margin: 0;
+  font-size: clamp(12px, 3.2vw, 14px);
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+  letter-spacing: 0.4px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 14px;
+  }
+}
+
+// ─── Stats Card ──────────────────────────────────────
+.pf__stats-wrap {
+  padding: 0 clamp(16px, 5vw, 28px);
+  margin-top: clamp(-28px, -4dvh, -22px);
+  margin-bottom: clamp(20px, 4dvh, 28px);
+  position: relative;
+  z-index: 2;
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    margin-top: -28px;
+    margin-bottom: 28px;
+  }
+}
+
+.pf__stats {
+  display: flex;
+  background: $white;
+  border-radius: clamp(16px, 4vw, 20px);
+  border: 1.5px solid $gray-light;
+  box-shadow:
+    0 12px 32px -8px rgba(11, 27, 43, 0.12),
+    0 4px 10px -4px rgba(11, 27, 43, 0.06);
+  overflow: hidden;
+}
+
+.pf__stat {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-
-  .stat-val {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--de-text-primary);
-    letter-spacing: -0.5px;
-  }
-
-  .stat-lbl {
-    font-size: 11px;
-    color: var(--de-gray);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
+  padding: clamp(18px, 4.5vw, 24px) 8px;
 }
 
-.stat-sep {
+.pf__stat-sep {
   width: 1px;
-  height: 32px;
-  background: var(--de-gray-light);
+  background: $gray-light;
+  margin: 12px 0;
+  flex-shrink: 0;
 }
 
-// ─── Profile Body ──────────────────────────────────────
-.profile-body {
-  padding: 28px 20px 0;
+.pf__stat-val {
+  font-size: clamp(26px, 7vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+
+  .pf__stat--bookings &,
+  .pf__stat--wishlist & {
+    color: $accent;
+  }
+
+  .pf__stat--vehicles & {
+    color: $primary;
+  }
 }
 
-// ─── Menu Card ─────────────────────────────────────────
-.menu-card {
-  background: var(--de-white);
-  border-radius: 20px;
+.pf__stat-label {
+  font-size: clamp(8px, 2.2vw, 9px);
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+// ─── Sections ────────────────────────────────────────
+.pf__section {
+  padding: 0 clamp(16px, 5vw, 28px);
+  margin-bottom: clamp(20px, 4dvh, 26px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    margin-bottom: 26px;
+  }
+}
+
+.pf__section-title {
+  margin: 0 0 clamp(10px, 2dvh, 12px) 4px;
+  font-size: clamp(10px, 2.6vw, 11px);
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: $gray;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 11px;
+  }
+}
+
+// ─── Menu Group (shared card per section) ────────────
+.pf__menu-group {
+  background: $white;
+  border-radius: clamp(16px, 4vw, 20px);
+  border: 1.5px solid $gray-light;
   overflow: hidden;
-  margin-bottom: 16px;
-  box-shadow: var(--de-shadow-sm);
+  box-shadow: 0 2px 12px -4px rgba(11, 27, 43, 0.06);
 }
 
-.menu-item {
+.pf__menu-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: clamp(12px, 3vw, 14px);
+  padding: clamp(14px, 3.5vw, 18px) clamp(16px, 4vw, 20px);
+  border-bottom: 1px solid $gray-light;
   cursor: pointer;
-  border-bottom: 1px solid var(--de-gray-light);
-  transition: background 0.12s ease;
+  transition: background 0.15s ease;
 
-  &:last-child { border-bottom: none; }
-  &:active { background: var(--de-off-white); }
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:active {
+    background: darken($bg, 2%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 16px 20px;
+
+    &:hover {
+      background: darken($bg, 1%);
+    }
+  }
 }
 
-.menu-ico-wrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
+// ── Icon squares ──
+.pf__menu-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 
-  ion-icon {
-    font-size: 19px;
+  ion-icon { font-size: 20px; }
+
+  &--blue {
+    background: rgba(0, 67, 235, 0.08);
+    ion-icon { color: $accent; }
+  }
+
+  &--green {
+    background: rgba(22, 163, 74, 0.08);
+    ion-icon { color: $success; }
+  }
+
+  &--purple {
+    background: rgba(124, 58, 237, 0.08);
+    ion-icon { color: #7c3aed; }
+  }
+
+  &--dark {
+    background: rgba(11, 27, 43, 0.06);
+    ion-icon { color: $primary; }
+  }
+
+  &--neutral {
+    background: rgba(11, 27, 43, 0.04);
+    ion-icon { color: $primary; }
+  }
+
+  &--danger {
+    background: rgba(231, 76, 60, 0.07);
+    ion-icon { color: $danger; }
   }
 }
 
-.menu-text {
+// ── Text block ──
+.pf__menu-text {
   flex: 1;
   min-width: 0;
-
-  .menu-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--de-text-primary);
-    margin-bottom: 1px;
-  }
-
-  .menu-sub {
-    display: block;
-    font-size: 12px;
-    color: var(--de-gray);
-    font-weight: 400;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.menu-arrow {
-  font-size: 16px;
-  color: var(--de-gray-light);
+.pf__menu-label {
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 600;
+  color: $primary;
+  line-height: 1.2;
+
+  &--danger { color: $danger; }
+
+  @media (min-width: $bp-tablet) { font-size: 15px; }
+}
+
+.pf__menu-sub {
+  font-size: clamp(11px, 3vw, 12px);
+  color: $gray;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: $bp-tablet) { font-size: 12px; }
+}
+
+// ── Right controls ──
+.pf__menu-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   flex-shrink: 0;
 }
 
-// ─── Logout ───────────────────────────────────────────
-.logout-btn {
-  width: 100%;
+.pf__badge-check {
+  font-size: 17px;
+  color: $success;
+}
+
+.pf__menu-meta {
+  font-size: clamp(11px, 3vw, 12px);
+  font-weight: 500;
+  color: $gray;
+
+  @media (min-width: $bp-tablet) { font-size: 12px; }
+}
+
+.pf__menu-arrow {
+  font-size: 16px;
+  color: $gray-light;
+
+  &--danger { color: rgba(231, 76, 60, 0.35); }
+}
+
+// ─── WhatsApp FAB ────────────────────────────────────
+.pf__whatsapp {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 80px);
+  right: clamp(20px, 6vw, 32px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: $whatsapp;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: var(--de-white);
-  color: var(--de-danger);
-  border: 1.5px solid rgba(231, 76, 60, 0.2);
-  border-radius: 16px;
-  padding: 15px;
-  font-family: var(--de-font-family);
-  font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 20px;
-  box-shadow: var(--de-shadow-sm);
+  box-shadow:
+    0 8px 20px -4px rgba(37, 211, 102, 0.45),
+    0 4px 8px -2px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-  ion-icon { font-size: 19px; }
+  ion-icon {
+    font-size: 28px;
+    color: $white;
+  }
 
-  &:active { background: rgba(231, 76, 60, 0.04); }
+  &:active { transform: scale(0.92); }
+
+  @media (min-width: $bp-tablet) {
+    bottom: 32px;
+    right: calc(50% - #{$pf-max} / 2 + 40px);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 24px -4px rgba(37, 211, 102, 0.5),
+        0 6px 10px -2px rgba(0, 0, 0, 0.12);
+    }
+  }
 }
 
-.app-ver {
-  text-align: center;
-  font-size: 11px;
-  color: var(--de-gray);
-  margin: 0;
-  letter-spacing: 0.3px;
+.pf__bottom-pad {
+  height: 16px;
+
+  @media (min-width: $bp-tablet) { height: 24px; }
 }

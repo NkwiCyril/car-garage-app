@@ -11,65 +11,104 @@ import {
   personOutline,
   cardOutline,
   carOutline,
-  settingsOutline,
-  helpCircleOutline,
   shieldCheckmarkOutline,
+  heartOutline,
+  lockClosedOutline,
+  languageOutline,
+  notificationsOutline,
+  helpCircleOutline,
+  documentTextOutline,
   logOutOutline,
-  chevronForward,
   chevronForwardOutline,
-  createOutline,
+  checkmarkCircle,
+  logoWhatsapp,
+  cameraOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
+
+interface MenuItem {
+  icon: string;
+  label: string;
+  subtitle?: string;
+  color: string;
+  badge?: boolean;
+  meta?: string;
+  route: string | null;
+}
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  imports: [
-    CommonModule,
-    IonContent,
-    IonIcon,
-  ],
+  imports: [CommonModule, IonContent, IonIcon],
 })
 export class ProfilePage implements OnInit {
-  userName: string = '';
-  userPhone: string = '';
+  userName = '';
+  userPhone = '';
+  userAvatar: string | null = null;
 
-  menuItems = [
+  stats = {
+    bookings: 12,
+    vehicles: 4,
+    wishlist: 28,
+  };
+
+  accountItems: MenuItem[] = [
     {
       icon: 'person-outline',
       label: 'Personal Information',
-      subtitle: 'Name, phone, email',
-      route: null,
+      subtitle: 'Manage your profile details',
+      color: 'blue',
+      route: '/profile/personal-info',
+    },
+    {
+      icon: 'shield-checkmark-outline',
+      label: 'ID Verification',
+      subtitle: 'Status: Verified Account',
+      color: 'green',
+      badge: true,
+      route: '/profile/verification',
     },
     {
       icon: 'card-outline',
       label: 'Payment Methods',
-      subtitle: 'Cards, mobile money',
+      subtitle: 'Momo, Orange, Cards',
+      color: 'purple',
       route: null,
     },
     {
       icon: 'car-outline',
-      label: 'My Vehicles',
-      subtitle: 'Registered cars',
+      label: 'My Listings',
+      subtitle: 'Manage your fleet',
+      color: 'dark',
       route: '/cars/my',
     },
+  ];
+
+  prefItems: MenuItem[] = [
     {
-      icon: 'shield-checkmark-outline',
+      icon: 'heart-outline',
+      label: 'My Wishlist',
+      color: 'danger',
+      route: null,
+    },
+    {
+      icon: 'lock-closed-outline',
       label: 'Privacy & Security',
-      subtitle: 'Password, 2FA',
+      color: 'blue',
       route: null,
     },
     {
-      icon: 'settings-outline',
-      label: 'Settings',
-      subtitle: 'Notifications, language',
+      icon: 'language-outline',
+      label: 'Language',
+      color: 'blue',
+      meta: 'English (US)',
       route: null,
     },
     {
-      icon: 'help-circle-outline',
-      label: 'Help & Support',
-      subtitle: 'FAQ, contact us',
+      icon: 'notifications-outline',
+      label: 'Notifications',
+      color: 'blue',
       route: null,
     },
   ];
@@ -77,19 +116,24 @@ export class ProfilePage implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
   ) {
     addIcons({
       personOutline,
       cardOutline,
       carOutline,
-      settingsOutline,
-      helpCircleOutline,
       shieldCheckmarkOutline,
+      heartOutline,
+      lockClosedOutline,
+      languageOutline,
+      notificationsOutline,
+      helpCircleOutline,
+      documentTextOutline,
       logOutOutline,
-      chevronForward,
       chevronForwardOutline,
-      createOutline,
+      checkmarkCircle,
+      logoWhatsapp,
+      cameraOutline,
     });
   }
 
@@ -101,26 +145,45 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  get isVerified(): boolean {
+    return this.accountItems.some(
+      item => item.route === '/profile/verification' && item.badge,
+    );
+  }
+
+  get maskedPhone(): string {
+    if (!this.userPhone) return 'No phone number';
+    const digits = this.userPhone.replace(/\D/g, '');
+    if (digits.length < 6) return this.userPhone;
+    const prefix = digits.slice(0, 6);
+    const suffix = digits.slice(-2);
+    return `+${prefix.slice(0, 3)} ${prefix.slice(3)} • • • • ${suffix}`;
+  }
+
+  padNum(n: number): string {
+    return n.toString().padStart(2, '0');
+  }
+
+  onMenuItemClick(item: any): void {
+    if (item.route) {
+      this.router.navigate([item.route]);
+    }
+  }
+
   async confirmLogout(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Confirm Logout',
       message: 'Are you sure you want to log out?',
       buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-        },
+        { text: 'Cancel', role: 'cancel' },
         {
           text: 'Logout',
           role: 'confirm',
           cssClass: 'alert-logout-btn',
-          handler: () => {
-            this.logout();
-          },
+          handler: () => this.logout(),
         },
       ],
     });
-
     await alert.present();
   }
 
@@ -129,9 +192,7 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/auth/login']);
   }
 
-  onMenuItemClick(item: any): void {
-    if (item.route) {
-      this.router.navigate([item.route]);
-    }
+  openWhatsApp(): void {
+    window.open('https://wa.me/237XXXXXXXXX', '_blank');
   }
 }
