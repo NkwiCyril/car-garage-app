@@ -6,7 +6,9 @@ $gray-light: #e2e4e9;
 $white: #ffffff;
 $radius: 14px;
 $whatsapp: #25d366;
+$success: #16a34a;
 
+$bp-sm: 480px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
 $mp-max: 960px;
@@ -51,14 +53,15 @@ ion-content {
 
 .mp__title {
   margin: 0 0 4px;
-  font-size: clamp(26px, 7vw, 34px);
+  font-size: clamp(28px, 7.5vw, 36px);
   font-weight: 800;
   color: $primary;
-  letter-spacing: -0.5px;
-  line-height: 1.1;
+  letter-spacing: -0.6px;
+  line-height: 1.08;
 
   @media (min-width: $bp-tablet) {
-    font-size: 32px;
+    font-size: 34px;
+
     br { display: none; }
   }
 }
@@ -68,15 +71,23 @@ ion-content {
   font-size: clamp(12px, 3.4vw, 14px);
   color: $gray;
   font-weight: 400;
+}
+
+.mp__header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top: 4px;
 
   @media (min-width: $bp-tablet) {
-    font-size: 14px;
+    margin-top: 0;
   }
 }
 
-.mp__add-btn {
-  width: 46px;
-  height: 46px;
+.mp__icon-btn {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: $accent;
   border: none;
@@ -85,8 +96,36 @@ ion-content {
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  box-shadow:
-    0 6px 16px -4px rgba(0, 67, 235, 0.35);
+  box-shadow: 0 6px 16px -4px rgba(0, 67, 235, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: $white;
+  }
+
+  &:active {
+    transform: scale(0.93);
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px -4px rgba(0, 67, 235, 0.4);
+  }
+}
+
+.mp__add-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: $accent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px -4px rgba(0, 67, 235, 0.35);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 
   ion-icon {
@@ -104,8 +143,7 @@ ion-content {
 
     &:hover {
       transform: translateY(-1px);
-      box-shadow:
-        0 8px 20px -4px rgba(0, 67, 235, 0.4);
+      box-shadow: 0 8px 20px -4px rgba(0, 67, 235, 0.4);
     }
   }
 }
@@ -129,12 +167,15 @@ ion-content {
   background: $white;
   border: 1.5px solid $gray-light;
   border-radius: 9999px;
-  padding: 3px;
-  gap: 2px;
+  padding: 4px;
+  gap: 3px;
 }
 
 .mp__toggle-btn {
-  padding: 10px clamp(22px, 6vw, 32px);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px clamp(16px, 4.5vw, 26px);
   border: none;
   border-radius: 9999px;
   background: transparent;
@@ -145,17 +186,30 @@ ion-content {
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 
+  ion-icon {
+    font-size: 15px;
+    transition: color 0.2s ease;
+  }
+
   &--active {
     background: $primary;
     color: $white;
+
+    ion-icon {
+      color: $white;
+    }
   }
 
   @media (min-width: $bp-tablet) {
-    padding: 10px 36px;
+    padding: 10px 30px;
     font-size: 14px;
 
     &:not(.mp__toggle-btn--active):hover {
       color: $primary;
+
+      ion-icon {
+        color: $primary;
+      }
     }
   }
 }
@@ -165,7 +219,7 @@ ion-content {
   display: flex;
   gap: 8px;
   padding: 0 clamp(20px, 6vw, 32px);
-  margin-bottom: clamp(18px, 3.5dvh, 26px);
+  margin-bottom: clamp(12px, 2.5dvh, 16px);
   overflow-x: auto;
 
   &::-webkit-scrollbar {
@@ -175,7 +229,7 @@ ion-content {
   @media (min-width: $bp-tablet) {
     padding: 0 40px;
     gap: 10px;
-    margin-bottom: 26px;
+    margin-bottom: 16px;
   }
 }
 
@@ -201,7 +255,6 @@ ion-content {
   }
 
   &--main {
-    background: $white;
     border-color: $primary;
     color: $primary;
   }
@@ -225,6 +278,24 @@ ion-content {
       color: $primary;
     }
   }
+}
+
+// ─── Results Count ───────────────────────────────────
+.mp__results {
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin: 0 0 clamp(14px, 3dvh, 18px);
+  font-size: clamp(12px, 3.2vw, 13px);
+  color: $gray;
+  font-weight: 500;
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+  }
+}
+
+.mp__results-count {
+  font-weight: 700;
+  color: $primary;
 }
 
 // ─── Loading / Empty ─────────────────────────────────
@@ -312,21 +383,22 @@ ion-content {
 .mp__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(12px, 3.5vw, 16px);
+  gap: clamp(12px, 3.5vw, 14px);
   padding: 0 clamp(20px, 6vw, 32px);
 
   @media (min-width: $bp-tablet) {
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: 16px;
     padding: 0 40px;
   }
 
   @media (min-width: $bp-desktop) {
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 18px;
   }
 }
 
+// ─── Car Card ────────────────────────────────────────
 .mp__card {
   background: $white;
   border: 1.5px solid $gray-light;
@@ -353,11 +425,13 @@ ion-content {
   }
 }
 
-.mp__card-img-wrap {
+// ─── Card Media ──────────────────────────────────────
+.mp__card-media {
+  position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  background: darken($bg, 2%);
+  aspect-ratio: 16 / 10;
   overflow: hidden;
+  background: darken($bg, 2%);
 }
 
 .mp__card-img {
@@ -369,7 +443,7 @@ ion-content {
 
   @media (min-width: $bp-tablet) {
     .mp__card:hover & {
-      transform: scale(1.04);
+      transform: scale(1.05);
     }
   }
 }
@@ -382,16 +456,110 @@ ion-content {
   justify-content: center;
 
   ion-icon {
-    font-size: 48px;
+    font-size: 44px;
     color: $gray-light;
   }
 }
 
-.mp__card-body {
-  padding: clamp(10px, 3vw, 14px);
+.mp__card-media-grad {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(11, 27, 43, 0.4) 100%);
+  pointer-events: none;
+}
+
+// Favorite button — overlaid on image
+.mp__card-fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  ion-icon {
+    font-size: 15px;
+    color: $white;
+  }
+
+  &:active {
+    transform: scale(0.85);
+  }
+
+  &--active {
+    background: rgba(239, 68, 68, 0.85);
+
+    ion-icon {
+      color: $white;
+    }
+  }
 
   @media (min-width: $bp-tablet) {
-    padding: 14px 16px;
+    width: 34px;
+    height: 34px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+// Year badge — bottom-left of image
+.mp__card-year {
+  position: absolute;
+  bottom: 9px;
+  left: 9px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(6px);
+  font-size: 11px;
+  font-weight: 700;
+  color: $white;
+  z-index: 5;
+  letter-spacing: 0.2px;
+}
+
+// Verified badge — top-left of image
+.mp__card-verified {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(22, 163, 74, 0.88);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+
+  ion-icon {
+    font-size: 14px;
+    color: $white;
+  }
+}
+
+// ─── Card Body ───────────────────────────────────────
+.mp__card-body {
+  padding: clamp(10px, 3vw, 14px) clamp(10px, 3vw, 13px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 13px 14px 14px;
   }
 }
 
@@ -400,7 +568,7 @@ ion-content {
   font-size: clamp(13px, 3.5vw, 14px);
   font-weight: 700;
   color: $primary;
-  letter-spacing: -0.1px;
+  letter-spacing: -0.2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -410,36 +578,58 @@ ion-content {
   }
 }
 
-.mp__card-meta {
-  margin: 0 0 clamp(6px, 1.5dvh, 10px);
-  font-size: clamp(10px, 2.8vw, 11px);
+.mp__card-loc {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: clamp(10px, 2.6vw, 11px);
   color: $gray;
   font-weight: 400;
+  margin: 0 0 clamp(7px, 1.5dvh, 10px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  @media (min-width: $bp-tablet) {
-    font-size: 12px;
-    margin-bottom: 10px;
+  ion-icon {
+    font-size: 11px;
+    flex-shrink: 0;
   }
 }
 
-.mp__card-bottom {
+// Spec chips
+.mp__card-chips {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: clamp(8px, 1.8dvh, 11px);
 }
 
-.mp__card-price {
-  margin: 0;
+.mp__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: $bg;
+  border: 1px solid $gray-light;
+  font-size: clamp(9px, 2.4vw, 10px);
+  font-weight: 600;
+  color: $gray;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+// Price row
+.mp__card-price-row {
   display: flex;
   align-items: baseline;
   gap: 3px;
 }
 
 .mp__card-price-val {
-  font-size: clamp(14px, 3.8vw, 16px);
+  font-size: clamp(15px, 4vw, 17px);
   font-weight: 800;
   color: $accent;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
 
   @media (min-width: $bp-tablet) {
     font-size: 17px;
@@ -451,42 +641,12 @@ ion-content {
   font-weight: 600;
   color: $accent;
   text-transform: uppercase;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 12px;
-  }
 }
 
-.mp__card-fav {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: transform 0.15s ease;
-
-  ion-icon {
-    font-size: 18px;
-    color: $gray;
-  }
-
-  &:active {
-    transform: scale(0.85);
-  }
-
-  @media (min-width: $bp-tablet) {
-    width: 34px;
-    height: 34px;
-
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
+.mp__card-per {
+  font-size: clamp(10px, 2.6vw, 11px);
+  color: $gray;
+  font-weight: 500;
 }
 
 // ─── WhatsApp FAB ────────────────────────────────────
@@ -548,60 +708,61 @@ ion-content {
 
   @media (min-width: $bp-tablet) {
     padding: 0 40px;
-    max-width: 560px;
+    max-width: 600px;
     margin: 0 auto;
   }
 }
 
-// ── Badge ──
-.sell__badge {
+// ─── Sell Hero ───────────────────────────────────────
+.sell__hero {
+  margin-bottom: clamp(32px, 6dvh, 44px);
+}
+
+.sell__hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
   border-radius: 9999px;
-  background: $accent;
-  color: $white;
-  font-size: 9px;
+  background: rgba(0, 67, 235, 0.07);
+  border: 1px solid rgba(0, 67, 235, 0.18);
+  color: $accent;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: clamp(20px, 4dvh, 28px);
+  margin-bottom: clamp(18px, 3.5dvh, 24px);
 
   ion-icon {
     font-size: 13px;
   }
 }
 
-// ── Hero text ──
-.sell__hero {
-  margin-bottom: clamp(32px, 6dvh, 44px);
-}
-
 .sell__hero-title {
   margin: 0 0 clamp(12px, 2.5dvh, 18px);
-  font-size: clamp(30px, 8vw, 42px);
+  font-size: clamp(32px, 8.5vw, 44px);
   font-weight: 800;
   color: $primary;
   letter-spacing: -0.8px;
-  line-height: 1.08;
+  line-height: 1.06;
 
   em {
     font-style: italic;
     font-weight: 800;
+    color: $accent;
   }
 
   @media (min-width: $bp-tablet) {
-    font-size: 38px;
+    font-size: 40px;
   }
 }
 
 .sell__hero-sub {
   margin: 0;
   font-size: clamp(13px, 3.6vw, 15px);
-  line-height: 1.6;
+  line-height: 1.65;
   color: $gray;
-  max-width: 340px;
+  max-width: 360px;
 
   @media (min-width: $bp-tablet) {
     font-size: 15px;
@@ -609,54 +770,39 @@ ion-content {
   }
 }
 
-// ── Journey ──
+// ─── Sell Journey ────────────────────────────────────
 .sell__journey {
   margin-bottom: clamp(28px, 5dvh, 40px);
 }
 
-.sell__journey-title {
-  margin: 0 0 clamp(18px, 3.5dvh, 24px);
-  font-size: clamp(18px, 5vw, 22px);
+.sell__journey-label {
+  margin: 0 0 clamp(14px, 3dvh, 18px);
+  font-size: clamp(11px, 3vw, 12px);
   font-weight: 700;
-  color: $primary;
-  letter-spacing: -0.3px;
-  text-align: center;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 22px;
-    margin-bottom: 28px;
-  }
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: $gray;
 }
 
-// ── Steps ──
 .sell__steps {
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 2.5dvh, 16px);
-
-  @media (min-width: $bp-tablet) {
-    gap: 16px;
-  }
+  gap: clamp(10px, 2dvh, 12px);
 }
 
 .sell__step {
   display: flex;
   align-items: center;
-  gap: clamp(14px, 3.5vw, 18px);
-  padding: clamp(18px, 4.5vw, 24px);
+  gap: clamp(12px, 3vw, 16px);
+  padding: clamp(16px, 4vw, 20px);
   background: $white;
   border: 1.5px solid $gray-light;
-  border-radius: clamp(18px, 4.5vw, 22px);
+  border-radius: clamp(16px, 4vw, 20px);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-  &--accent {
-    background: rgba(0, 67, 235, 0.04);
-    border-color: rgba(0, 67, 235, 0.12);
-  }
-
   @media (min-width: $bp-tablet) {
-    padding: 22px 26px;
-    border-radius: 22px;
+    padding: 20px 24px;
+    border-radius: 20px;
 
     &:hover {
       transform: translateY(-2px);
@@ -665,36 +811,54 @@ ion-content {
   }
 }
 
-.sell__step-left {
+.sell__step-num {
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 800;
+  color: $gray-light;
+  letter-spacing: -0.2px;
   flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
-.sell__step-num {
+.sell__step-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(40px, 10vw, 48px);
-  height: clamp(40px, 10vw, 48px);
-  border-radius: 50%;
-  font-size: clamp(16px, 4.2vw, 20px);
-  font-weight: 800;
-  letter-spacing: -0.3px;
+  flex-shrink: 0;
 
-  .sell__step--accent & {
-    background: rgba(0, 67, 235, 0.1);
-    color: $accent;
-  }
-
-  .sell__step:not(.sell__step--accent) & {
-    background: rgba(11, 27, 43, 0.06);
-    color: $primary;
-  }
-
-  @media (min-width: $bp-tablet) {
-    width: 48px;
-    height: 48px;
+  ion-icon {
     font-size: 20px;
   }
+}
+
+// Colored icon backgrounds per step (nth-child)
+.sell__step:nth-child(1) .sell__step-icon {
+  background: #dbeafe;
+
+  ion-icon { color: #2563eb; }
+}
+
+.sell__step:nth-child(2) .sell__step-icon {
+  background: #ede9fe;
+
+  ion-icon { color: #7c3aed; }
+}
+
+.sell__step:nth-child(3) .sell__step-icon {
+  background: #ccfbf1;
+
+  ion-icon { color: #0d9488; }
+}
+
+.sell__step:nth-child(4) .sell__step-icon {
+  background: #dcfce7;
+
+  ion-icon { color: #16a34a; }
 }
 
 .sell__step-body {
@@ -704,62 +868,32 @@ ion-content {
 
 .sell__step-title {
   margin: 0 0 3px;
-  font-size: clamp(15px, 4vw, 17px);
+  font-size: clamp(14px, 3.8vw, 16px);
   font-weight: 700;
   color: $primary;
   letter-spacing: -0.2px;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 16px;
-  }
 }
 
 .sell__step-desc {
   margin: 0;
-  font-size: clamp(11px, 3vw, 13px);
+  font-size: clamp(11px, 3vw, 12px);
   color: $gray;
-  line-height: 1.4;
-
-  @media (min-width: $bp-tablet) {
-    font-size: 13px;
-  }
+  line-height: 1.45;
 }
 
-.sell__step-icon {
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: $white;
-  border: 1.5px solid $gray-light;
+// ─── Sell CTAs ───────────────────────────────────────
+.sell__ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.sell__cta-primary {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  ion-icon {
-    font-size: 17px;
-    color: $primary;
-  }
-
-  .sell__step--accent & {
-    border-color: rgba(0, 67, 235, 0.15);
-
-    ion-icon {
-      color: $accent;
-    }
-  }
-
-  @media (min-width: $bp-tablet) {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-// ── CTA ──
-.sell__cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 8px;
   width: 100%;
   height: clamp(52px, 7.5dvh, 60px);
   border: none;
@@ -769,13 +903,16 @@ ion-content {
   font-family: inherit;
   font-size: clamp(14px, 3.8vw, 16px);
   font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+  letter-spacing: 0.3px;
   cursor: pointer;
   box-shadow:
     0 12px 24px -8px rgba(0, 67, 235, 0.4),
     0 4px 10px -4px rgba(0, 67, 235, 0.2);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+  }
 
   &:active {
     transform: scale(0.98);
@@ -793,4 +930,270 @@ ion-content {
         0 6px 14px -4px rgba(0, 67, 235, 0.25);
     }
   }
+}
+
+.sell__cta-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: clamp(48px, 7dvh, 54px);
+  border: 1.5px solid $gray-light;
+  border-radius: 9999px;
+  background: $white;
+  color: $primary;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    background: darken($bg, 3%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    height: 52px;
+
+    &:hover {
+      background: darken($bg, 3%);
+      border-color: darken($gray-light, 8%);
+    }
+  }
+}
+
+// ─── Sell: Loading ───────────────────────────────────
+.sell__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px 0;
+
+  p {
+    font-size: 13px;
+    color: $gray;
+  }
+}
+
+// ─── Sell: My Listings header ─────────────────────────
+.sell__my-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-top: clamp(20px, 4dvh, 28px);
+}
+
+.sell__my-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sell__my-title {
+  margin: 0;
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.3px;
+}
+
+.sell__my-count {
+  font-size: 12px;
+  color: $gray;
+  font-weight: 500;
+}
+
+.sell__my-see-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 1.5px solid $gray-light;
+  border-radius: 9999px;
+  background: $white;
+  font-size: 13px;
+  font-weight: 700;
+  color: $accent;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  ion-icon { font-size: 14px; }
+
+  &:active {
+    background: darken($bg, 3%);
+  }
+}
+
+// ─── Sell: Listing preview cards ─────────────────────
+.sell__my-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: clamp(24px, 4dvh, 32px);
+}
+
+.sell__my-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: $white;
+  border-radius: $radius;
+  border: 1.5px solid $gray-light;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 12px -4px rgba(11, 27, 43, 0.1);
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -6px rgba(11, 27, 43, 0.1);
+    }
+  }
+}
+
+.sell__my-card-media {
+  position: relative;
+  width: 88px;
+  height: 68px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: $gray-light;
+}
+
+.sell__my-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sell__my-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: lighten($gray-light, 4%);
+
+  ion-icon {
+    font-size: 28px;
+    color: $gray;
+    opacity: 0.5;
+  }
+}
+
+.sell__my-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  &--active {
+    background: rgba(22, 163, 74, 0.15);
+    color: #15803d;
+  }
+
+  &--review {
+    background: rgba(217, 119, 6, 0.15);
+    color: #b45309;
+  }
+
+  &--sold {
+    background: rgba(107, 114, 128, 0.15);
+    color: $gray;
+  }
+}
+
+.sell__my-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sell__my-card-name {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sell__my-card-price {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: $accent;
+  letter-spacing: -0.2px;
+}
+
+.sell__my-card-currency {
+  font-size: 11px;
+  font-weight: 600;
+  color: $gray;
+}
+
+.sell__my-card-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.sell__my-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  background: $gray-light;
+  color: $gray;
+
+  ion-icon { font-size: 11px; }
+
+  &--blue {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+
+  &--green {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+
+  &--amber {
+    background: #fef3c7;
+    color: #d97706;
+  }
+}
+
+.sell__my-card-arrow {
+  font-size: 18px;
+  color: $gray-light;
+  flex-shrink: 0;
 }

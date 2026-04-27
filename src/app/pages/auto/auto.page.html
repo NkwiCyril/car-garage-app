@@ -4,15 +4,20 @@
     <!-- ─── Header ─────────────────────────────────────── -->
     <div class="mp__header">
       <div class="mp__header-left">
-        <h1 class="mp__title">ParkEase<br/>Official</h1>
-        <p class="mp__subtitle">Your bookings and history</p>
+        <h1 class="mp__title">Auto<br/>Market</h1>
+        <p class="mp__subtitle">Find your next dream vehicle</p>
       </div>
-      <button class="mp__add-btn" (click)="onAddCar()">
-        <ion-icon name="add-outline"></ion-icon>
-      </button>
+      <div class="mp__header-right">
+        <button class="mp__icon-btn" (click)="goToMyListings()" title="My Listings">
+          <ion-icon name="car-outline"></ion-icon>
+        </button>
+        <button class="mp__add-btn" (click)="onAddCar()" title="Add Car">
+          <ion-icon name="add-outline"></ion-icon>
+        </button>
+      </div>
     </div>
 
-    <!-- ─── Purchase / Rent / Sell Toggle ──────────────── -->
+    <!-- ─── Tab Toggle ─────────────────────────────────── -->
     <div class="mp__toggle-wrap">
       <div class="mp__toggle">
         <button
@@ -20,6 +25,7 @@
           [class.mp__toggle-btn--active]="activeTab === 'buy'"
           (click)="onTabChange('buy')"
         >
+          <ion-icon name="bag-handle-outline"></ion-icon>
           Purchase
         </button>
         <button
@@ -27,6 +33,7 @@
           [class.mp__toggle-btn--active]="activeTab === 'rent'"
           (click)="onTabChange('rent')"
         >
+          <ion-icon name="key-outline"></ion-icon>
           Rent
         </button>
         <button
@@ -34,6 +41,7 @@
           [class.mp__toggle-btn--active]="activeTab === 'sell'"
           (click)="onTabChange('sell')"
         >
+          <ion-icon name="pricetag-outline"></ion-icon>
           Sell
         </button>
       </div>
@@ -59,6 +67,12 @@
           {{ f }}
         </button>
       </div>
+
+      <!-- Results count -->
+      <p class="mp__results" *ngIf="!isLoadingAvailable && currentCars.length > 0">
+        <span class="mp__results-count">{{ currentCars.length }}</span>
+        vehicle{{ currentCars.length !== 1 ? 's' : '' }} available
+      </p>
 
       <!-- Loading -->
       <div class="mp__loading" *ngIf="isLoadingAvailable">
@@ -86,80 +100,208 @@
           *ngFor="let car of currentCars"
           (click)="openCarDetail(car)"
         >
-          <div class="mp__card-img-wrap">
+          <!-- Image + overlays -->
+          <div class="mp__card-media">
             <img
               *ngIf="getFirstImage(car)"
               [src]="getFirstImage(car)!"
               class="mp__card-img"
-              alt="Car"
+              alt=""
             />
             <div class="mp__card-placeholder" *ngIf="!getFirstImage(car)">
               <ion-icon name="car-sport-outline"></ion-icon>
             </div>
+
+            <!-- Bottom gradient -->
+            <div class="mp__card-media-grad"></div>
+
+            <!-- Favorite -->
+            <button
+              class="mp__card-fav"
+              [class.mp__card-fav--active]="isFavorited(car)"
+              (click)="toggleFavorite(car); $event.stopPropagation()"
+            >
+              <ion-icon [name]="isFavorited(car) ? 'heart' : 'heart-outline'"></ion-icon>
+            </button>
+
+            <!-- Year badge -->
+            <span class="mp__card-year" *ngIf="car.year">{{ car.year }}</span>
+
+            <!-- Verified badge -->
+            <span class="mp__card-verified" *ngIf="car.isVerified">
+              <ion-icon name="shield-checkmark-outline"></ion-icon>
+            </span>
           </div>
+
+          <!-- Card Body -->
           <div class="mp__card-body">
             <h3 class="mp__card-name">{{ getCarName(car) }}</h3>
-            <p class="mp__card-meta">
-              {{ car.year }}<span *ngIf="car.transmission"> &bull; {{ getTransmission(car) }}</span>
+            <p class="mp__card-loc" *ngIf="car.location">
+              <ion-icon name="location-outline"></ion-icon>
+              {{ car.location }}
             </p>
-            <div class="mp__card-bottom">
-              <p class="mp__card-price">
-                <span class="mp__card-price-val">{{ formatPrice(activeTab === 'rent' ? (car.rentalPrice ?? 0) : car.price) }}</span>
-                <span class="mp__card-price-cur"> XAF</span>
-              </p>
-              <button
-                class="mp__card-fav"
-                (click)="toggleFavorite(car); $event.stopPropagation()"
-              >
-                <ion-icon [name]="isFavorited(car) ? 'heart' : 'heart-outline'"></ion-icon>
-              </button>
+            <!-- Spec chips -->
+            <div class="mp__card-chips" *ngIf="car.transmission || car.fuelType || car.mileage">
+              <span class="mp__chip" *ngIf="car.transmission">{{ getTransmission(car) }}</span>
+              <span class="mp__chip" *ngIf="car.fuelType">{{ car.fuelType }}</span>
+              <span class="mp__chip" *ngIf="car.mileage">{{ car.mileage }}</span>
+            </div>
+            <!-- Price -->
+            <div class="mp__card-price-row">
+              <span class="mp__card-price-val">
+                {{ formatPrice(activeTab === 'rent' ? (car.rentalPrice ?? 0) : car.price) }}
+              </span>
+              <span class="mp__card-price-cur">XAF</span>
+              <span class="mp__card-per" *ngIf="activeTab === 'rent'">/day</span>
             </div>
           </div>
         </div>
       </div>
+
     </ng-container>
 
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- ─── Sell View ──────────────────────────────────── -->
+    <!-- ─── Sell View ────────────────────────────────────── -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div class="sell" *ngIf="activeTab === 'sell'">
-      <!-- Hero text -->
-      <div class="sell__hero">
-        <h2 class="sell__hero-title">
-          Sell Your Car<br/>with <em>Confidence</em>
-        </h2>
-        <p class="sell__hero-sub">
-          Your vehicle will be reviewed by our experts to ensure the highest
-          standards of quality and trust for our premium buyers.
-        </p>
+
+      <!-- ── Loading ── -->
+      <div class="sell__loading" *ngIf="isLoadingMyListings">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Loading your listings…</p>
       </div>
 
-      <!-- Journey -->
-      <div class="sell__journey">
-        <div class="sell__steps">
+      <!-- ── Has listings ── -->
+      <ng-container *ngIf="!isLoadingMyListings && myListings.length > 0">
+
+        <!-- Header -->
+        <div class="sell__my-head">
+          <div class="sell__my-head-left">
+            <h2 class="sell__my-title">My Listings</h2>
+            <span class="sell__my-count">
+              {{ myListings.length }} vehicle{{ myListings.length !== 1 ? 's' : '' }}
+            </span>
+          </div>
+          <button class="sell__my-see-more" (click)="goToMyListings()">
+            See More
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </button>
+        </div>
+
+        <!-- Preview cards (up to 3) -->
+        <div class="sell__my-list">
           <div
-            class="sell__step"
-            *ngFor="let step of sellSteps; let i = index"
-            [class.sell__step--accent]="i % 2 === 0"
+            class="sell__my-card"
+            *ngFor="let car of myListings.slice(0, 3)"
+            (click)="openOwnedCarDetail(car)"
           >
-            <div class="sell__step-left">
+            <!-- Thumbnail -->
+            <div class="sell__my-card-media">
+              <img
+                *ngIf="getFirstImage(car)"
+                [src]="getFirstImage(car)!"
+                class="sell__my-card-img"
+                alt=""
+              />
+              <div class="sell__my-card-placeholder" *ngIf="!getFirstImage(car)">
+                <ion-icon name="car-outline"></ion-icon>
+              </div>
+              <span
+                class="sell__my-badge sell__my-badge--{{ getStatusClass(car) }}"
+                *ngIf="getStatusLabel(car)"
+              >
+                {{ getStatusLabel(car) }}
+              </span>
+            </div>
+
+            <!-- Info -->
+            <div class="sell__my-card-info">
+              <h4 class="sell__my-card-name">{{ getCarName(car) }}</h4>
+              <p class="sell__my-card-price">
+                {{ formatPrice(car.price) }}
+                <span class="sell__my-card-currency">XAF</span>
+              </p>
+              <div class="sell__my-card-pills">
+                <span class="sell__my-pill" *ngIf="car.forSale && car.forRent">Sale &amp; Rent</span>
+                <span class="sell__my-pill sell__my-pill--blue" *ngIf="car.forSale && !car.forRent">For Sale</span>
+                <span class="sell__my-pill sell__my-pill--green" *ngIf="!car.forSale && car.forRent">For Rent</span>
+                <span class="sell__my-pill sell__my-pill--amber" *ngIf="isInReview(car)">
+                  <ion-icon name="time-outline"></ion-icon>
+                  In Review
+                </span>
+              </div>
+            </div>
+
+            <ion-icon name="arrow-forward-outline" class="sell__my-card-arrow"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Add new + See all -->
+        <div class="sell__ctas">
+          <button class="sell__cta-primary" (click)="onStartListing()">
+            <ion-icon name="add-outline"></ion-icon>
+            Add New Listing
+          </button>
+          <button class="sell__cta-secondary" (click)="goToMyListings()">
+            <ion-icon name="car-outline"></ion-icon>
+            All My Listings
+          </button>
+        </div>
+
+      </ng-container>
+
+      <!-- ── No listings → hero + steps ── -->
+      <ng-container *ngIf="!isLoadingMyListings && myListings.length === 0">
+
+        <!-- Hero -->
+        <div class="sell__hero">
+          <div class="sell__hero-badge">
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+            TRUSTED MARKETPLACE
+          </div>
+          <h2 class="sell__hero-title">
+            Sell Your Car<br/>with <em>Confidence</em>
+          </h2>
+          <p class="sell__hero-sub">
+            Your vehicle will be reviewed by our experts to ensure the highest
+            standards of quality and trust for our premium buyers.
+          </p>
+        </div>
+
+        <!-- Journey steps -->
+        <div class="sell__journey">
+          <p class="sell__journey-label">How It Works</p>
+          <div class="sell__steps">
+            <div
+              class="sell__step"
+              *ngFor="let step of sellSteps; let i = index"
+            >
               <span class="sell__step-num">{{ padStep(i + 1) }}</span>
-            </div>
-            <div class="sell__step-body">
-              <h4 class="sell__step-title">{{ step.title }}</h4>
-              <p class="sell__step-desc">{{ step.desc }}</p>
-            </div>
-            <div class="sell__step-icon">
-              <ion-icon [name]="step.icon"></ion-icon>
+              <div class="sell__step-icon">
+                <ion-icon [name]="step.icon"></ion-icon>
+              </div>
+              <div class="sell__step-body">
+                <h4 class="sell__step-title">{{ step.title }}</h4>
+                <p class="sell__step-desc">{{ step.desc }}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- CTA -->
-      <button class="sell__cta" (click)="onStartListing()">
-        START LISTING
-      </button>
+        <!-- CTAs -->
+        <div class="sell__ctas">
+          <button class="sell__cta-primary" (click)="onStartListing()">
+            <ion-icon name="add-outline"></ion-icon>
+            Start Listing
+          </button>
+          <button class="sell__cta-secondary" (click)="goToMyListings()">
+            <ion-icon name="car-outline"></ion-icon>
+            My Listings
+          </button>
+        </div>
+
+      </ng-container>
+
     </div>
 
     <!-- ─── WhatsApp FAB ───────────────────────────────── -->

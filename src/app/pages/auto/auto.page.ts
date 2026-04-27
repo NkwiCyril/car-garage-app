@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
 import {
   IonContent,
   IonIcon,
   IonSpinner,
   ToastController,
+  ViewWillEnter,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -24,8 +26,13 @@ import {
   cameraOutline,
   documentTextOutline,
   pricetagOutline,
+  arrowForwardOutline,
+  eyeOutline,
+  pencilOutline,
+  timeOutline,
 } from 'ionicons/icons';
 import { CarService } from '../../core/services/car.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Car } from '../../core/models/car.model';
 
 interface SellStep {
@@ -40,7 +47,7 @@ interface SellStep {
   styleUrls: ['./auto.page.scss'],
   imports: [CommonModule, IonContent, IonIcon, IonSpinner],
 })
-export class AutoPage implements OnInit {
+export class AutoPage implements OnInit, ViewWillEnter {
   activeTab: 'buy' | 'rent' | 'sell' = 'buy';
   activeFilterIndex: number = -1;
 
@@ -48,6 +55,10 @@ export class AutoPage implements OnInit {
   rentCars: Car[] = [];
   buyCars: Car[] = [];
   favoritedIds: Set<string> = new Set();
+
+  myListings: Car[] = [];
+  isLoadingMyListings = false;
+  private myListingsLoaded = false;
 
   filterOptions = ['SUV', 'Sedan', 'Luxury', 'Sports', 'Pickup'];
 
@@ -77,6 +88,7 @@ export class AutoPage implements OnInit {
   constructor(
     private router: Router,
     private carService: CarService,
+    private authService: AuthService,
     private toastController: ToastController,
   ) {
     addIcons({
@@ -95,11 +107,21 @@ export class AutoPage implements OnInit {
       cameraOutline,
       documentTextOutline,
       pricetagOutline,
+      arrowForwardOutline,
+      eyeOutline,
+      pencilOutline,
+      timeOutline,
     });
   }
 
   ngOnInit(): void {
     this.loadAvailableCars();
+  }
+
+  ionViewWillEnter(): void {
+    if (this.activeTab === 'sell') {
+      this.loadMyListings();
+    }
   }
 
   get currentCars(): Car[] {
@@ -140,6 +162,40 @@ export class AutoPage implements OnInit {
     });
   }
 
+  loadMyListings(): void {
+    const userId = this.authService.currentUser?.id;
+    if (!userId) return;
+
+    this.isLoadingMyListings = true;
+    this.myListingsLoaded = false;
+
+    forkJoin({
+      sale: this.carService.getUserCarsForSale(userId),
+      rent: this.carService.getUserCarsForRent(userId),
+    }).subscribe({
+      next: ({ sale, rent }) => {
+        const saleCars: Car[] = Array.isArray(sale.data) ? sale.data : [];
+        const rentCars: Car[] = Array.isArray(rent.data) ? rent.data : [];
+        const seen = new Set<string>();
+        const combined: Car[] = [];
+        for (const car of [...saleCars, ...rentCars]) {
+          if (!seen.has(car._id)) {
+            seen.add(car._id);
+            combined.push(car);
+          }
+        }
+        this.myListings = combined;
+        this.isLoadingMyListings = false;
+        this.myListingsLoaded = true;
+      },
+      error: (err) => {
+        this.isLoadingMyListings = false;
+        this.myListingsLoaded = true;
+        this.showToast(err.message || 'Failed to load your listings', 'danger');
+      },
+    });
+  }
+
   private extractCars(response: any): Car[] {
     if (Array.isArray(response)) return response;
     if (Array.isArray(response.data)) return response.data;
@@ -151,6 +207,9 @@ export class AutoPage implements OnInit {
   onTabChange(tab: 'buy' | 'rent' | 'sell'): void {
     this.activeTab = tab;
     this.activeFilterIndex = -1;
+    if (tab === 'sell' && !this.myListingsLoaded) {
+      this.loadMyListings();
+    }
   }
 
   selectFilter(index: number): void {
@@ -179,6 +238,14 @@ export class AutoPage implements OnInit {
     sessionStorage.setItem(
       'pendingCarNav',
       JSON.stringify({ car, isOwned: false, fromRoute: '/tabs/auto' }),
+    );
+    this.router.navigate(['/cars/detail']);
+  }
+
+  openOwnedCarDetail(car: Car): void {
+    sessionStorage.setItem(
+      'pendingCarNav',
+      JSON.stringify({ car, isOwned: true, fromRoute: '/tabs/auto' }),
     );
     this.router.navigate(['/cars/detail']);
   }
@@ -212,6 +279,29 @@ export class AutoPage implements OnInit {
       return (price / 1000).toFixed(0) + 'K';
     }
     return price.toLocaleString('fr-CM');
+  }
+
+  getStatusLabel(car: Car): string {
+    const status = (car as any).status;
+    if (status === 'sold') return 'SOLD';
+    if (status === 'review') return 'IN REVIEW';
+    if (car.forSale || car.forRent) return 'ACTIVE';
+    return '';
+  }
+
+  getStatusClass(car: Car): string {
+    const status = (car as any).status;
+    if (status === 'sold') return 'sold';
+    if (status === 'review') return 'review';
+    return 'active';
+  }
+
+  isInReview(car: Car): boolean {
+    return (car as any).status === 'review';
+  }
+
+  goToMyListings(): void {
+    this.router.navigate(['/cars/my']);
   }
 
   openWhatsApp(): void {
