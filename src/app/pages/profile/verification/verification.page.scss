@@ -1,0 +1,998 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$green: #16a34a;
+$green-light: #dcfce7;
+$red: #dc2626;
+$red-light: #fee2e2;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$radius: 14px;
+$vf-max: 520px;
+$bp-tablet: 768px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$bg};
+}
+
+.vf {
+  min-height: 100%;
+  padding-bottom: 120px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $vf-max;
+    margin: 0 auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.vf__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 14px;
+  background: $bg;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.vf__nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+.vf__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+}
+
+.vf__nav-spacer {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+// ─── Hero ────────────────────────────────────────────
+.vf__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 24px 24px;
+  text-align: center;
+}
+
+// Shield icon
+.vf__shield {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  &--unverified {
+    background: $red-light;
+
+    .vf__shield-icon {
+      font-size: 44px;
+      color: $red;
+    }
+  }
+
+  &--verified {
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+    box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.18);
+
+    .vf__shield-icon {
+      font-size: 44px;
+      color: $accent;
+    }
+  }
+}
+
+// X overlay for unverified shield
+.vf__shield-x {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    position: absolute;
+    width: 22px;
+    height: 2.5px;
+    background: $red;
+    border-radius: 2px;
+
+    &:first-child { transform: rotate(45deg); }
+    &:last-child  { transform: rotate(-45deg); }
+  }
+}
+
+// Trusted badge
+.vf__trusted-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: $green-light;
+  color: $green;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+.vf__title {
+  margin: 0 0 10px;
+  font-size: clamp(26px, 7vw, 32px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.5px;
+
+  &--verified {
+    color: $accent;
+  }
+}
+
+.vf__subtitle {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: $gray;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+// ─── Cards ───────────────────────────────────────────
+.vf__card {
+  margin: 0 16px 14px;
+  padding: 18px 18px 20px;
+  background: $white;
+  border-radius: $radius;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  &--privileges {
+    padding-bottom: 4px;
+  }
+}
+
+.vf__card-head {
+  margin: 0 0 16px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+// ─── Privileges ──────────────────────────────────────
+.vf__privilege-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.vf__privilege {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0 0 18px;
+
+  &:not(:last-child) {
+    margin-bottom: 4px;
+    border-bottom: 1px solid $gray-light;
+    margin-bottom: 18px;
+  }
+}
+
+.vf__privilege-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 20px; }
+
+  &--blue {
+    background: #dbeafe;
+    ion-icon { color: $accent; }
+  }
+  &--accent {
+    background: #fef3c7;
+    ion-icon { color: #d97706; }
+  }
+  &--rose {
+    background: #ffe4e6;
+    ion-icon { color: #e11d48; }
+  }
+}
+
+.vf__privilege-body {
+  flex: 1;
+  padding-top: 2px;
+}
+
+.vf__privilege-title {
+  margin: 0 0 4px;
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 700;
+  color: $primary;
+}
+
+.vf__privilege-desc {
+  margin: 0;
+  font-size: 12px;
+  color: $gray;
+  line-height: 1.5;
+}
+
+// ─── Security note ────────────────────────────────────
+.vf__security-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 16px 20px;
+  padding: 14px 16px;
+  background: $white;
+  border-radius: 12px;
+  border: 1px dashed $gray-light;
+
+  ion-icon {
+    font-size: 16px;
+    color: $gray;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  span {
+    font-size: 12px;
+    color: $gray;
+    line-height: 1.5;
+  }
+}
+
+// ─── Process status card ──────────────────────────────
+.vf__status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.vf__status-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: $primary;
+}
+
+.vf__status-pct {
+  font-size: 13px;
+  font-weight: 800;
+  color: $green;
+}
+
+.vf__progress-track {
+  height: 7px;
+  background: $gray-light;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.vf__progress-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, $accent 0%, $green 100%);
+  border-radius: 99px;
+}
+
+.vf__status-steps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.vf__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+
+  ion-icon { font-size: 12px; }
+
+  &--done {
+    background: $green-light;
+    color: $green;
+  }
+}
+
+// ─── Approved by ─────────────────────────────────────
+.vf__approved-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vf__approved-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 22px;
+    color: $accent;
+  }
+}
+
+.vf__approved-body {
+  flex: 1;
+}
+
+.vf__approved-name {
+  margin: 0 0 3px;
+  font-size: 14px;
+  font-weight: 700;
+  color: $primary;
+}
+
+.vf__approved-meta {
+  margin: 0;
+  font-size: 12px;
+  color: $gray;
+}
+
+.vf__approved-check {
+  font-size: 22px;
+  color: $green;
+  flex-shrink: 0;
+}
+
+// ─── Documents ───────────────────────────────────────
+.vf__doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vf__doc-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vf__doc-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #f0f4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $accent;
+  }
+}
+
+.vf__doc-body {
+  flex: 1;
+}
+
+.vf__doc-name {
+  margin: 0 0 3px;
+  font-size: 13px;
+  font-weight: 700;
+  color: $primary;
+}
+
+.vf__doc-file {
+  margin: 0;
+  font-size: 11px;
+  color: $gray;
+  font-family: monospace;
+}
+
+.vf__doc-check {
+  font-size: 20px;
+  color: $green;
+  flex-shrink: 0;
+}
+
+// ─── Verified date ───────────────────────────────────
+.vf__verified-date {
+  margin: 4px 16px 4px;
+  text-align: center;
+  font-size: 12px;
+  color: $gray;
+}
+
+// ─── Fixed footer ────────────────────────────────────
+.vf__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 14px 20px calc(env(safe-area-inset-bottom) + 14px);
+  background: rgba(245, 245, 243, 0.96);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid $gray-light;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $vf-max;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-left: 1px solid $gray-light;
+    border-right: 1px solid $gray-light;
+  }
+}
+
+.vf__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 14px;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: none;
+  }
+
+  &--secondary {
+    background: $white;
+    color: $primary;
+    border: 1.5px solid $gray-light;
+    box-shadow: none;
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:not(.vf__cta--secondary):hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.vf__bottom-pad {
+  height: 16px;
+}
+
+// ─── Wizard step header ───────────────────────────────
+.vf__wiz-head {
+  padding: 20px 20px 4px;
+}
+
+.vf__wiz-label {
+  margin: 0 0 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+.vf__wiz-title {
+  margin: 0 0 18px;
+  font-size: clamp(28px, 7.5vw, 34px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.vf__wiz-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.vf__wiz-track {
+  flex: 1;
+  height: 7px;
+  background: $gray-light;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.vf__wiz-fill {
+  height: 100%;
+  background: linear-gradient(90deg, $accent 0%, #3b82f6 100%);
+  border-radius: 99px;
+  transition: width 0.45s ease;
+}
+
+.vf__wiz-pct {
+  font-size: 12px;
+  font-weight: 800;
+  color: $accent;
+  min-width: 34px;
+  text-align: right;
+}
+
+// ─── Step 1: Photo tips ───────────────────────────────
+.vf__card--tips {
+  margin-top: 16px;
+}
+
+.vf__tips {
+  display: flex;
+  gap: 8px;
+  justify-content: space-around;
+}
+
+.vf__tip-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.vf__tip-icon {
+  width: clamp(48px, 12vw, 56px);
+  height: clamp(48px, 12vw, 56px);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon { font-size: clamp(22px, 5.5vw, 26px); }
+
+  &--amber {
+    background: #fef3c7;
+    ion-icon { color: #d97706; }
+  }
+  &--blue {
+    background: #dbeafe;
+    ion-icon { color: $accent; }
+  }
+  &--green {
+    background: $green-light;
+    ion-icon { color: $green; }
+  }
+}
+
+.vf__tip-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: $primary;
+  text-align: center;
+  line-height: 1.3;
+}
+
+// ─── Step 1: Upload areas ─────────────────────────────
+.vf__upload-row {
+  display: flex;
+  gap: 12px;
+  padding: 0 16px;
+  margin-bottom: 14px;
+}
+
+.vf__upload-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: clamp(20px, 5vw, 28px) 12px;
+  background: $white;
+  border: 2px dashed $gray-light;
+  border-radius: $radius;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &--active {
+    border-color: $green;
+    background: rgba(22, 163, 74, 0.04);
+
+    .vf__upload-icon {
+      background: $green-light;
+      ion-icon { color: $green; }
+    }
+  }
+
+  &:active { opacity: 0.75; }
+}
+
+.vf__upload-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f0f4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+
+  ion-icon {
+    font-size: 22px;
+    color: $accent;
+    transition: color 0.2s ease;
+  }
+}
+
+.vf__upload-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: $primary;
+}
+
+.vf__upload-sub {
+  font-size: 11px;
+  color: $gray;
+}
+
+// ─── Step 1: Validity chips ───────────────────────────
+.vf__validity-notes {
+  display: flex;
+  gap: 10px;
+  padding: 0 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.vf__validity-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: $white;
+  border-radius: 20px;
+  border: 1px solid $gray-light;
+
+  ion-icon {
+    font-size: 14px;
+    color: $green;
+  }
+
+  span {
+    font-size: 12px;
+    font-weight: 600;
+    color: $primary;
+  }
+}
+
+// ─── Footer note (all wizard steps) ──────────────────
+.vf__footer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 14px;
+    color: $gray;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  span {
+    font-size: 11px;
+    color: $gray;
+    line-height: 1.45;
+    text-align: center;
+  }
+}
+
+// ─── Step 2: Instruction ──────────────────────────────
+.vf__instruction {
+  margin: 16px 24px 28px;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: $gray;
+  line-height: 1.65;
+  text-align: center;
+}
+
+// ─── Step 2: Face scan circle ─────────────────────────
+.vf__scan-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+  margin-bottom: 28px;
+}
+
+.vf__scan-circle {
+  position: relative;
+  width: clamp(200px, 56vw, 264px);
+  height: clamp(200px, 56vw, 264px);
+  border-radius: 50%;
+  background: #0b1b2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 56px -8px rgba(11, 27, 43, 0.45),
+              0 0 0 3px rgba(0, 67, 235, 0.35);
+}
+
+.vf__scan-person {
+  font-size: clamp(80px, 23vw, 114px);
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.vf__scan-lines {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vf__scan-line {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+
+  &--h {
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+
+  &--v {
+    left: 50%;
+    top: 10%;
+    bottom: 10%;
+    width: 1px;
+    transform: translateX(-50%);
+  }
+}
+
+.vf__scan-badge {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: $accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 67, 235, 0.55);
+
+  ion-icon {
+    font-size: 20px;
+    color: $white;
+  }
+}
+
+// ─── Step 2: Live tip chips ───────────────────────────
+.vf__live-tips {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 0 20px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.vf__live-tip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  background: $white;
+  border-radius: 24px;
+  border: 1px solid $gray-light;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  ion-icon {
+    font-size: 15px;
+    color: $gray;
+  }
+
+  span {
+    font-size: 13px;
+    font-weight: 600;
+    color: $primary;
+  }
+}
+
+// ─── Step 3: Pending card ─────────────────────────────
+.vf__pending-card {
+  margin: 24px 16px 16px;
+  padding: 36px 24px 40px;
+  background: $white;
+  border-radius: $radius;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.vf__pending-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.18);
+
+  ion-icon {
+    font-size: 36px;
+    color: $accent;
+  }
+}
+
+.vf__pending-title {
+  margin: 0 0 12px;
+  font-size: clamp(20px, 5.5vw, 24px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.3px;
+}
+
+.vf__pending-desc {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: $gray;
+  line-height: 1.65;
+}
+
+// ─── File input (hidden) ──────────────────────────────
+.vf__file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+// ─── Upload area overrides for preview/empty states ───
+.vf__upload-area {
+  cursor: default;
+  padding: 14px 10px;
+  min-height: clamp(140px, 36vw, 180px);
+  justify-content: flex-start;
+}
+
+.vf__upload-tap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+
+  &:active { opacity: 0.7; }
+}
+
+.vf__upload-preview-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.vf__upload-preview {
+  display: block;
+  width: 100%;
+  height: clamp(72px, 18vw, 96px);
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.vf__upload-clear {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  padding: 0;
+
+  ion-icon {
+    font-size: 18px;
+    color: $red;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+.vf__upload-sub--done {
+  color: $green;
+  font-weight: 600;
+}
+
+.vf__upload-retake {
+  margin-top: 4px;
+  padding: 4px 12px;
+  border: 1px solid $gray-light;
+  border-radius: 20px;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  color: $gray;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:active { opacity: 0.7; }
+}
+
+// ─── CTA disabled state ───────────────────────────────
+.vf__cta--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+
+  &:active { transform: none; }
+}
