@@ -1,0 +1,316 @@
+$bg: #f5f5f3;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$white: #ffffff;
+$radius: 14px;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// ─── Root container ──────────────────────────────────
+.fs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: $white;
+  overflow: hidden;
+}
+
+// ─── Header ──────────────────────────────────────────
+.fs__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  flex-shrink: 0;
+  border-bottom: 1px solid $gray-light;
+}
+
+.fs__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: 0.5px;
+}
+
+.fs__close {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 18px;
+    color: $gray;
+  }
+
+  &:active { background: $bg; }
+}
+
+// ─── Scrollable body ─────────────────────────────────
+.fs__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 24px;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.fs__body-pad {
+  height: 16px;
+}
+
+// ─── Section ─────────────────────────────────────────
+.fs__section {
+  padding: 22px 0 0;
+
+  &:not(:last-child) {
+    padding-bottom: 22px;
+    border-bottom: 1px solid $gray-light;
+  }
+}
+
+.fs__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.fs__section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: $primary;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.fs__section-head .fs__section-label {
+  margin-bottom: 0;
+}
+
+.fs__price-summary {
+  font-size: 12px;
+  font-weight: 700;
+  color: $accent;
+}
+
+// ─── Price range slider ───────────────────────────────
+.fs__range {
+  --bar-background: #{$gray-light};
+  --bar-background-active: #{$accent};
+  --bar-height: 3px;
+  --bar-border-radius: 4px;
+  --knob-background: #{$white};
+  --knob-border-radius: 50%;
+  --knob-size: 22px;
+  --knob-box-shadow: 0 0 0 2.5px #{$accent}, 0 2px 8px rgba(0, 67, 235, 0.25);
+  --pin-background: #{$accent};
+  --pin-color: #{$white};
+  padding: 0;
+  margin: 0 -4px 6px;
+}
+
+.fs__price-boxes {
+  display: flex;
+  gap: 10px;
+}
+
+.fs__price-box {
+  flex: 1;
+  padding: 10px 14px;
+  background: $bg;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  &--right {
+    text-align: right;
+    align-items: flex-end;
+  }
+}
+
+.fs__price-box-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+.fs__price-box-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.3px;
+}
+
+// ─── Brand pills ─────────────────────────────────────
+.fs__brands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fs__brand {
+  padding: 9px 18px;
+  border-radius: 9999px;
+  border: 1.5px solid $gray-light;
+  background: $bg;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: $primary;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &--active {
+    background: $accent;
+    border-color: $accent;
+    color: $white;
+  }
+
+  &:active:not(.fs__brand--active) {
+    background: darken($bg, 4%);
+  }
+}
+
+// ─── Year select ─────────────────────────────────────
+.fs__select-wrap {
+  position: relative;
+}
+
+.fs__select {
+  width: 100%;
+  padding: 14px 44px 14px 16px;
+  border-radius: 12px;
+  border: none;
+  background: $bg;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: $primary;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(0, 67, 235, 0.25);
+  }
+}
+
+.fs__select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: $gray;
+  pointer-events: none;
+}
+
+// ─── Segmented control (Transmission / Fuel) ─────────
+.fs__seg {
+  display: flex;
+  background: $bg;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 3px;
+}
+
+.fs__seg-btn {
+  flex: 1;
+  padding: 11px 8px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: $gray;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+
+  &--active {
+    background: $white;
+    color: $accent;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active:not(.fs__seg-btn--active) {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+// ─── Footer ──────────────────────────────────────────
+.fs__footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px calc(env(safe-area-inset-bottom) + 14px);
+  border-top: 1px solid $gray-light;
+  background: $white;
+  flex-shrink: 0;
+}
+
+.fs__reset {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active { background: $bg; }
+}
+
+.fs__apply {
+  flex: 1;
+  height: 52px;
+  border: none;
+  border-radius: 9999px;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 12px -4px rgba(0, 67, 235, 0.35);
+  }
+}

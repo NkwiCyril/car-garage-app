@@ -1,0 +1,359 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="vf">
+
+    <!-- ─── Nav ──────────────────────────────────────────── -->
+    <div class="vf__nav">
+      <button class="vf__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="vf__nav-title">ID Verification</span>
+      <div class="vf__nav-spacer"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!--  NOT VERIFIED LANDING  (step 0)                     -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="!isVerified && step === 0">
+
+      <!-- Hero -->
+      <div class="vf__hero">
+        <div class="vf__shield vf__shield--unverified">
+          <ion-icon name="shield-outline" class="vf__shield-icon"></ion-icon>
+          <div class="vf__shield-x">
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        <h1 class="vf__title">Not Verified Yet</h1>
+        <p class="vf__subtitle">Complete identity verification to unlock exclusive benefits and build trust with our community.</p>
+      </div>
+
+      <!-- Privileges card -->
+      <div class="vf__card vf__card--privileges">
+        <p class="vf__card-head">Exclusive Privileges</p>
+        <div class="vf__privilege-list">
+          <div class="vf__privilege" *ngFor="let p of privileges">
+            <div class="vf__privilege-icon vf__privilege-icon--{{ p.color }}">
+              <ion-icon [name]="p.icon"></ion-icon>
+            </div>
+            <div class="vf__privilege-body">
+              <p class="vf__privilege-title">{{ p.title }}</p>
+              <p class="vf__privilege-desc">{{ p.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security note -->
+      <div class="vf__security-note">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <span>Your data is encrypted and protected under our Privacy Policy. We never share your documents with third parties.</span>
+      </div>
+
+      <!-- CTA -->
+      <div class="vf__footer">
+        <button class="vf__cta" (click)="startVerification()">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          Start Verification
+        </button>
+      </div>
+
+    </ng-container>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!--  VERIFIED STATE  (step 0)                           -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="isVerified && step === 0">
+
+      <!-- Hero -->
+      <div class="vf__hero">
+        <div class="vf__shield vf__shield--verified">
+          <ion-icon name="shield-checkmark-outline" class="vf__shield-icon"></ion-icon>
+        </div>
+        <h1 class="vf__title vf__title--verified">Verified</h1>
+        <p class="vf__subtitle">Your identity has been confirmed. You now have full access to all platform features.</p>
+      </div>
+
+      <!-- Process status card -->
+      <div class="vf__card">
+        <p class="vf__card-head">PROCESS STATUS</p>
+        <div class="vf__status-row">
+          <span class="vf__status-label">Verification Complete</span>
+          <span class="vf__status-pct">100%</span>
+        </div>
+        <div class="vf__progress-track">
+          <div class="vf__progress-fill"></div>
+        </div>
+        <div class="vf__status-steps">
+          <span class="vf__step vf__step--done">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            Document Check
+          </span>
+          <span class="vf__step vf__step--done">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            Identity Match
+          </span>
+          <span class="vf__step vf__step--done">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            Approved
+          </span>
+        </div>
+      </div>
+
+      <!-- Approved by card -->
+      <div class="vf__card">
+        <p class="vf__card-head">APPROVED BY</p>
+        <div class="vf__approved-row">
+          <div class="vf__approved-avatar">
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+          </div>
+          <div class="vf__approved-body">
+            <p class="vf__approved-name">DriveEase Trust &amp; Safety</p>
+            <p class="vf__approved-meta">Verification ID: {{ verificationId }}</p>
+          </div>
+          <ion-icon name="checkmark-circle" class="vf__approved-check"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Documents card -->
+      <div class="vf__card">
+        <p class="vf__card-head">UPLOADED DOCUMENTS</p>
+        <div class="vf__doc-list">
+          <div class="vf__doc-item" *ngFor="let doc of documents">
+            <div class="vf__doc-icon">
+              <ion-icon name="document-text-outline"></ion-icon>
+            </div>
+            <div class="vf__doc-body">
+              <p class="vf__doc-name">{{ doc.name }}</p>
+              <p class="vf__doc-file">{{ doc.filename }}</p>
+            </div>
+            <ion-icon name="checkmark-circle" class="vf__doc-check"></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified date footer -->
+      <p class="vf__verified-date">Verified on {{ verifiedDate }}</p>
+
+      <!-- CTA -->
+      <div class="vf__footer">
+        <button class="vf__cta vf__cta--secondary" (click)="goBack()">
+          Back to Profile
+        </button>
+      </div>
+
+    </ng-container>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!--  WIZARD STEPS  (step 1–2)                           -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <ng-container *ngIf="step > 0">
+
+      <!-- Step progress header -->
+      <div class="vf__wiz-head">
+        <p class="vf__wiz-label">STEP {{ step }} OF 2</p>
+        <h1 class="vf__wiz-title" [innerHTML]="stepTitle"></h1>
+        <div class="vf__wiz-progress-row">
+          <div class="vf__wiz-track">
+            <div class="vf__wiz-fill" [style.width.%]="stepPercent"></div>
+          </div>
+          <span class="vf__wiz-pct">{{ stepPercent }}%</span>
+        </div>
+      </div>
+
+      <!-- ── Step 1: National ID Upload ── -->
+      <ng-container *ngIf="step === 1">
+
+        <!-- Hidden file inputs -->
+        <input
+          #frontInput
+          type="file"
+          accept="image/*"
+          class="vf__file-input"
+          (change)="onFrontFileChange($event)"
+        />
+        <input
+          #backInput
+          type="file"
+          accept="image/*"
+          class="vf__file-input"
+          (change)="onBackFileChange($event)"
+        />
+
+        <!-- Photo guidelines card -->
+        <div class="vf__card vf__card--tips">
+          <p class="vf__card-head">PHOTO GUIDELINES</p>
+          <div class="vf__tips">
+            <div class="vf__tip-item">
+              <div class="vf__tip-icon vf__tip-icon--amber">
+                <ion-icon name="sunny-outline"></ion-icon>
+              </div>
+              <span class="vf__tip-label">Good<br/>Lighting</span>
+            </div>
+            <div class="vf__tip-item">
+              <div class="vf__tip-icon vf__tip-icon--blue">
+                <ion-icon name="eye-off-outline"></ion-icon>
+              </div>
+              <span class="vf__tip-label">No<br/>Glare</span>
+            </div>
+            <div class="vf__tip-item">
+              <div class="vf__tip-icon vf__tip-icon--green">
+                <ion-icon name="scan-outline"></ion-icon>
+              </div>
+              <span class="vf__tip-label">Stay<br/>Focused</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload areas -->
+        <div class="vf__upload-row">
+
+          <!-- Front of ID -->
+          <div class="vf__upload-area" [class.vf__upload-area--active]="frontIdUploaded">
+            <ng-container *ngIf="frontIdPreview; else frontEmpty">
+              <div class="vf__upload-preview-wrap">
+                <img class="vf__upload-preview" [src]="frontIdPreview" alt="Front ID" />
+                <button class="vf__upload-clear" (click)="clearFront(); $event.stopPropagation()">
+                  <ion-icon name="close-circle-outline"></ion-icon>
+                </button>
+              </div>
+              <span class="vf__upload-label">Front of ID</span>
+              <span class="vf__upload-sub vf__upload-sub--done">Tap to change</span>
+            </ng-container>
+            <ng-template #frontEmpty>
+              <button class="vf__upload-tap" (click)="triggerFrontUpload()">
+                <div class="vf__upload-icon">
+                  <ion-icon name="camera-outline"></ion-icon>
+                </div>
+                <span class="vf__upload-label">Front of ID</span>
+                <span class="vf__upload-sub">Tap to upload</span>
+              </button>
+            </ng-template>
+            <button
+              *ngIf="frontIdPreview"
+              class="vf__upload-retake"
+              (click)="triggerFrontUpload()"
+            >
+              Retake
+            </button>
+          </div>
+
+          <!-- Back of ID -->
+          <div class="vf__upload-area" [class.vf__upload-area--active]="backIdUploaded">
+            <ng-container *ngIf="backIdPreview; else backEmpty">
+              <div class="vf__upload-preview-wrap">
+                <img class="vf__upload-preview" [src]="backIdPreview" alt="Back ID" />
+                <button class="vf__upload-clear" (click)="clearBack(); $event.stopPropagation()">
+                  <ion-icon name="close-circle-outline"></ion-icon>
+                </button>
+              </div>
+              <span class="vf__upload-label">Back of ID</span>
+              <span class="vf__upload-sub vf__upload-sub--done">Tap to change</span>
+            </ng-container>
+            <ng-template #backEmpty>
+              <button class="vf__upload-tap" (click)="triggerBackUpload()">
+                <div class="vf__upload-icon">
+                  <ion-icon name="camera-outline"></ion-icon>
+                </div>
+                <span class="vf__upload-label">Back of ID</span>
+                <span class="vf__upload-sub">Tap to upload</span>
+              </button>
+            </ng-template>
+            <button
+              *ngIf="backIdPreview"
+              class="vf__upload-retake"
+              (click)="triggerBackUpload()"
+            >
+              Retake
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Validity chips -->
+        <div class="vf__validity-notes">
+          <div class="vf__validity-item">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <span>Valid Documents</span>
+          </div>
+          <div class="vf__validity-item">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <span>Official Badge</span>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="vf__footer">
+          <button
+            class="vf__cta"
+            [class.vf__cta--disabled]="!frontIdUploaded || !backIdUploaded"
+            [disabled]="!frontIdUploaded || !backIdUploaded"
+            (click)="nextStep()"
+          >
+            Continue to Verification
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </button>
+          <div class="vf__footer-note">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            <span>Your ID is encrypted and never stored without your consent.</span>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <!-- ── Step 2: Verification Pending ── -->
+      <ng-container *ngIf="step === 2">
+
+        <div class="vf__pending-card">
+          <div class="vf__pending-icon">
+            <ion-icon name="hourglass-outline"></ion-icon>
+          </div>
+          <h2 class="vf__pending-title">Verification in Progress</h2>
+          <p class="vf__pending-desc">Our team is reviewing your documents and will notify you once verification is complete. This usually takes 1–2 business days.</p>
+        </div>
+
+        <!-- Uploaded docs summary -->
+        <div class="vf__card" *ngIf="frontIdFile || backIdFile">
+          <p class="vf__card-head">SUBMITTED DOCUMENTS</p>
+          <div class="vf__doc-list">
+            <div class="vf__doc-item" *ngIf="frontIdFile">
+              <div class="vf__doc-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+              <div class="vf__doc-body">
+                <p class="vf__doc-name">Front of ID</p>
+                <p class="vf__doc-file">{{ frontIdFile.name }}</p>
+              </div>
+              <ion-icon name="checkmark-circle" class="vf__doc-check"></ion-icon>
+            </div>
+            <div class="vf__doc-item" *ngIf="backIdFile">
+              <div class="vf__doc-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+              <div class="vf__doc-body">
+                <p class="vf__doc-name">Back of ID</p>
+                <p class="vf__doc-file">{{ backIdFile.name }}</p>
+              </div>
+              <ion-icon name="checkmark-circle" class="vf__doc-check"></ion-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="vf__footer">
+          <button class="vf__cta vf__cta--secondary" (click)="finishVerification()">
+            Back to Profile
+          </button>
+          <div class="vf__footer-note">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <span>You'll receive a push notification once your identity is verified.</span>
+          </div>
+        </div>
+
+      </ng-container>
+
+    </ng-container>
+
+    <div class="vf__bottom-pad"></div>
+  </div>
+</ion-content>

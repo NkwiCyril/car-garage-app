@@ -1,0 +1,35 @@
+<ion-content [fullscreen]="true" [scrollY]="false">
+  <div class="step">
+    <div class="step__body">
+      <div class="step__hero">
+        <div class="step__device">
+          <img
+            class="step__device-photo"
+            src="assets/images/onboarding/car-mockup.png"
+            alt="Sell your car preview"
+          />
+        </div>
+      </div>
+
+      <div class="step__content">
+        <p class="step__eyebrow">STEP 03</p>
+        <h1 class="step__title">
+          Sell Safely <span class="step__title--accent">&amp;</span> Fast.
+        </h1>
+      </div>
+    </div>
+
+    <div class="step__footer">
+      <div class="step__dots" aria-hidden="true">
+        <span class="step__dot"></span>
+        <span class="step__dot"></span>
+        <span class="step__dot step__dot--active"></span>
+      </div>
+
+      <div class="step__actions">
+        <button type="button" class="step__primary" (click)="getStarted()">Get Started</button>
+        <button type="button" class="step__secondary" (click)="reviewListingPolicy()">Review Listing Policy</button>
+      </div>
+    </div>
+  </div>
+</ion-content>

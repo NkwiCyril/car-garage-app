@@ -1,0 +1,134 @@
+<div class="fs">
+
+  <!-- ─── Header ──────────────────────────────────── -->
+  <div class="fs__header">
+    <h2 class="fs__title">FILTERS</h2>
+    <button class="fs__close" (click)="close()">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+  </div>
+
+  <!-- ─── Scrollable body ──────────────────────────── -->
+  <div class="fs__body">
+
+    <!-- Price Range -->
+    <div class="fs__section">
+      <div class="fs__section-head">
+        <span class="fs__section-label">PRICE RANGE (XAF)</span>
+        <span class="fs__price-summary">{{ priceSummary }}</span>
+      </div>
+
+      <ion-range
+        dualKnobs
+        [min]="priceMin"
+        [max]="priceMax"
+        [step]="priceStep"
+        [value]="priceRange"
+        (ionChange)="onPriceChange($event)"
+        class="fs__range"
+      ></ion-range>
+
+      <div class="fs__price-boxes">
+        <div class="fs__price-box">
+          <span class="fs__price-box-label">MINIMUM</span>
+          <span class="fs__price-box-val">{{ formatFull(priceRange.lower) }}</span>
+        </div>
+        <div class="fs__price-box fs__price-box--right">
+          <span class="fs__price-box-label">MAXIMUM</span>
+          <span class="fs__price-box-val">
+            {{ formatFull(priceRange.upper) }}{{ priceRange.upper >= priceMax ? '+' : '' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car Brands -->
+    <div class="fs__section">
+      <span class="fs__section-label">CAR BRANDS</span>
+      <div class="fs__brands">
+        <button
+          class="fs__brand"
+          *ngFor="let brand of brands"
+          [class.fs__brand--active]="isBrandSelected(brand)"
+          (click)="toggleBrand(brand)"
+        >
+          {{ brand }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Year -->
+    <div class="fs__section">
+      <span class="fs__section-label">YEAR</span>
+      <div class="fs__select-wrap">
+        <select class="fs__select" [(ngModel)]="selectedYear">
+          <option value="">Any Year</option>
+          <option *ngFor="let y of yearOptions" [value]="y">{{ y }}</option>
+        </select>
+        <ion-icon name="chevron-down-outline" class="fs__select-arrow"></ion-icon>
+      </div>
+    </div>
+
+    <!-- Transmission -->
+    <div class="fs__section">
+      <span class="fs__section-label">TRANSMISSION</span>
+      <div class="fs__seg">
+        <button
+          class="fs__seg-btn"
+          [class.fs__seg-btn--active]="transmission === 'automatic'"
+          (click)="setTransmission('automatic')"
+        >
+          Automatic
+        </button>
+        <button
+          class="fs__seg-btn"
+          [class.fs__seg-btn--active]="transmission === 'manual'"
+          (click)="setTransmission('manual')"
+        >
+          Manual
+        </button>
+      </div>
+    </div>
+
+    <!-- Fuel Type -->
+    <div class="fs__section">
+      <span class="fs__section-label">FUEL TYPE</span>
+      <div class="fs__seg">
+        <button
+          class="fs__seg-btn"
+          [class.fs__seg-btn--active]="fuelType === 'petrol'"
+          (click)="setFuelType('petrol')"
+        >
+          Petrol
+        </button>
+        <button
+          class="fs__seg-btn"
+          [class.fs__seg-btn--active]="fuelType === 'diesel'"
+          (click)="setFuelType('diesel')"
+        >
+          Diesel
+        </button>
+        <button
+          class="fs__seg-btn"
+          [class.fs__seg-btn--active]="fuelType === 'electric'"
+          (click)="setFuelType('electric')"
+        >
+          Electric
+        </button>
+      </div>
+    </div>
+
+    <div class="fs__body-pad"></div>
+  </div>
+
+  <!-- ─── Footer ───────────────────────────────────── -->
+  <div class="fs__footer">
+    <button class="fs__reset" (click)="reset()" title="Reset filters">
+      <ion-icon name="refresh-outline"></ion-icon>
+    </button>
+    <button class="fs__apply" (click)="apply()">
+      APPLY FILTERS
+    </button>
+  </div>
+
+</div>

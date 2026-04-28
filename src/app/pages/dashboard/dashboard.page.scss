@@ -1,514 +1,895 @@
-.dash-wrap {
-  background: var(--de-white);
+$bg: #f5f5f3;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$white: #ffffff;
+$radius: 14px;
+$danger: #e74c3c;
+$whatsapp: #25d366;
+
+$bp-sm: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$bp-wide: 1280px;
+$dash-max: 960px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$bg};
+}
+
+.dash {
   min-height: 100%;
   padding-bottom: 32px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $dash-max;
+    margin: 0 auto;
+    padding-bottom: 48px;
+  }
+
+  @media (min-width: $bp-wide) {
+    max-width: 1080px;
+  }
 }
 
-// ─── Header ────────────────────────────────────────────
-.dash-header {
-  padding: calc(env(safe-area-inset-top) + 20px) 24px 20px;
-  background: var(--de-white);
-}
-
-.header-row {
+// ─── Header ──────────────────────────────────────────
+.dash__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
-}
+  padding: calc(env(safe-area-inset-top) + 16px) clamp(20px, 6vw, 32px) 18px;
 
-.greeting-block {
-  .greeting-label {
-    font-size: 13px;
-    color: var(--de-gray);
-    margin: 0 0 2px;
-    font-weight: 400;
-  }
-
-  .greeting-name {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--de-text-primary);
-    margin: 0;
-    letter-spacing: -0.4px;
+  @media (min-width: $bp-tablet) {
+    padding: 28px 40px 22px;
   }
 }
 
-.header-right {
+.dash__header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  cursor: pointer;
 }
 
-.icon-btn {
-  width: 42px;
-  height: 42px;
+.dash__avatar {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
+  background: linear-gradient(135deg, $primary 0%, lighten($primary, 15%) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  position: relative;
-
-  ion-icon {
-    font-size: 20px;
-    color: var(--de-text-primary);
-  }
-}
-
-.notif-dot {
-  position: absolute;
-  top: 9px;
-  right: 9px;
-  width: 8px;
-  height: 8px;
-  background: var(--de-danger);
-  border-radius: 50%;
-  border: 1.5px solid var(--de-white);
-}
-
-.avatar-chip {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--de-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px -2px rgba(11, 27, 43, 0.3);
 
   span {
     font-size: 17px;
-    font-weight: 800;
-    color: var(--de-white);
+    font-weight: 700;
+    color: $white;
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 46px;
+    height: 46px;
   }
 }
 
-.location-pill {
-  display: inline-flex;
+.dash__greeting {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.dash__greeting-time {
+  margin: 0;
+  font-size: clamp(11px, 3vw, 12px);
+  font-weight: 500;
+  color: $gray;
+  letter-spacing: 0.2px;
+}
+
+.dash__greeting-name {
+  margin: 0;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.2px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 16px;
+  }
+}
+
+.dash__location {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 20px;
-  padding: 7px 14px;
-  cursor: pointer;
+  gap: 3px;
+  margin-top: 1px;
 
   ion-icon {
-    font-size: 15px;
-    color: var(--de-primary);
-
-    &:last-child {
-      font-size: 13px;
-      color: var(--de-gray);
-      margin-left: 2px;
-    }
+    font-size: 11px;
+    color: $gray;
   }
 
   span {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--de-text-primary);
-  }
-}
-
-// ─── Search ────────────────────────────────────────────
-.search-row {
-  padding: 0 24px;
-  display: flex;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-
-.search-box {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 14px;
-  padding: 0 16px;
-  height: 50px;
-  cursor: pointer;
-
-  ion-icon {
-    font-size: 19px;
-    color: var(--de-gray);
-    flex-shrink: 0;
-  }
-
-  .search-hint {
-    font-size: 14px;
-    color: var(--de-gray);
+    font-size: clamp(10px, 2.8vw, 11px);
+    color: $gray;
     font-weight: 400;
   }
 }
 
-.filter-fab {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  background: var(--de-primary);
-  border: none;
+.dash__header-right {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
+  gap: clamp(10px, 3vw, 14px);
 
-  ion-icon {
-    font-size: 20px;
-    color: var(--de-white);
+  @media (min-width: $bp-tablet) {
+    gap: 16px;
   }
 }
 
-// ─── Categories ────────────────────────────────────────
-.categories-row {
-  display: flex;
-  padding: 0 24px;
-  gap: 12px;
-  margin-bottom: 28px;
-}
-
-.cat-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-
-  &:active .cat-icon {
-    transform: scale(0.94);
-  }
-}
-
-.cat-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease;
-
-  ion-icon {
-    font-size: 24px;
-    color: var(--de-gray-dark);
-  }
-}
-
-.cat-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--de-gray-dark);
-  text-align: center;
-}
-
-.cat-active {
-  .cat-icon {
-    background: var(--de-primary);
-    border-color: var(--de-primary);
-
-    ion-icon {
-      color: var(--de-white);
-    }
-  }
-
-  .cat-label {
-    color: var(--de-primary);
-  }
-}
-
-// ─── Promo Banner ──────────────────────────────────────
-.promo-section {
-  padding: 0 24px;
-  margin-bottom: 32px;
-}
-
-.promo-card {
-  background: linear-gradient(135deg, var(--de-accent) 0%, #1c3659 100%);
-  border-radius: 24px;
-  padding: 28px 24px 28px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
+.dash__notif-btn {
   position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -30px;
-    right: 80px;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(26, 115, 232, 0.15);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -40px;
-    right: -10px;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: rgba(26, 115, 232, 0.08);
-  }
-}
-
-.promo-text {
-  flex: 1;
-  z-index: 1;
-
-  .promo-tag {
-    display: inline-block;
-    background: rgba(26, 115, 232, 0.35);
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 10px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 12px;
-  }
-
-  .promo-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--de-white);
-    margin: 0 0 8px;
-    line-height: 1.2;
-    letter-spacing: -0.4px;
-  }
-
-  .promo-sub {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0 0 20px;
-    line-height: 1.4;
-  }
-}
-
-.promo-btn {
-  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--de-primary);
-  color: var(--de-white);
-  border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-family: var(--de-font-family);
-  font-size: 13px;
-  font-weight: 700;
+  justify-content: center;
   cursor: pointer;
-  letter-spacing: 0.2px;
+  transition: background 0.15s ease;
 
   ion-icon {
-    font-size: 15px;
+    font-size: 19px;
+    color: $primary;
   }
 
   &:active {
-    opacity: 0.85;
+    background: darken($bg, 3%);
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 42px;
+    height: 42px;
+
+    &:hover {
+      background: darken($bg, 3%);
+    }
   }
 }
 
-.promo-car-wrap {
-  flex-shrink: 0;
-  width: 100px;
+.dash__notif-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: $danger;
+  border-radius: 50%;
+  border: 1.5px solid $bg;
+}
+
+.dash__brand {
+  font-size: clamp(16px, 4.5vw, 18px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.4px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 20px;
+  }
+}
+
+// ─── Promo Slider ────────────────────────────────────
+.dash__promo {
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(20px, 4dvh, 28px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    margin-bottom: 32px;
+  }
+}
+
+.dash__promo-track {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: clamp(12px, 3vw, 16px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.dash__promo-card {
+  position: relative;
+  border-radius: clamp(18px, 5vw, 24px);
+  overflow: hidden;
+  min-height: clamp(160px, 28dvh, 200px);
+  display: flex;
+  align-items: flex-end;
+  flex: 0 0 clamp(280px, 82vw, 480px);
+  scroll-snap-align: start;
+
+  @media (min-width: $bp-tablet) {
+    flex: 0 0 clamp(380px, 55vw, 540px);
+    min-height: 240px;
+    border-radius: 24px;
+  }
+
+  @media (min-width: $bp-desktop) {
+    min-height: 280px;
+  }
+}
+
+.dash__promo-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dash__promo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(11, 27, 43, 0.85) 0%,
+    rgba(11, 27, 43, 0.4) 50%,
+    rgba(11, 27, 43, 0.15) 100%
+  );
+}
+
+.dash__promo-content {
+  position: relative;
   z-index: 1;
+  padding: clamp(18px, 5vw, 24px);
+  width: 100%;
+
+  @media (min-width: $bp-tablet) {
+    padding: 32px;
+  }
+}
+
+.dash__promo-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: clamp(10px, 2dvh, 14px);
+  flex-wrap: wrap;
+
+  @media (min-width: $bp-tablet) {
+    margin-bottom: 16px;
+  }
+}
+
+.dash__promo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 
   ion-icon {
-    font-size: 80px;
-    color: rgba(255, 255, 255, 0.12);
-    filter: drop-shadow(0 4px 12px rgba(26, 115, 232, 0.3));
+    font-size: 12px;
+  }
+
+  &--deal {
+    background: $accent;
+    color: $white;
+  }
+
+  &--timer {
+    background: $danger;
+    color: $white;
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 6px 12px;
+    font-size: 11px;
   }
 }
 
-// ─── Sections ──────────────────────────────────────────
-.section {
-  padding: 0 24px;
-  margin-bottom: 32px;
-}
-
-.section-hdr {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--de-text-primary);
-  margin: 0 0 16px;
+.dash__promo-title {
+  margin: 0 0 4px;
+  font-size: clamp(20px, 5.5vw, 24px);
+  font-weight: 700;
+  color: $white;
+  line-height: 1.2;
   letter-spacing: -0.3px;
 
-  .section-hdr & {
-    margin-bottom: 0;
+  @media (min-width: $bp-tablet) {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  @media (min-width: $bp-desktop) {
+    font-size: 32px;
   }
 }
 
-.see-all-btn {
-  background: none;
+.dash__promo-sub {
+  margin: 0 0 clamp(12px, 2.5dvh, 16px);
+  font-size: clamp(12px, 3.2vw, 13px);
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+}
+
+.dash__promo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
   border: none;
-  font-family: var(--de-font-family);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--de-primary);
+  border-radius: 10px;
+  background: $accent;
+  color: $white;
+  font-size: clamp(12px, 3.4vw, 13px);
+  font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
-  padding: 0;
-}
-
-// ─── Services horizontal scroll ────────────────────────
-.services-scroller {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-
-  &::-webkit-scrollbar { display: none; }
-}
-
-.svc-card {
-  min-width: 220px;
-  background: var(--de-white);
-  border: 1.5px solid var(--de-gray-light);
-  border-radius: 20px;
-  padding: 20px;
-  cursor: pointer;
-  box-shadow: var(--de-shadow-sm);
-  flex-shrink: 0;
+  letter-spacing: 0.1px;
   transition: transform 0.15s ease;
+
+  ion-icon {
+    font-size: 14px;
+  }
 
   &:active {
     transform: scale(0.97);
   }
+
+  @media (min-width: $bp-tablet) {
+    padding: 12px 22px;
+    font-size: 14px;
+    border-radius: 12px;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
 }
 
-.svc-icon-wrap {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+// ─── Search ──────────────────────────────────────────
+.dash__search {
+  display: flex;
+  gap: 10px;
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(16px, 3dvh, 22px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+}
+
+.dash__search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  ion-icon {
+    font-size: 18px;
+    color: $gray;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: $bp-tablet) {
+    height: 50px;
+    padding: 0 20px;
+
+    &:hover {
+      border-color: darken($gray-light, 10%);
+    }
+  }
+}
+
+.dash__search-hint {
+  font-size: clamp(13px, 3.6vw, 14px);
+  color: $gray;
+  font-weight: 400;
+}
+
+.dash__filter-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius;
+  background: $primary;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
 
-  ion-icon { font-size: 26px; }
-
-  &.icon-parking {
-    background: rgba(46, 204, 113, 0.1);
-    ion-icon { color: var(--de-success); }
+  ion-icon {
+    font-size: 19px;
+    color: $white;
   }
 
-  &.icon-auto {
-    background: rgba(26, 115, 232, 0.1);
-    ion-icon { color: var(--de-primary); }
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 50px;
+    height: 50px;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
   }
 }
 
-.svc-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--de-text-primary);
-  margin: 0 0 6px;
-}
-
-.svc-desc {
-  font-size: 12px;
-  color: var(--de-gray);
-  line-height: 1.5;
-  margin: 0 0 14px;
-}
-
-.svc-footer {
+// ─── Category Pills ──────────────────────────────────
+.dash__categories {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(20px, 4dvh, 26px);
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+}
+
+.dash__cat {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-}
-
-.svc-meta {
-  font-size: 11px;
+  gap: 6px;
+  padding: 9px 18px;
+  border: 1.5px solid $gray-light;
+  border-radius: 9999px;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(12px, 3.4vw, 13px);
   font-weight: 600;
-  flex: 1;
-
-  &.meta-success { color: var(--de-success); }
-  &.meta-info { color: var(--de-primary); }
-}
-
-.svc-action {
-  background: var(--de-accent);
-  color: var(--de-white);
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-family: var(--de-font-family);
-  font-size: 12px;
-  font-weight: 600;
+  color: $gray;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  ion-icon {
+    font-size: 15px;
+  }
+
+  &:active {
+    background: darken($bg, 3%);
+  }
+
+  &--active {
+    background: $primary;
+    border-color: $primary;
+    color: $white;
+
+    ion-icon {
+      color: $white;
+    }
+  }
+
+  @media (min-width: $bp-tablet) {
+    padding: 10px 20px;
+    font-size: 13px;
+
+    &:not(.dash__cat--active):hover {
+      border-color: darken($gray-light, 10%);
+      color: $primary;
+    }
+  }
 }
 
-// ─── Quick Actions ─────────────────────────────────────
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+// ─── Quick Actions ───────────────────────────────────
+.dash__quick-wrap {
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(24px, 5dvh, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    margin-bottom: 32px;
+  }
 }
 
-.quick-tile {
+.dash__quick {
+  display: flex;
+  gap: clamp(10px, 2.8vw, 16px);
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: $bp-sm) {
+    justify-content: space-between;
+  }
+}
+
+.dash__action {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
   cursor: pointer;
+  padding: 0;
+  min-width: clamp(56px, 14vw, 72px);
 
-  &:active .tile-icon-wrap {
+  &:active .dash__action-icon {
     transform: scale(0.92);
-    background: var(--de-gray-light);
+  }
+
+  @media (min-width: $bp-tablet) {
+    flex: 1;
+    min-width: unset;
   }
 }
 
-.tile-icon-wrap {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: var(--de-off-white);
-  border: 1.5px solid var(--de-gray-light);
+.dash__action-icon {
+  width: clamp(52px, 13vw, 64px);
+  height: clamp(52px, 13vw, 64px);
+  border-radius: clamp(16px, 4vw, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: transform 0.15s ease;
 
   ion-icon {
-    font-size: 24px;
-    color: var(--de-accent);
+    font-size: clamp(22px, 5.5vw, 26px);
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+
+    ion-icon {
+      font-size: 24px;
+    }
   }
 }
 
-.tile-label {
-  font-size: 11px;
+.dash__action-label {
+  font-size: clamp(11px, 2.9vw, 12px);
   font-weight: 600;
-  color: var(--de-gray-dark);
-  text-align: center;
+  color: $primary;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
 }
 
-.bottom-pad {
+// ─── Section ─────────────────────────────────────────
+.dash__section {
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: 28px;
+
+  @media (min-width: $bp-tablet) {
+    padding: 0 40px;
+    margin-bottom: 36px;
+  }
+}
+
+.dash__section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: clamp(14px, 3dvh, 20px);
+
+  @media (min-width: $bp-tablet) {
+    margin-bottom: 22px;
+  }
+}
+
+.dash__section-title {
+  margin: 0;
+  font-size: clamp(17px, 4.8vw, 20px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.3px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 22px;
+  }
+}
+
+.dash__see-all {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: clamp(12px, 3.4vw, 13px);
+  font-weight: 600;
+  color: $accent;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s ease;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 14px;
+
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}
+
+// ─── Car Grid ────────────────────────────────────────
+.dash__car-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 3.5vw, 14px);
+
+  @media (min-width: $bp-tablet) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+}
+
+.dash__car-card {
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(16px, 4vw, 20px);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @media (min-width: $bp-tablet) {
+    border-radius: 20px;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px -8px rgba(11, 27, 43, 0.16);
+    }
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+
+// ─── Car Media ───────────────────────────────────────
+.dash__car-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: darken($bg, 2%);
+}
+
+.dash__car-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+
+  @media (min-width: $bp-tablet) {
+    .dash__car-card:hover & {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.dash__car-media-grad {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(11, 27, 43, 0.4) 100%);
+  pointer-events: none;
+}
+
+.dash__car-fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.15s ease, background 0.15s ease;
+
+  ion-icon {
+    font-size: 15px;
+    color: $white;
+  }
+
+  &:active {
+    transform: scale(0.85);
+  }
+
+  &--active {
+    background: rgba(239, 68, 68, 0.85);
+  }
+
+  @media (min-width: $bp-tablet) {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.dash__car-year {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(6px);
+  font-size: 11px;
+  font-weight: 700;
+  color: $white;
+  z-index: 5;
+  letter-spacing: 0.2px;
+}
+
+// ─── Car Info ────────────────────────────────────────
+.dash__car-info {
+  padding: clamp(10px, 3vw, 13px) clamp(10px, 3vw, 13px) clamp(12px, 3vw, 14px);
+
+  @media (min-width: $bp-tablet) {
+    padding: 12px 14px 14px;
+  }
+}
+
+.dash__car-name {
+  margin: 0 0 3px;
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 15px;
+  }
+}
+
+.dash__car-meta {
+  margin: 0 0 clamp(6px, 1.4dvh, 9px);
+  font-size: clamp(10px, 2.8vw, 11px);
+  color: $gray;
+  font-weight: 400;
+}
+
+.dash__car-price {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.dash__car-price-value {
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 800;
+  color: $accent;
+  letter-spacing: -0.2px;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 17px;
+  }
+}
+
+.dash__car-price-currency {
+  font-size: clamp(10px, 2.6vw, 11px);
+  font-weight: 600;
+  color: $accent;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 12px;
+  }
+}
+
+// ─── WhatsApp FAB ────────────────────────────────────
+.dash__whatsapp {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 80px);
+  right: clamp(20px, 6vw, 32px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: $whatsapp;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 8px 20px -4px rgba(37, 211, 102, 0.45),
+    0 4px 8px -2px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  ion-icon {
+    font-size: 28px;
+    color: $white;
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  @media (min-width: $bp-tablet) {
+    bottom: 32px;
+    right: calc(50% - #{$dash-max} / 2 + 40px);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 24px -4px rgba(37, 211, 102, 0.5),
+        0 6px 10px -2px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  @media (min-width: $bp-wide) {
+    right: calc(50% - 540px + 40px);
+  }
+}
+
+.dash__bottom-pad {
   height: 16px;
+
+  @media (min-width: $bp-tablet) {
+    height: 24px;
+  }
 }

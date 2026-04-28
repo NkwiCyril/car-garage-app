@@ -15,9 +15,8 @@ export class StepTwoPage {
     private storageService: StorageService
   ) {}
 
-  getStarted(): void {
-    this.storageService.setOnboarded();
-    this.router.navigate(['/auth/login']);
+  goToNext(): void {
+    this.router.navigate(['/onboarding/step-three']);
   }
 
   skip(): void {

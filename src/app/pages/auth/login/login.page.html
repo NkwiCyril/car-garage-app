@@ -1,41 +1,47 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="login-container">
-    <!-- Logo -->
-    <div class="logo-section">
-      <div class="logo-icon">
-        <svg width="36" height="36" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="48" height="48" rx="12" fill="#1a73e8"/>
-          <path d="M14 28h20l-2-8H16l-2 8zm2 2v2a1 1 0 001 1h2a1 1 0 001-1v-2h8v2a1 1 0 001 1h2a1 1 0 001-1v-2h1a1 1 0 001-1v-1H15v1a1 1 0 001 1zm3-4a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm10 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" fill="white"/>
-        </svg>
-      </div>
-    </div>
+  <div class="login">
+    <!-- Top spacer area -->
+    <div class="login__header"></div>
 
-    <!-- Welcome text -->
-    <div class="welcome-section">
-      <h1 class="title">Welcome Back</h1>
-      <p class="subtitle">Login to manage your rides, parking, and more</p>
+    <!-- Welcome -->
+    <div class="login__welcome">
+      <h1 class="login__title">ParkEase</h1>
+      <p class="login__subtitle">
+        Sign in to your account to access exclusive
+        valet and marketplace services.
+      </p>
     </div>
 
     <!-- Form -->
-    <div class="form-section">
-      <div class="input-group">
-        <label class="input-label">Phone</label>
-        <ion-input
-          class="de-input"
-          type="tel"
-          placeholder="Enter your phone"
-          [(ngModel)]="phone"
-          fill="outline"
-          mode="md"
-        ></ion-input>
+    <div class="login__form">
+      <!-- Phone -->
+      <div class="login__field">
+        <label class="login__label">PHONE NUMBER</label>
+        <div class="login__phone-row">
+          <div class="login__country-code">
+            <span>+237</span>
+          </div>
+          <ion-input
+            class="login__input login__input--phone"
+            type="tel"
+            placeholder="6XX XXX XXX"
+            [(ngModel)]="phone"
+            fill="outline"
+            mode="md"
+          ></ion-input>
+        </div>
       </div>
 
-      <div class="input-group">
-        <label class="input-label">Password</label>
+      <!-- Password -->
+      <div class="login__field">
+        <div class="login__label-row">
+          <label class="login__label">PASSWORD</label>
+          <a class="login__forgot" (click)="goToForgotPassword()">Forgot Password?</a>
+        </div>
         <ion-input
-          class="de-input"
+          class="login__input"
           type="password"
-          placeholder="Enter your password"
+          placeholder="••••••••"
           [(ngModel)]="password"
           fill="outline"
           mode="md"
@@ -44,37 +50,21 @@
         </ion-input>
       </div>
 
-      <div class="forgot-password">
-        <a (click)="goToForgotPassword()" class="de-link">Forgot Password?</a>
-      </div>
-
-      <!-- Login Button -->
-      <button class="login-btn" (click)="login()" [disabled]="isLoading">
+      <!-- Login button -->
+      <button class="login__btn" (click)="login()" [disabled]="isLoading">
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        <span *ngIf="!isLoading">Login</span>
+        <ng-container *ngIf="!isLoading">
+          <span>Login</span>
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ng-container>
       </button>
     </div>
 
-    <!-- Divider -->
-    <div class="de-divider">
-      <span>Or continue with</span>
-    </div>
-
-    <!-- Social Login -->
-    <div class="social-section">
-      <button class="social-btn" (click)="loginWithGoogle()">
-        <ion-icon name="logo-google"></ion-icon>
-        <span>Google</span>
-      </button>
-      <button class="social-btn" (click)="loginWithApple()">
-        <ion-icon name="logo-apple"></ion-icon>
-        <span>Apple</span>
-      </button>
-    </div>
-
-    <!-- Register link -->
-    <div class="register-section">
-      <p>Don't have an account? <a (click)="goToRegister()" class="de-link">Sign Up</a></p>
+    <!-- Register -->
+    <div class="login__register">
+      <p>Don't have an account?
+        <a class="login__register-link" (click)="goToRegister()">Create Account</a>
+      </p>
     </div>
   </div>
 </ion-content>

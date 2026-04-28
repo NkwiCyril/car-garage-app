@@ -1,52 +1,57 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="register-container">
-    <!-- Header -->
-    <div class="header-section">
-      <button class="back-btn" (click)="goToLogin()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-      </button>
-    </div>
+  <div class="signup">
+    <!-- Header spacer -->
+    <div class="signup__header"></div>
 
-    <!-- Title -->
-    <div class="title-section">
-      <h1 class="title">Create Account</h1>
-      <p class="subtitle">Sign up to get started with DriveEase</p>
+    <!-- Welcome -->
+    <div class="signup__welcome">
+      <h1 class="signup__title">ParkEase</h1>
+      <p class="signup__subtitle">
+        Create your account to access exclusive valet
+        and marketplace services.
+      </p>
     </div>
 
     <!-- Form -->
-    <div class="form-section">
-      <div class="input-group">
-        <label class="input-label">Full Name</label>
+    <div class="signup__form">
+      <!-- Full Name -->
+      <div class="signup__field">
+        <label class="signup__label">FULL NAME</label>
         <ion-input
-          class="de-input"
+          class="signup__input"
           type="text"
-          placeholder="Enter your full name"
+          placeholder="Samuel Eto'o"
           [(ngModel)]="fullName"
           fill="outline"
           mode="md"
         ></ion-input>
       </div>
 
-      <div class="input-group">
-        <label class="input-label">Phone Number</label>
-        <ion-input
-          class="de-input"
-          type="tel"
-          placeholder="Enter your phone number"
-          [(ngModel)]="phone"
-          fill="outline"
-          mode="md"
-        ></ion-input>
+      <!-- Phone -->
+      <div class="signup__field">
+        <label class="signup__label">PHONE NUMBER</label>
+        <div class="signup__phone-row">
+          <div class="signup__country-code">
+            <span>+237</span>
+          </div>
+          <ion-input
+            class="signup__input signup__input--phone"
+            type="tel"
+            placeholder="6XX XXX XXX"
+            [(ngModel)]="phone"
+            fill="outline"
+            mode="md"
+          ></ion-input>
+        </div>
       </div>
 
-      <div class="input-group">
-        <label class="input-label">Password</label>
+      <!-- Password -->
+      <div class="signup__field">
+        <label class="signup__label">PASSWORD</label>
         <ion-input
-          class="de-input"
+          class="signup__input"
           type="password"
-          placeholder="Create a password"
+          placeholder="••••••••"
           [(ngModel)]="password"
           fill="outline"
           mode="md"
@@ -55,12 +60,13 @@
         </ion-input>
       </div>
 
-      <div class="input-group">
-        <label class="input-label">Confirm Password</label>
+      <!-- Confirm Password -->
+      <div class="signup__field">
+        <label class="signup__label">CONFIRM PASSWORD</label>
         <ion-input
-          class="de-input"
+          class="signup__input"
           type="password"
-          placeholder="Repeat your password"
+          placeholder="••••••••"
           [(ngModel)]="confirmPassword"
           fill="outline"
           mode="md"
@@ -69,16 +75,21 @@
         </ion-input>
       </div>
 
-      <!-- Register Button -->
-      <button class="register-btn" (click)="register()" [disabled]="isLoading">
+      <!-- Register button -->
+      <button class="signup__btn" (click)="register()" [disabled]="isLoading">
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        <span *ngIf="!isLoading">Sign Up</span>
+        <ng-container *ngIf="!isLoading">
+          <span>Create Account</span>
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ng-container>
       </button>
     </div>
 
     <!-- Login link -->
-    <div class="login-section">
-      <p>Already have an account? <a (click)="goToLogin()" class="de-link">Login</a></p>
+    <div class="signup__login">
+      <p>Already have an account?
+        <a class="signup__login-link" (click)="goToLogin()">Sign In</a>
+      </p>
     </div>
   </div>
 </ion-content>

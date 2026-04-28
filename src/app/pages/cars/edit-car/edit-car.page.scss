@@ -1,0 +1,526 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$radius: 14px;
+
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 960px;
+
+$ec-max-md: 620px;
+$ec-max-lg: 760px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$bg};
+
+  @media (min-width: $bp-md) {
+    --background: #{$bg};
+  }
+}
+
+// ─── Page shell ──────────────────────────────────────
+.ec {
+  min-height: 100%;
+  padding-bottom: clamp(90px, 14dvh, 120px);
+
+  @media (min-width: $bp-md) {
+    max-width: $ec-max-md;
+    margin: 0 auto;
+  }
+
+  @media (min-width: $bp-lg) {
+    max-width: $ec-max-lg;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.ec__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) clamp(16px, 5vw, 24px) 14px;
+  background: $bg;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid transparent;
+
+  @media (min-width: $bp-md) {
+    padding-top: calc(env(safe-area-inset-top) + 18px);
+    padding-bottom: 18px;
+  }
+}
+
+.ec__nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(38px, 10vw, 42px);
+  height: clamp(38px, 10vw, 42px);
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, opacity 0.15s ease;
+
+  ion-icon {
+    font-size: clamp(18px, 5vw, 20px);
+    color: $primary;
+  }
+
+  &:active { opacity: 0.7; }
+
+  @media (min-width: $bp-md) {
+    &:hover { background: darken($bg, 4%); }
+  }
+}
+
+.ec__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+}
+
+.ec__nav-spacer {
+  width: clamp(38px, 10vw, 42px);
+  flex-shrink: 0;
+}
+
+.ec__nav-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(38px, 10vw, 42px);
+  height: clamp(38px, 10vw, 42px);
+  border-radius: 12px;
+  border: 1.5px solid #fee2e2;
+  background: #fff5f5;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, opacity 0.15s ease;
+
+  ion-icon {
+    font-size: clamp(17px, 4.5vw, 19px);
+    color: #dc2626;
+  }
+
+  &:active { opacity: 0.7; }
+
+  @media (min-width: $bp-md) {
+    &:hover { background: #fee2e2; }
+  }
+}
+
+// ─── Header ──────────────────────────────────────────
+.ec__header {
+  padding: clamp(8px, 2dvh, 16px) clamp(16px, 5vw, 24px) clamp(16px, 3dvh, 28px);
+
+  @media (min-width: $bp-md) {
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0 clamp(16px, 5vw, 24px);
+    padding-bottom: clamp(16px, 3dvh, 24px);
+  }
+}
+
+.ec__title {
+  margin: 0 0 clamp(6px, 1.5dvh, 10px);
+  font-size: clamp(28px, 7.5vw, 44px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -1px;
+  line-height: 1.05;
+}
+
+.ec__subtitle {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 15px);
+  color: $gray;
+  font-weight: 500;
+}
+
+// ─── Form ────────────────────────────────────────────
+.ec__form {
+  padding: 0 clamp(16px, 5vw, 24px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 4dvh, 28px);
+
+  @media (min-width: $bp-lg) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "basic  specs"
+      "type   pricing"
+      "extra  extra";
+    align-items: start;
+    gap: clamp(20px, 3vw, 24px);
+  }
+}
+
+// ─── Sections ────────────────────────────────────────
+.ec__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &:nth-child(1) { @media (min-width: $bp-lg) { grid-area: basic; } }
+  &:nth-child(2) { @media (min-width: $bp-lg) { grid-area: specs; } }
+  &:nth-child(3) { @media (min-width: $bp-lg) { grid-area: type; } }
+  &:nth-child(4) { @media (min-width: $bp-lg) { grid-area: pricing; } }
+  &:nth-child(5) { @media (min-width: $bp-lg) { grid-area: extra; } }
+}
+
+.ec__section-head {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: $gray;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-md) {
+    font-size: 11px;
+  }
+}
+
+// Section card
+.ec__section-card {
+  background: $white;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(14px, 3.5vw, 18px);
+  padding: clamp(16px, 4vw, 22px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 3dvh, 18px);
+
+  @media (min-width: $bp-md) {
+    border-radius: 18px;
+    padding: clamp(18px, 4vw, 24px);
+  }
+
+  &--flush {
+    padding: 0;
+    gap: 0;
+    overflow: hidden;
+  }
+}
+
+// ─── Field ───────────────────────────────────────────
+.ec__field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ec__row {
+  display: flex;
+  gap: clamp(10px, 2.5vw, 14px);
+
+  .ec__field { flex: 1; }
+}
+
+.ec__label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: $gray;
+  text-transform: uppercase;
+
+  @media (min-width: $bp-md) {
+    font-size: 11px;
+  }
+}
+
+// ─── Input ───────────────────────────────────────────
+.ec__input {
+  width: 100%;
+  height: clamp(48px, 7dvh, 54px);
+  padding: 0 clamp(14px, 3.5vw, 16px);
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 500;
+  color: $primary;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &::placeholder {
+    color: #c4c8d1;
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(0, 67, 235, 0.08);
+  }
+
+  &--suffix { padding-right: 52px; }
+  &--prefix { padding-left: 52px; }
+}
+
+// ─── Affixed inputs (KM / XAF) ───────────────────────
+.ec__input-affix-wrap {
+  position: relative;
+}
+
+.ec__affix {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  color: $gray;
+  letter-spacing: 0.4px;
+  pointer-events: none;
+
+  &--right { right: 14px; }
+  &--left  { left: 14px; }
+}
+
+// ─── Textarea ────────────────────────────────────────
+.ec__textarea {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px) clamp(14px, 3.5vw, 16px);
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 500;
+  color: $primary;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: #c4c8d1;
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(0, 67, 235, 0.08);
+  }
+}
+
+.ec__char-count {
+  align-self: flex-end;
+  font-size: 11px;
+  color: $gray;
+  margin-top: -4px;
+}
+
+// ─── Chip selectors ──────────────────────────────────
+.ec__chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(7px, 2vw, 10px);
+}
+
+.ec__chip {
+  padding: clamp(7px, 2dvh, 9px) clamp(14px, 3.5vw, 18px);
+  border-radius: 99px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(12px, 3.2vw, 13px);
+  font-weight: 600;
+  color: $gray;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+
+  &--active {
+    border-color: $accent;
+    background: rgba(0, 67, 235, 0.07);
+    color: $accent;
+  }
+
+  &:active { opacity: 0.8; }
+
+  @media (min-width: $bp-md) {
+    &:not(.ec__chip--active):hover {
+      border-color: darken($gray-light, 8%);
+      color: $primary;
+    }
+  }
+}
+
+// ─── Toggles ─────────────────────────────────────────
+.ec__toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(14px, 3dvh, 18px) clamp(16px, 4vw, 22px);
+  cursor: pointer;
+  gap: 12px;
+  transition: background 0.1s ease;
+  background: $white;
+
+  &:active { background: darken($bg, 1%); }
+
+  @media (min-width: $bp-md) {
+    &:hover { background: darken($bg, 1%); }
+  }
+}
+
+.ec__toggle-divider {
+  height: 1px;
+  background: $gray-light;
+  margin: 0 clamp(16px, 4vw, 22px);
+}
+
+.ec__toggle-body { flex: 1; }
+
+.ec__toggle-title {
+  margin: 0 0 2px;
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 700;
+  color: $primary;
+}
+
+.ec__toggle-desc {
+  margin: 0;
+  font-size: clamp(11px, 3vw, 12px);
+  color: $gray;
+}
+
+.ec__switch {
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  background: $gray-light;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+
+  &--on { background: $accent; }
+}
+
+.ec__switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: $white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+
+  .ec__switch--on & { transform: translateX(18px); }
+}
+
+// ─── Info note ───────────────────────────────────────
+.ec__info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: clamp(10px, 2.5dvh, 14px) clamp(12px, 3vw, 16px);
+  background: #f0f4ff;
+  border-radius: 10px;
+
+  ion-icon {
+    font-size: clamp(15px, 4vw, 17px);
+    color: $accent;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  span {
+    font-size: clamp(12px, 3.2vw, 13px);
+    color: $accent;
+    line-height: 1.5;
+  }
+}
+
+// ─── Fixed footer ────────────────────────────────────
+.ec__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 12px clamp(16px, 5vw, 24px) calc(env(safe-area-inset-bottom) + 12px);
+  background: rgba(245, 245, 243, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid $gray-light;
+
+  @media (min-width: $bp-md) {
+    max-width: $ec-max-md;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-left: 1px solid $gray-light;
+    border-right: 1px solid $gray-light;
+  }
+
+  @media (min-width: $bp-lg) {
+    max-width: $ec-max-lg;
+  }
+}
+
+.ec__save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: clamp(50px, 7dvh, 56px);
+  border: none;
+  border-radius: 14px;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+
+  ion-icon { font-size: clamp(17px, 4.5vw, 19px); }
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: none;
+  }
+
+  &--saving {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
+  &:disabled { cursor: not-allowed; }
+
+  @media (min-width: $bp-md) {
+    &:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px -4px rgba(0, 67, 235, 0.4);
+    }
+  }
+}
+
+.ec__bottom-pad {
+  height: clamp(12px, 3dvh, 20px);
+}

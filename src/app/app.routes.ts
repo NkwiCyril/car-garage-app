@@ -20,6 +20,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/onboarding/step-two/step-two.page').then((m) => m.StepTwoPage),
     canActivate: [guestGuard],
   },
+  {
+    path: 'onboarding/step-three',
+    loadComponent: () => import('./pages/onboarding/step-three/step-three.page').then((m) => m.StepThreePage),
+    canActivate: [guestGuard],
+  },
 
   // Auth
   {
@@ -75,6 +80,36 @@ export const routes: Routes = [
     path: 'cars/detail',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/cars/car-detail/car-detail.page').then((m) => m.CarDetailPage),
+  },
+
+  {
+    path: 'cars/sell',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/sell-car/sell-car.page').then((m) => m.SellCarPage),
+  },
+  {
+    path: 'cars/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/cars/edit-car/edit-car.page').then((m) => m.EditCarPage),
+  },
+
+  // Profile sub-pages (full-screen, no tab bar)
+  {
+    path: 'profile/personal-info',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/personal-info/personal-info.page').then((m) => m.PersonalInfoPage),
+  },
+  {
+    path: 'profile/verification',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/verification/verification.page').then((m) => m.VerificationPage),
+  },
+
+  // Bookings (protected full-screen pages, no tab bar)
+  {
+    path: 'bookings/detail',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/bookings/booking-detail/booking-detail.page').then((m) => m.BookingDetailPage),
   },
 
   // Legacy home redirect

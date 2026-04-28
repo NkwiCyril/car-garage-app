@@ -1,0 +1,493 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- STEPS 1 – 5                                           -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="sc" *ngIf="step <= 5">
+
+    <!-- ─── Nav ──────────────────────────────────────────── -->
+    <div class="sc__nav">
+      <button class="sc__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="sc__nav-title">Sell Your Vehicle</span>
+      <div class="sc__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Progress bar ─────────────────────────────────── -->
+    <div class="sc__progress">
+      <div
+        class="sc__progress-seg"
+        *ngFor="let s of stepProgress"
+        [class.sc__progress-seg--active]="step >= s"
+      ></div>
+    </div>
+
+    <!-- ─── Step label + title ───────────────────────────── -->
+    <div class="sc__head">
+      <p class="sc__step-label">STEP {{ step }} OF {{ totalSteps }}</p>
+      <h1 class="sc__step-title">{{ stepTitle }}</h1>
+      <p class="sc__step-sub" *ngIf="stepSubtitle">{{ stepSubtitle }}</p>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- STEP 1 – Car Details                                -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="sc__body" *ngIf="step === 1">
+
+      <!-- Manufacturer -->
+      <div class="sc__field">
+        <label class="sc__label">Manufacturer</label>
+        <div class="sc__select-wrap">
+          <select class="sc__select" [(ngModel)]="listing.make">
+            <option value="" disabled>Select Make</option>
+            <option *ngFor="let m of makes" [value]="m">{{ m }}</option>
+          </select>
+          <ion-icon name="chevron-down-outline" class="sc__select-icon"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Model Variant -->
+      <div class="sc__field">
+        <label class="sc__label">Model Variant</label>
+        <input
+          type="text"
+          class="sc__input"
+          [(ngModel)]="listing.model"
+          placeholder="e.g. G63 AMG"
+        />
+      </div>
+
+      <!-- Manufacturing Year -->
+      <div class="sc__field">
+        <label class="sc__label">Manufacturing Year</label>
+        <div class="sc__select-wrap">
+          <select class="sc__select" [(ngModel)]="listing.year">
+            <option *ngFor="let y of years" [ngValue]="y">{{ y }}</option>
+          </select>
+          <ion-icon name="chevron-down-outline" class="sc__select-icon"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Mileage -->
+      <div class="sc__field">
+        <label class="sc__label">Mileage (KM)</label>
+        <div class="sc__input-wrap">
+          <input
+            type="number"
+            class="sc__input sc__input--suffix"
+            [(ngModel)]="listing.mileage"
+            placeholder="0"
+            min="0"
+          />
+          <span class="sc__input-suffix">KM</span>
+        </div>
+      </div>
+
+      <!-- Technical Configuration -->
+      <div class="sc__section-head">Technical Configuration</div>
+
+      <div class="sc__config-grid">
+
+        <!-- Transmission -->
+        <div class="sc__field">
+          <label class="sc__label">Transmission</label>
+          <div class="sc__toggle">
+            <button
+              class="sc__toggle-btn"
+              [class.sc__toggle-btn--active]="listing.transmission === 'automatic'"
+              (click)="listing.transmission = 'automatic'"
+            >Automatic</button>
+            <button
+              class="sc__toggle-btn"
+              [class.sc__toggle-btn--active]="listing.transmission === 'manual'"
+              (click)="listing.transmission = 'manual'"
+            >Manual</button>
+          </div>
+        </div>
+
+        <!-- Fuel Type -->
+        <div class="sc__field">
+          <label class="sc__label">Fuel Type</label>
+          <div class="sc__select-wrap">
+            <select class="sc__select" [(ngModel)]="listing.fuelType">
+              <option *ngFor="let f of fuelTypes" [value]="f">{{ f }}</option>
+            </select>
+            <ion-icon name="chevron-down-outline" class="sc__select-icon"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Color -->
+        <div class="sc__field">
+          <label class="sc__label">Color</label>
+          <div class="sc__select-wrap">
+            <select class="sc__select" [(ngModel)]="listing.color">
+              <option value="" disabled>Select Color</option>
+              <option *ngFor="let c of colors" [value]="c">{{ c }}</option>
+            </select>
+            <ion-icon name="chevron-down-outline" class="sc__select-icon"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Body Type -->
+        <div class="sc__field">
+          <label class="sc__label">Body Type</label>
+          <div class="sc__select-wrap">
+            <select class="sc__select" [(ngModel)]="listing.bodyType">
+              <option *ngFor="let b of bodyTypes" [value]="b">{{ b }}</option>
+            </select>
+            <ion-icon name="chevron-down-outline" class="sc__select-icon"></ion-icon>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- STEP 2 – Upload Photos                              -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="sc__body" *ngIf="step === 2">
+
+      <!-- Min photos notice -->
+      <div class="sc__info-badge">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Minimum 5 high-quality photos required
+      </div>
+
+      <!-- Drop zone -->
+      <label class="sc__drop-zone" for="scDropZone">
+        <input
+          id="scDropZone"
+          type="file"
+          multiple
+          accept="image/*"
+          style="display:none"
+          (change)="onDropZoneFiles($event)"
+        />
+        <div class="sc__drop-icon">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+        <p class="sc__drop-title">Drop your photos here</p>
+        <p class="sc__drop-sub">or click to browse from your computer</p>
+        <span class="sc__drop-hint">JPG, PNG &middot; UP TO 25MB</span>
+      </label>
+
+      <!-- Hidden slot-specific input -->
+      <input
+        id="scPhotoInput"
+        type="file"
+        accept="image/*"
+        style="display:none"
+        (change)="onPhotoSelected($event)"
+      />
+
+      <!-- Photo grid -->
+      <div class="sc__photo-grid">
+        <div
+          class="sc__photo-slot"
+          *ngFor="let label of photoSlotLabels; let i = index"
+          [class.sc__photo-slot--filled]="photos[i].file"
+          (click)="triggerPhotoSlot(i)"
+        >
+          <img
+            *ngIf="photos[i].preview"
+            [src]="photos[i].preview!"
+            class="sc__photo-img"
+            alt="Photo"
+          />
+          <div class="sc__photo-empty" *ngIf="!photos[i].preview">
+            <ion-icon name="add-outline"></ion-icon>
+            <span>ADD {{ label }}</span>
+          </div>
+          <div class="sc__photo-overlay" *ngIf="photos[i].file">
+            <span class="sc__photo-badge" *ngIf="i === 0">
+              <ion-icon name="checkmark-circle"></ion-icon>
+              UPLOADED
+            </span>
+            <span class="sc__photo-label">{{ label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="sc__tips">
+        <h3 class="sc__tips-title">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          Quick Tips for Success
+        </h3>
+        <ul class="sc__tips-list">
+          <li>Avoid blurry or low-res images. High resolution helps buyers zoom in on details.</li>
+          <li>Drag to reorder. The first photo will be your primary marketplace cover.</li>
+          <li>Shoot during the "Golden Hour" (late afternoon) for the best metallic reflection.</li>
+        </ul>
+        <div class="sc__tips-avoid">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span><strong>Avoid these:</strong> Screenshots, photos of other screens, or images containing watermarks will be automatically rejected.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- STEP 3 – Verify Ownership                           -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="sc__body" *ngIf="step === 3">
+
+      <!-- VIN input -->
+      <div class="sc__field">
+        <label class="sc__label">Vehicle Identification (VIN)</label>
+        <input
+          type="text"
+          class="sc__input"
+          [(ngModel)]="listing.vin"
+          placeholder="Enter 17-digit VIN"
+          maxlength="17"
+        />
+        <p class="sc__field-hint">The VIN can be found on your dashboard or driver-side door jamb.</p>
+      </div>
+
+      <!-- Document list -->
+      <div class="sc__doc-list">
+        <div class="sc__doc-item" *ngFor="let doc of documents">
+          <input
+            type="file"
+            [id]="'docInput_' + doc.key"
+            accept=".pdf,.jpg,.jpeg,.png"
+            style="display:none"
+            (change)="onDocumentSelected($event, doc)"
+          />
+          <div class="sc__doc-icon">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <div class="sc__doc-body">
+            <span class="sc__doc-label">{{ doc.label }}</span>
+            <span class="sc__doc-desc">{{ doc.desc }}</span>
+          </div>
+          <div class="sc__doc-action">
+            <button
+              class="sc__doc-upload-btn"
+              *ngIf="doc.status === 'pending'"
+              (click)="triggerDocInput(doc.key)"
+            >
+              <ion-icon name="cloud-upload-outline"></ion-icon>
+            </button>
+            <span class="sc__doc-uploaded" *ngIf="doc.status === 'uploaded'">
+              <ion-icon name="checkmark-circle"></ion-icon>
+              UPLOADED
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security footer -->
+      <div class="sc__security">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        Encrypted Storage. Handled with Concierge Security.
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- STEP 4 – Set Price                                  -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="sc__body" *ngIf="step === 4">
+
+      <!-- Price input -->
+      <div class="sc__field">
+        <label class="sc__label">Set Your Price</label>
+        <div class="sc__price-row">
+          <span class="sc__currency">XAF</span>
+          <input
+            type="number"
+            class="sc__price-input"
+            [(ngModel)]="listing.price"
+            placeholder="0"
+            min="0"
+          />
+        </div>
+        <p class="sc__field-hint">
+          Your listing will be highlighted to premium buyers in Douala and Yaoundé.
+        </p>
+      </div>
+
+      <!-- Description -->
+      <div class="sc__field">
+        <label class="sc__label">Vehicle Description</label>
+        <textarea
+          class="sc__textarea"
+          [(ngModel)]="listing.description"
+          maxlength="2000"
+          rows="7"
+          placeholder="Tell buyers about the condition, maintenance history, and unique features…"
+        ></textarea>
+        <div class="sc__char-row">
+          <span class="sc__char-hint">Recommended: 200+ words for better visibility</span>
+          <span class="sc__char-count">{{ listing.description.length }}/2000</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════ -->
+    <!-- STEP 5 – Review & Submit                            -->
+    <!-- ════════════════════════════════════════════════════ -->
+    <div class="sc__body sc__body--review" *ngIf="step === 5">
+
+      <!-- Car photo -->
+      <div class="sc__review-hero">
+        <img
+          *ngIf="photos[0].preview"
+          [src]="photos[0].preview!"
+          class="sc__review-hero-img"
+          alt="Car"
+        />
+        <div class="sc__review-hero-placeholder" *ngIf="!photos[0].preview">
+          <ion-icon name="car-outline"></ion-icon>
+        </div>
+        <span class="sc__review-badge">
+          <ion-icon name="checkmark-circle"></ion-icon>
+          Ready to Verify
+        </span>
+      </div>
+
+      <!-- Listing summary -->
+      <div class="sc__review-summary">
+        <h2 class="sc__review-name">{{ reviewCarName || 'Your Vehicle' }}</h2>
+        <div class="sc__review-pills">
+          <span class="sc__review-pill">
+            <ion-icon name="speedometer-outline"></ion-icon>
+            {{ listing.mileage.toLocaleString() }} KM
+          </span>
+          <span class="sc__review-pill">
+            <ion-icon name="settings-outline"></ion-icon>
+            {{ listing.transmission === 'automatic' ? 'Automatic' : 'Manual' }}
+          </span>
+          <span class="sc__review-pill">
+            <ion-icon name="flame-outline"></ion-icon>
+            {{ listing.fuelType }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Price card -->
+      <div class="sc__review-price">
+        <p class="sc__review-price-label">Asking Price</p>
+        <p class="sc__review-price-amount">{{ formatPrice(listing.price) }} FCFA</p>
+        <p class="sc__review-price-note">Excl. registration fees</p>
+      </div>
+
+      <!-- Technical overview -->
+      <div class="sc__review-section">
+        <h3 class="sc__review-section-title">Technical Overview</h3>
+        <div class="sc__review-tech">
+          <div class="sc__review-tech-row">
+            <span class="sc__review-tech-key">Year</span>
+            <span class="sc__review-tech-val">{{ listing.year }}</span>
+          </div>
+          <div class="sc__review-tech-row">
+            <span class="sc__review-tech-key">Body Type</span>
+            <span class="sc__review-tech-val">{{ listing.bodyType }}</span>
+          </div>
+          <div class="sc__review-tech-row">
+            <span class="sc__review-tech-key">Mileage</span>
+            <span class="sc__review-tech-val">{{ listing.mileage.toLocaleString() }} km</span>
+          </div>
+          <div class="sc__review-tech-row">
+            <span class="sc__review-tech-key">Fuel Type</span>
+            <span class="sc__review-tech-val">{{ listing.fuelType }}</span>
+          </div>
+          <div class="sc__review-tech-row">
+            <span class="sc__review-tech-key">Transmission</span>
+            <span class="sc__review-tech-val">{{ listing.transmission === 'automatic' ? 'Automatic' : 'Manual' }}</span>
+          </div>
+          <div class="sc__review-tech-row" *ngIf="listing.color">
+            <span class="sc__review-tech-key">Exterior Color</span>
+            <span class="sc__review-tech-val">{{ listing.color }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documentation -->
+      <div class="sc__review-section">
+        <h3 class="sc__review-section-title">Documentation</h3>
+        <div class="sc__review-docs">
+          <div class="sc__review-doc" *ngFor="let doc of documents">
+            <div class="sc__review-doc-left">
+              <div class="sc__review-doc-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+              <div class="sc__review-doc-info">
+                <span class="sc__review-doc-label">{{ doc.label }}</span>
+                <span class="sc__review-doc-status" *ngIf="doc.status === 'uploaded'">Verified &amp; Uploaded</span>
+                <span class="sc__review-doc-status sc__review-doc-status--missing" *ngIf="doc.status === 'pending'">Not uploaded</span>
+              </div>
+            </div>
+            <ion-icon
+              name="checkmark-circle"
+              class="sc__review-doc-check"
+              *ngIf="doc.status === 'uploaded'"
+            ></ion-icon>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIN -->
+      <div class="sc__review-section" *ngIf="listing.vin">
+        <h3 class="sc__review-section-title">VIN</h3>
+        <p class="sc__review-vin">{{ listing.vin }}</p>
+      </div>
+
+      <!-- Final verification notice -->
+      <div class="sc__review-notice">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <div>
+          <strong>Final Verification Step</strong>
+          <p>Admin will review your listing and contact you via WhatsApp for final verification. Please ensure your contact details are accurate to avoid listing rejection.</p>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <p class="sc__terms">
+        By submitting, you agree to our <span>Listing Terms of Service</span>
+      </p>
+    </div>
+
+    <!-- ─── Fixed CTA ─────────────────────────────────────── -->
+    <div class="sc__footer">
+      <button class="sc__cta" (click)="next()">
+        <span>{{ ctaLabel }}</span>
+        <ion-icon name="rocket-outline" *ngIf="step === 5"></ion-icon>
+        <ion-icon name="arrow-forward-outline" *ngIf="step < 5"></ion-icon>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- STEP 6 – Success                                      -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="sc__success" *ngIf="step === 6">
+    <div class="sc__success-icon">
+      <ion-icon name="checkmark-outline"></ion-icon>
+    </div>
+    <h1 class="sc__success-title">Listing Submitted Successfully</h1>
+    <p class="sc__success-desc">
+      Our team is currently reviewing your vehicle details. We will reach out to
+      you on <strong>WhatsApp</strong> within 24 hours to schedule a physical inspection.
+    </p>
+    <div class="sc__success-status">
+      <div class="sc__success-status-icon">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
+      <div class="sc__success-status-body">
+        <span class="sc__success-status-label">Under Review</span>
+        <span class="sc__success-status-eta">Estimated verification time: ~18 hours</span>
+      </div>
+    </div>
+    <button class="sc__success-primary" (click)="goToMyListings()">
+      Go to My Listings
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </button>
+    <button class="sc__success-secondary" (click)="returnHome()">
+      Return to Home
+    </button>
+  </div>
+
+</ion-content>

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline,
@@ -13,14 +13,31 @@ import {
   colorPaletteOutline,
   speedometerOutline,
   settingsOutline,
-  starOutline,
-  star,
+  calendarOutline,
+  flameOutline,
+  businessOutline,
+  chatbubbleOutline,
+  heartOutline,
+  heart,
   createOutline,
+  checkmarkCircle,
   checkmarkCircleOutline,
-  informationCircleOutline,
+  bookmarkOutline,
+  bookmark,
+  pricetagOutline,
+  chevronBackOutline,
+  chevronForwardOutline,
 } from 'ionicons/icons';
 import { Car } from '../../../core/models/car.model';
 import { CarService } from '../../../core/services/car.service';
+
+interface SimilarCar {
+  id: string;
+  name: string;
+  image: string;
+  year: number;
+  price: string;
+}
 
 @Component({
   selector: 'app-car-detail',
@@ -28,9 +45,15 @@ import { CarService } from '../../../core/services/car.service';
   styleUrls: ['./car-detail.page.scss'],
   imports: [CommonModule, IonContent, IonIcon],
 })
-export class CarDetailPage implements OnInit {
+export class CarDetailPage implements OnInit, ViewWillEnter {
+  @ViewChild('imgTrack') imgTrackRef!: ElementRef<HTMLElement>;
+
   car: Car | null = null;
   isOwned = false;
+  isBookmarked = false;
+  activeImageIndex = 0;
+  similarCars: SimilarCar[] = [];
+  private fromRoute: string | null = null;
 
   constructor(private router: Router, private carService: CarService) {
     addIcons({
@@ -43,43 +66,98 @@ export class CarDetailPage implements OnInit {
       colorPaletteOutline,
       speedometerOutline,
       settingsOutline,
-      starOutline,
-      star,
+      calendarOutline,
+      flameOutline,
+      businessOutline,
+      chatbubbleOutline,
+      heartOutline,
+      heart,
       createOutline,
+      checkmarkCircle,
       checkmarkCircleOutline,
-      informationCircleOutline,
+      bookmarkOutline,
+      bookmark,
+      pricetagOutline,
+      chevronBackOutline,
+      chevronForwardOutline,
     });
   }
 
-  ngOnInit(): void {
-    const state = history.state;
-    this.car = state?.car ?? null;
-    this.isOwned = state?.isOwned ?? false;
+  ngOnInit(): void {}
+
+  ionViewWillEnter(): void {
+    const raw = sessionStorage.getItem('pendingCarNav');
+    if (raw) {
+      const nav = JSON.parse(raw);
+      this.car = nav.car ?? null;
+      this.isOwned = nav.isOwned ?? false;
+      this.fromRoute = nav.fromRoute ?? null;
+      sessionStorage.removeItem('pendingCarNav');
+    }
   }
 
   goBack(): void {
-    this.router.navigate([history.state?.fromRoute ?? (this.isOwned ? '/cars/my' : '/tabs/auto')]);
+    const fallback = this.isOwned ? '/cars/my' : '/tabs/auto';
+    this.router.navigate([this.fromRoute ?? fallback]);
+  }
+
+  toggleBookmark(): void {
+    this.isBookmarked = !this.isBookmarked;
+  }
+
+  selectImage(index: number): void {
+    this.activeImageIndex = index;
+    const track = this.imgTrackRef?.nativeElement;
+    if (track) {
+      track.scrollTo({ left: index * track.offsetWidth, behavior: 'smooth' });
+    }
+  }
+
+  prevImage(): void {
+    const total = this.getAllImages().length;
+    this.selectImage((this.activeImageIndex - 1 + total) % total);
+  }
+
+  nextImage(): void {
+    const total = this.getAllImages().length;
+    this.selectImage((this.activeImageIndex + 1) % total);
+  }
+
+  onImgScroll(): void {
+    const track = this.imgTrackRef?.nativeElement;
+    if (!track) return;
+    const total = this.getAllImages().length;
+    const index = Math.round(track.scrollLeft / track.offsetWidth);
+    this.activeImageIndex = Math.max(0, Math.min(index, total - 1));
   }
 
   getCarName(): string {
     if (!this.car) return '';
-    return `${this.car.year ?? ''} ${this.car.make ?? ''} ${this.car.model ?? ''}`.trim();
+    return `${this.car.make ?? ''} ${this.car.model ?? ''}`.trim();
   }
 
   getConditionLabel(): string {
     if (!this.car?.condition) return '';
-    const map: Record<string, string> = { 'new': 'New', 'like-new': 'Like New', 'used': 'Used' };
+    const map: Record<string, string> = {
+      new: 'New',
+      'like-new': 'Like New',
+      used: 'Used',
+    };
     return map[this.car.condition] ?? this.car.condition;
   }
 
   getTransmission(): string {
     if (!this.car?.transmission) return '';
-    return this.car.transmission.charAt(0).toUpperCase() + this.car.transmission.slice(1);
+    return (
+      this.car.transmission.charAt(0).toUpperCase() +
+      this.car.transmission.slice(1)
+    );
   }
 
   getFirstImage(): string | null {
-    return this.car?.images && this.car.images.length > 0
-      ? this.carService.imageUrl(this.car.images[0])
+    const images = this.getAllImages();
+    return images.length > 0
+      ? images[this.activeImageIndex] ?? images[0]
       : null;
   }
 
@@ -94,22 +172,24 @@ export class CarDetailPage implements OnInit {
 
   get ctaLabel(): string {
     if (this.isOwned) return 'Manage Car';
-    if (this.car?.forRent) return 'Book Now';
-    if (this.car?.forSale) return 'Buy Now';
-    return 'Contact Seller';
+    return 'Add to Wishlist';
   }
 
-  get ctaClass(): string {
-    if (this.isOwned) return 'cta-manage';
-    if (this.car?.forRent) return 'cta-rent';
-    if (this.car?.forSale) return 'cta-buy';
-    return 'cta-contact';
+  messageSeller(): void {
+    // TODO: open messaging flow
+  }
+
+  viewDealer(): void {
+    // TODO: navigate to dealer profile
   }
 
   onCta(): void {
     if (this.isOwned) {
       this.router.navigate(['/cars/my']);
     }
-    // Rent/buy flows to be wired when booking/purchase screens are built
+  }
+
+  openSimilarCar(car: SimilarCar): void {
+    // TODO: navigate to similar car detail
   }
 }

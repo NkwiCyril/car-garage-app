@@ -1,0 +1,236 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$radius: 14px;
+$pi-max: 520px;
+$bp-tablet: 768px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$white};
+}
+
+.pi {
+  min-height: 100%;
+  padding-bottom: 100px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $pi-max;
+    margin: 0 auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.pi__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 14px;
+  background: $white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.pi__nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.pi__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+}
+
+.pi__nav-spacer {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+// ─── Header ──────────────────────────────────────────
+.pi__header {
+  padding: 8px 24px 24px;
+}
+
+.pi__title {
+  margin: 0 0 10px;
+  font-size: clamp(30px, 8vw, 40px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -1px;
+  line-height: 1.1;
+}
+
+.pi__subtitle {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: $gray;
+  line-height: 1.5;
+}
+
+// ─── Form ────────────────────────────────────────────
+.pi__form {
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pi__field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pi__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+.pi__input {
+  width: 100%;
+  height: 54px;
+  padding: 0 16px;
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 500;
+  color: $primary;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+
+  &::placeholder {
+    color: lighten($gray-light, 5%);
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: $accent;
+  }
+}
+
+.pi__textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid $gray-light;
+  border-radius: $radius;
+  background: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 500;
+  color: $primary;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+
+  &::placeholder {
+    color: lighten($gray-light, 5%);
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: $accent;
+  }
+}
+
+// ─── Fixed footer ─────────────────────────────────────
+.pi__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 14px 24px calc(env(safe-area-inset-bottom) + 14px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid $gray-light;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $pi-max;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-left: 1px solid $gray-light;
+    border-right: 1px solid $gray-light;
+  }
+}
+
+.pi__save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 14px;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: none;
+  }
+
+  &--saving {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:not(:disabled):hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.pi__bottom-pad {
+  height: 16px;
+}

@@ -1,0 +1,98 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="pi">
+
+    <!-- ─── Nav ──────────────────────────────────────────── -->
+    <div class="pi__nav">
+      <button class="pi__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="pi__nav-title">Personal Information</span>
+      <div class="pi__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ───────────────────────────────────────── -->
+    <div class="pi__header">
+      <h1 class="pi__title">Personal<br/>Information</h1>
+      <p class="pi__subtitle">Update your account details and contact preferences.</p>
+    </div>
+
+    <!-- ─── Form ─────────────────────────────────────────── -->
+    <div class="pi__form">
+
+      <div class="pi__field">
+        <label class="pi__label">Full Name</label>
+        <input
+          type="text"
+          class="pi__input"
+          [(ngModel)]="form.name"
+          placeholder="Your full name"
+          autocomplete="name"
+        />
+      </div>
+
+      <div class="pi__field">
+        <label class="pi__label">Email Address</label>
+        <input
+          type="email"
+          class="pi__input"
+          [(ngModel)]="form.email"
+          placeholder="your@email.com"
+          autocomplete="email"
+          inputmode="email"
+        />
+      </div>
+
+      <div class="pi__field">
+        <label class="pi__label">Phone Number</label>
+        <input
+          type="tel"
+          class="pi__input"
+          [(ngModel)]="form.phone"
+          placeholder="+237 6XX XXX XXX"
+          autocomplete="tel"
+          inputmode="tel"
+        />
+      </div>
+
+      <div class="pi__field">
+        <label class="pi__label">Date of Birth</label>
+        <input
+          type="text"
+          class="pi__input"
+          [(ngModel)]="form.dob"
+          placeholder="MM/DD/YYYY"
+          inputmode="numeric"
+          maxlength="10"
+        />
+      </div>
+
+      <div class="pi__field">
+        <label class="pi__label">Residential Address</label>
+        <textarea
+          class="pi__textarea"
+          [(ngModel)]="form.address"
+          placeholder="Street, district, city, country"
+          rows="3"
+          autocomplete="street-address"
+        ></textarea>
+      </div>
+
+    </div>
+
+    <div class="pi__bottom-pad"></div>
+  </div>
+
+  <!-- ─── Fixed CTA ────────────────────────────────────── -->
+  <div class="pi__footer">
+    <button
+      class="pi__save-btn"
+      (click)="saveChanges()"
+      [class.pi__save-btn--saving]="isSaving"
+      [disabled]="isSaving"
+    >
+      <span *ngIf="!isSaving">Save Changes</span>
+      <span *ngIf="isSaving">Saving…</span>
+    </button>
+  </div>
+
+</ion-content>

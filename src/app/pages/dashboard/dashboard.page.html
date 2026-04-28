@@ -1,115 +1,153 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="dash-wrap">
+  <div class="dash">
 
-    <!-- ─── Header ──────────────────────────────────────── -->
-    <div class="dash-header">
-      <div class="header-row">
-        <div class="greeting-block">
-          <p class="greeting-label">Good day,</p>
-          <h1 class="greeting-name">{{ userName || 'Driver' }} 👋</h1>
+    <!-- ─── Header ─────────────────────────────────────── -->
+    <div class="dash__header">
+      <div class="dash__header-left" (click)="openMenu()">
+        <div class="dash__avatar">
+          <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
         </div>
-        <div class="header-right">
-          <button class="icon-btn notif" (click)="openNotifications()">
-            <ion-icon name="notifications-outline"></ion-icon>
-            <span class="notif-dot"></span>
-          </button>
-          <div class="avatar-chip" (click)="navigateTo('/tabs/profile')">
-            <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
+        <div class="dash__greeting">
+          <p class="dash__greeting-time">{{ greeting }}</p>
+          <p class="dash__greeting-name">{{ userName || 'Driver' }}</p>
+          <div class="dash__location">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>{{ currentLocation }}</span>
           </div>
         </div>
       </div>
-      <div class="location-pill">
-        <ion-icon name="location-outline"></ion-icon>
-        <span>{{ currentLocation }}</span>
-        <ion-icon name="chevron-down-outline"></ion-icon>
+      <div class="dash__header-right">
+        <button class="dash__notif-btn" (click)="openNotifications()">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span class="dash__notif-dot"></span>
+        </button>
+        <span class="dash__brand">ParkEase</span>
       </div>
     </div>
 
-    <!-- ─── Search Bar ──────────────────────────────────── -->
-    <div class="search-row">
-      <div class="search-box" (click)="onSearchFocus()">
-        <ion-icon name="search-outline"></ion-icon>
-        <span class="search-hint">Search cars, parking...</span>
-      </div>
-      <button class="filter-fab">
-        <ion-icon name="options-outline"></ion-icon>
-      </button>
-    </div>
-
-    <!-- ─── Categories ─────────────────────────────────── -->
-    <div class="categories-row">
+    <!-- ─── Promo Slider ───────────────────────────────── -->
+    <div class="dash__promo">
       <div
-        class="cat-item"
-        *ngFor="let cat of categories; let i = index"
-        [class.cat-active]="i === 0"
-        (click)="navigateTo(cat.route)"
+        class="dash__promo-track"
+        #promoTrack
+        (scroll)="onPromoScroll()"
       >
-        <div class="cat-icon">
-          <ion-icon [name]="cat.icon"></ion-icon>
-        </div>
-        <span class="cat-label">{{ cat.label }}</span>
-      </div>
-    </div>
-
-    <!-- ─── Promo Banner ────────────────────────────────── -->
-    <div class="promo-section">
-      <div class="promo-card">
-        <div class="promo-text">
-          <span class="promo-tag">DriveEase</span>
-          <h2 class="promo-title">Find Your<br>Perfect Drive</h2>
-          <p class="promo-sub">Rent, buy & park — all in one place.</p>
-          <button class="promo-btn" (click)="navigateTo('/tabs/auto')">
-            Explore Cars
-            <ion-icon name="arrow-forward-outline"></ion-icon>
-          </button>
-        </div>
-        <div class="promo-car-wrap">
-          <ion-icon name="car-sport-outline"></ion-icon>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── Featured Services ──────────────────────────── -->
-    <div class="section">
-      <div class="section-hdr">
-        <h2 class="section-title">Featured Services</h2>
-        <button class="see-all-btn" (click)="viewAllServices()">See all</button>
-      </div>
-
-      <div class="services-scroller">
-        <div class="svc-card" *ngFor="let s of featuredServices" (click)="navigateTo(s.route)">
-          <div class="svc-icon-wrap" [ngClass]="s.iconClass">
-            <ion-icon [name]="s.icon"></ion-icon>
-          </div>
-          <h3 class="svc-title">{{ s.title }}</h3>
-          <p class="svc-desc">{{ s.description }}</p>
-          <div class="svc-footer">
-            <span class="svc-meta" [ngClass]="s.metaClass">{{ s.meta }}</span>
-            <button class="svc-action" (click)="navigateTo(s.route); $event.stopPropagation()">
-              {{ s.buttonText }}
+        <div
+          class="dash__promo-card"
+          *ngFor="let promo of promos; let i = index"
+        >
+          <img class="dash__promo-bg" [src]="promo.image" [alt]="promo.title" />
+          <div class="dash__promo-overlay"></div>
+          <div class="dash__promo-content">
+            <div class="dash__promo-tags">
+              <span class="dash__promo-badge dash__promo-badge--deal">
+                <ion-icon [name]="promo.badgeIcon"></ion-icon>
+                {{ promo.badgeText }}
+              </span>
+              <span
+                class="dash__promo-badge dash__promo-badge--timer"
+                *ngIf="promo.hasCountdown"
+              >
+                <ion-icon name="time-outline"></ion-icon>
+                {{ countdownDisplay }} LEFT
+              </span>
+            </div>
+            <h2 class="dash__promo-title" [innerHTML]="promo.title"></h2>
+            <p class="dash__promo-sub">{{ promo.subtitle }}</p>
+            <button class="dash__promo-btn" (click)="navigateTo(promo.route)">
+              {{ promo.buttonText }}
+              <ion-icon name="arrow-forward-outline"></ion-icon>
             </button>
           </div>
         </div>
       </div>
+
     </div>
 
-    <!-- ─── Quick Actions ──────────────────────────────── -->
-    <div class="section">
-      <h2 class="section-title">Quick Actions</h2>
-      <div class="quick-grid">
-        <div
-          class="quick-tile"
+    <!-- ─── Search Bar ─────────────────────────────────── -->
+    <div class="dash__search">
+      <div class="dash__search-box" (click)="onSearchFocus()">
+        <ion-icon name="search-outline"></ion-icon>
+        <span class="dash__search-hint">Search for your dream car...</span>
+      </div>
+      <button class="dash__filter-btn" (click)="openFilters()">
+        <ion-icon name="options-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- ─── Category Pills ─────────────────────────────── -->
+    <div class="dash__categories">
+      <button
+        class="dash__cat"
+        *ngFor="let cat of categories; let i = index"
+        [class.dash__cat--active]="activeCategoryIndex === i"
+        (click)="selectCategory(i)"
+      >
+        <ion-icon [name]="cat.icon"></ion-icon>
+        <span>{{ cat.label }}</span>
+      </button>
+    </div>
+
+    <!-- ─── Quick Actions ─────────────────────────────── -->
+    <div class="dash__quick-wrap">
+      <div class="dash__quick">
+        <button
+          class="dash__action"
           *ngFor="let a of quickActions"
           (click)="navigateTo(a.route)"
         >
-          <div class="tile-icon-wrap">
-            <ion-icon [name]="a.icon"></ion-icon>
+          <div class="dash__action-icon" [style.background]="a.bg">
+            <ion-icon [name]="a.icon" [style.color]="a.color"></ion-icon>
           </div>
-          <span class="tile-label">{{ a.label }}</span>
+          <span class="dash__action-label">{{ a.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── Featured Premium ───────────────────────────── -->
+    <div class="dash__section">
+      <div class="dash__section-header">
+        <h2 class="dash__section-title">Featured Premium</h2>
+        <button class="dash__see-all" (click)="viewAllCars()">See all</button>
+      </div>
+
+      <div class="dash__car-grid">
+        <div
+          class="dash__car-card"
+          *ngFor="let car of featuredCars"
+          (click)="openCarDetail(car)"
+        >
+          <!-- Image + overlays -->
+          <div class="dash__car-media">
+            <img class="dash__car-img" [src]="car.image" [alt]="car.name" />
+            <div class="dash__car-media-grad"></div>
+            <button
+              class="dash__car-fav"
+              [class.dash__car-fav--active]="car.isFavorite"
+              (click)="toggleFavorite(car); $event.stopPropagation()"
+            >
+              <ion-icon [name]="car.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+            </button>
+            <span class="dash__car-year">{{ car.year }}</span>
+          </div>
+          <!-- Info -->
+          <div class="dash__car-info">
+            <h3 class="dash__car-name">{{ car.name }}</h3>
+            <p class="dash__car-meta">{{ car.km }} KM</p>
+            <p class="dash__car-price">
+              <span class="dash__car-price-value">{{ car.price }}</span>
+              <span class="dash__car-price-currency"> XAF</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="bottom-pad"></div>
+    <!-- ─── WhatsApp FAB ───────────────────────────────── -->
+    <button class="dash__whatsapp" (click)="openWhatsApp()">
+      <ion-icon name="logo-whatsapp"></ion-icon>
+    </button>
+
+    <div class="dash__bottom-pad"></div>
   </div>
 </ion-content>

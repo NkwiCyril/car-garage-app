@@ -1,67 +1,154 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
-  <div class="profile-wrap">
+  <div class="pf">
 
-    <!-- ─── Hero Banner ──────────────────────────────────── -->
-    <div class="profile-hero">
-      <div class="hero-bg"></div>
-      <div class="hero-content">
-        <div class="avatar-ring">
-          <div class="avatar-inner">
-            <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
-          </div>
+    <!-- ─── Hero Header ──────────────────────────────────── -->
+    <div class="pf__hero">
+      <div class="pf__avatar-wrap">
+        <div class="pf__avatar">
+          <img
+            *ngIf="userAvatar"
+            [src]="userAvatar"
+            class="pf__avatar-img"
+            alt="Profile"
+          />
+          <span *ngIf="!userAvatar">{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
         </div>
-        <div class="hero-info">
-          <h1 class="hero-name">{{ userName || 'Driver' }}</h1>
-          <p class="hero-phone">{{ userPhone || 'No phone number' }}</p>
-        </div>
-        <button class="edit-btn">
-          <ion-icon name="create-outline"></ion-icon>
+        <button class="pf__avatar-edit" title="Edit photo">
+          <ion-icon name="camera-outline"></ion-icon>
         </button>
       </div>
-    </div>
 
-    <!-- ─── Stats ────────────────────────────────────────── -->
-    <div class="stats-band">
-      <div class="stat-item">
-        <span class="stat-val">12</span>
-        <span class="stat-lbl">Bookings</span>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <span class="stat-val">3</span>
-        <span class="stat-lbl">Vehicles</span>
-      </div>
-      <div class="stat-sep"></div>
-      <div class="stat-item">
-        <span class="stat-val">2</span>
-        <span class="stat-lbl">Favorites</span>
+      <div class="pf__hero-info">
+        <div class="pf__hero-name-row">
+          <h1 class="pf__name">{{ userName || 'Driver' }}</h1>
+          <ion-icon
+            *ngIf="isVerified"
+            name="shield-checkmark-outline"
+            class="pf__hero-verified"
+          ></ion-icon>
+        </div>
+        <p class="pf__phone">{{ maskedPhone }}</p>
       </div>
     </div>
 
-    <!-- ─── Menu Sections ────────────────────────────────── -->
-    <div class="profile-body">
-
-      <div class="menu-card">
-        <div class="menu-item" *ngFor="let item of menuItems" (click)="onMenuItemClick(item)">
-          <div class="menu-ico-wrap">
-            <ion-icon [name]="item.icon"></ion-icon>
-          </div>
-          <div class="menu-text">
-            <span class="menu-label">{{ item.label }}</span>
-            <span class="menu-sub">{{ item.subtitle }}</span>
-          </div>
-          <ion-icon name="chevron-forward-outline" class="menu-arrow"></ion-icon>
+    <!-- ─── Stats Card ───────────────────────────────────── -->
+    <div class="pf__stats-wrap">
+      <div class="pf__stats">
+        <div class="pf__stat pf__stat--bookings">
+          <span class="pf__stat-val">{{ padNum(stats.bookings) }}</span>
+          <span class="pf__stat-label">BOOKINGS</span>
+        </div>
+        <div class="pf__stat-sep"></div>
+        <div class="pf__stat pf__stat--vehicles">
+          <span class="pf__stat-val">{{ padNum(stats.vehicles) }}</span>
+          <span class="pf__stat-label">VEHICLES</span>
+        </div>
+        <div class="pf__stat-sep"></div>
+        <div class="pf__stat pf__stat--wishlist">
+          <span class="pf__stat-val">{{ padNum(stats.wishlist) }}</span>
+          <span class="pf__stat-label">WISHLIST</span>
         </div>
       </div>
-
-      <!-- Logout -->
-      <button class="logout-btn" (click)="confirmLogout()">
-        <ion-icon name="log-out-outline"></ion-icon>
-        <span>Log Out</span>
-      </button>
-
-      <p class="app-ver">DriveEase v1.0.0</p>
-
     </div>
+
+    <!-- ─── Account Management ─────────────────────────── -->
+    <div class="pf__section">
+      <p class="pf__section-title">ACCOUNT MANAGEMENT</p>
+      <div class="pf__menu-group">
+        <div
+          class="pf__menu-item"
+          *ngFor="let item of accountItems"
+          (click)="onMenuItemClick(item)"
+        >
+          <div class="pf__menu-icon" [class]="'pf__menu-icon--' + item.color">
+            <ion-icon [name]="item.icon"></ion-icon>
+          </div>
+          <div class="pf__menu-text">
+            <span class="pf__menu-label">{{ item.label }}</span>
+            <span class="pf__menu-sub" *ngIf="item.subtitle">{{ item.subtitle }}</span>
+          </div>
+          <div class="pf__menu-right">
+            <ion-icon
+              *ngIf="item.badge"
+              name="checkmark-circle"
+              class="pf__badge-check"
+            ></ion-icon>
+            <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Preferences & Security ─────────────────────── -->
+    <div class="pf__section">
+      <p class="pf__section-title">PREFERENCES &amp; SECURITY</p>
+      <div class="pf__menu-group">
+        <div
+          class="pf__menu-item"
+          *ngFor="let item of prefItems"
+          (click)="onMenuItemClick(item)"
+        >
+          <div class="pf__menu-icon" [class]="'pf__menu-icon--' + item.color">
+            <ion-icon [name]="item.icon"></ion-icon>
+          </div>
+          <div class="pf__menu-text">
+            <span class="pf__menu-label">{{ item.label }}</span>
+          </div>
+          <div class="pf__menu-right">
+            <span class="pf__menu-meta" *ngIf="item.meta">{{ item.meta }}</span>
+            <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Support ────────────────────────────────────── -->
+    <div class="pf__section">
+      <p class="pf__section-title">SUPPORT</p>
+      <div class="pf__menu-group">
+        <div class="pf__menu-item" (click)="onMenuItemClick({ route: null })">
+          <div class="pf__menu-icon pf__menu-icon--neutral">
+            <ion-icon name="help-circle-outline"></ion-icon>
+          </div>
+          <div class="pf__menu-text">
+            <span class="pf__menu-label">Help &amp; Support</span>
+          </div>
+          <div class="pf__menu-right">
+            <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
+          </div>
+        </div>
+
+        <div class="pf__menu-item" (click)="onMenuItemClick({ route: null })">
+          <div class="pf__menu-icon pf__menu-icon--neutral">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <div class="pf__menu-text">
+            <span class="pf__menu-label">Terms of Service</span>
+          </div>
+          <div class="pf__menu-right">
+            <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
+          </div>
+        </div>
+
+        <div class="pf__menu-item pf__menu-item--logout" (click)="confirmLogout()">
+          <div class="pf__menu-icon pf__menu-icon--danger">
+            <ion-icon name="log-out-outline"></ion-icon>
+          </div>
+          <div class="pf__menu-text">
+            <span class="pf__menu-label pf__menu-label--danger">Log Out</span>
+          </div>
+          <div class="pf__menu-right">
+            <ion-icon name="chevron-forward-outline" class="pf__menu-arrow pf__menu-arrow--danger"></ion-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── WhatsApp FAB ───────────────────────────────── -->
+    <button class="pf__whatsapp" (click)="openWhatsApp()">
+      <ion-icon name="logo-whatsapp"></ion-icon>
+    </button>
+
+    <div class="pf__bottom-pad"></div>
   </div>
 </ion-content>

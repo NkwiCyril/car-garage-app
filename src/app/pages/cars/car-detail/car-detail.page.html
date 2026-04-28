@@ -2,133 +2,282 @@
 
   <!-- No car fallback -->
   <div class="no-car" *ngIf="!car">
-    <div class="no-car-ico">
+    <div class="no-car__icon">
       <ion-icon name="car-outline"></ion-icon>
     </div>
     <h3>Car not found</h3>
     <p>No car data was passed to this screen.</p>
-    <button class="back-pill" (click)="goBack()">
+    <button class="no-car__btn" (click)="goBack()">
       <ion-icon name="arrow-back-outline"></ion-icon>
       Go Back
     </button>
   </div>
 
-  <div class="detail-wrap" *ngIf="car">
+  <div class="cd" *ngIf="car">
 
-    <!-- ─── Hero Image ────────────────────────────────── -->
-    <div class="hero-img-wrap">
-      <img *ngIf="getFirstImage()" [src]="getFirstImage()!" class="hero-img" alt="Car image" />
-      <div class="hero-placeholder" *ngIf="!getFirstImage()">
-        <ion-icon name="car-sport-outline"></ion-icon>
+    <!-- ─── Hero (full-bleed, nav floats on top) ───────── -->
+    <div class="cd__hero">
+
+      <!-- Image slider -->
+      <div class="cd__img-track" #imgTrack (scroll)="onImgScroll()">
+        <ng-container *ngIf="getAllImages().length > 0">
+          <div class="cd__img-slide" *ngFor="let img of getAllImages()">
+            <img [src]="img" class="cd__hero-img" alt="" />
+          </div>
+        </ng-container>
+        <div class="cd__img-slide" *ngIf="getAllImages().length === 0">
+          <div class="cd__hero-placeholder">
+            <ion-icon name="car-sport-outline"></ion-icon>
+          </div>
+        </div>
       </div>
 
-      <!-- Back button overlay -->
-      <button class="hero-back-btn" (click)="goBack()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
+      <!-- Prev / Next buttons -->
+      <button
+        class="cd__img-nav cd__img-nav--prev"
+        *ngIf="getAllImages().length > 1"
+        (click)="prevImage()"
+      >
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </button>
+      <button
+        class="cd__img-nav cd__img-nav--next"
+        *ngIf="getAllImages().length > 1"
+        (click)="nextImage()"
+      >
+        <ion-icon name="chevron-forward-outline"></ion-icon>
       </button>
 
-      <!-- Listing type badge -->
-      <span class="hero-badge" *ngIf="car.forRent">For Rent</span>
-      <span class="hero-badge hero-badge-buy" *ngIf="car.forSale">For Sale</span>
+      <!-- Bottom gradient -->
+      <div class="cd__hero-grad"></div>
 
-      <!-- Image count indicator -->
-      <span class="img-count" *ngIf="getAllImages().length > 1">
-        <ion-icon name="car-outline"></ion-icon>
-        {{ getAllImages().length }} photos
+      <!-- Floating nav -->
+      <div class="cd__nav">
+        <button class="cd__nav-btn" (click)="goBack()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </button>
+        <button class="cd__nav-btn" (click)="toggleBookmark()">
+          <ion-icon [name]="isBookmarked ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Verified badge -->
+      <span class="cd__verified" *ngIf="car.isVerified !== false">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        VERIFIED
       </span>
+
+      <!-- Image counter -->
+      <span class="cd__img-counter" *ngIf="getAllImages().length > 1">
+        {{ activeImageIndex + 1 }} / {{ getAllImages().length }}
+      </span>
+
+      <!-- Dot indicators -->
+      <div class="cd__hero-dots" *ngIf="getAllImages().length > 1">
+        <span
+          class="cd__hero-dot"
+          *ngFor="let img of getAllImages(); let i = index"
+          [class.cd__hero-dot--active]="activeImageIndex === i"
+          (click)="selectImage(i)"
+        ></span>
+      </div>
     </div>
 
-    <!-- ─── Content ──────────────────────────────────── -->
-    <div class="detail-content">
+    <!-- ─── Info Card ──────────────────────────────────── -->
+    <div class="cd__info">
 
-      <!-- Name & Price -->
-      <div class="name-price-row">
-        <div class="name-block">
-          <h1 class="car-name">{{ getCarName() }}</h1>
-          <p class="car-location" *ngIf="car.location">
+      <!-- Title + Price -->
+      <div class="cd__title-row">
+        <div class="cd__title-block">
+          <p class="cd__year-tag" *ngIf="car.year">{{ car.year }}</p>
+          <h1 class="cd__name">{{ getCarName() }}</h1>
+          <p class="cd__location" *ngIf="car.location">
             <ion-icon name="location-outline"></ion-icon>
             {{ car.location }}
           </p>
         </div>
-        <div class="price-block" *ngIf="car.forRent && car.rentalPrice">
-          <span class="price-main">{{ formatPrice(car.rentalPrice) }}</span>
-          <span class="price-label">CFA/day</span>
-        </div>
-        <div class="price-block" *ngIf="!car.forRent && car.price">
-          <span class="price-main">{{ formatPrice(car.price) }}</span>
-          <span class="price-label">CFA</span>
-        </div>
-      </div>
-
-      <!-- Spec Chips -->
-      <div class="spec-chips">
-        <div class="spec-chip" *ngIf="getConditionLabel()">
-          <ion-icon name="checkmark-circle-outline"></ion-icon>
-          <span>{{ getConditionLabel() }}</span>
-        </div>
-        <div class="spec-chip" *ngIf="getTransmission()">
-          <ion-icon name="settings-outline"></ion-icon>
-          <span>{{ getTransmission() }}</span>
-        </div>
-        <div class="spec-chip" *ngIf="car.mileage">
-          <ion-icon name="speedometer-outline"></ion-icon>
-          <span>{{ car.mileage }} km</span>
-        </div>
-        <div class="spec-chip" *ngIf="car.color">
-          <ion-icon name="color-palette-outline"></ion-icon>
-          <span>{{ car.color }}</span>
+        <!-- Single price — only when NOT both for rent and for sale -->
+        <div class="cd__price-block" *ngIf="!(car.forRent && car.forSale)">
+          <span class="cd__price-value">
+            {{ formatPrice(car.forRent && car.rentalPrice ? car.rentalPrice : car.price) }}
+          </span>
+          <span class="cd__price-unit">FCFA</span>
+          <span class="cd__price-per" *ngIf="car.forRent && car.rentalPrice">/day</span>
         </div>
       </div>
 
-      <!-- Description -->
-      <div class="detail-section" *ngIf="car.description">
-        <h2 class="section-title">About</h2>
-        <p class="description-text">{{ car.description }}</p>
-      </div>
-
-      <!-- Details Table -->
-      <div class="detail-section">
-        <h2 class="section-title">Details</h2>
-        <div class="detail-table">
-          <div class="detail-row" *ngIf="car.make">
-            <span class="detail-label">Make</span>
-            <span class="detail-val">{{ car.make }}</span>
+      <!-- Dual price card — shown when car is both for rent AND for sale -->
+      <div class="cd__price-dual" *ngIf="car.forRent && car.forSale">
+        <div class="cd__price-half">
+          <span class="cd__price-half-label">SALE PRICE</span>
+          <div class="cd__price-half-row">
+            <span class="cd__price-half-val">{{ formatPrice(car.price) }}</span>
+            <span class="cd__price-half-cur">FCFA</span>
           </div>
-          <div class="detail-row" *ngIf="car.model">
-            <span class="detail-label">Model</span>
-            <span class="detail-val">{{ car.model }}</span>
-          </div>
-          <div class="detail-row" *ngIf="car.year">
-            <span class="detail-label">Year</span>
-            <span class="detail-val">{{ car.year }}</span>
-          </div>
-          <div class="detail-row" *ngIf="car.condition">
-            <span class="detail-label">Condition</span>
-            <span class="detail-val">{{ getConditionLabel() }}</span>
-          </div>
-          <div class="detail-row" *ngIf="car.transmission">
-            <span class="detail-label">Transmission</span>
-            <span class="detail-val">{{ getTransmission() }}</span>
-          </div>
-          <div class="detail-row" *ngIf="car.mileage">
-            <span class="detail-label">Mileage</span>
-            <span class="detail-val">{{ car.mileage }} km</span>
-          </div>
-          <div class="detail-row" *ngIf="car.color">
-            <span class="detail-label">Color</span>
-            <span class="detail-val">{{ car.color }}</span>
+        </div>
+        <div class="cd__price-half-sep"></div>
+        <div class="cd__price-half">
+          <span class="cd__price-half-label cd__price-half-label--rent">RENTAL / DAY</span>
+          <div class="cd__price-half-row">
+            <span class="cd__price-half-val">{{ formatPrice(car.rentalPrice ?? 0) }}</span>
+            <span class="cd__price-half-cur">FCFA</span>
           </div>
         </div>
       </div>
 
+      <!-- Listing type + condition tags -->
+      <div class="cd__tags">
+        <span class="cd__tag cd__tag--condition" *ngIf="car.condition">
+          {{ getConditionLabel() }}
+        </span>
+        <span class="cd__tag cd__tag--sale" *ngIf="car.forSale && !car.forRent">
+          <ion-icon name="pricetag-outline"></ion-icon>
+          For Sale
+        </span>
+        <span class="cd__tag cd__tag--rent" *ngIf="car.forRent && !car.forSale">
+          <ion-icon name="key-outline"></ion-icon>
+          For Rent
+        </span>
+        <span class="cd__tag cd__tag--both" *ngIf="car.forSale && car.forRent">
+          <ion-icon name="pricetag-outline"></ion-icon>
+          Sale &amp; Rent
+        </span>
+      </div>
+
+      <!-- ─── Specifications ──────────────────────────── -->
+      <p class="cd__section-title">Specifications</p>
+      <div class="cd__specs">
+        <div class="cd__spec" *ngIf="car.year">
+          <div class="cd__spec-icon cd__spec-icon--blue">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">YEAR</span>
+            <span class="cd__spec-value">{{ car.year }}</span>
+          </div>
+        </div>
+        <div class="cd__spec" *ngIf="car.mileage">
+          <div class="cd__spec-icon cd__spec-icon--green">
+            <ion-icon name="speedometer-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">MILEAGE</span>
+            <span class="cd__spec-value">{{ car.mileage }}</span>
+          </div>
+        </div>
+        <div class="cd__spec" *ngIf="car.transmission">
+          <div class="cd__spec-icon cd__spec-icon--purple">
+            <ion-icon name="settings-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">GEARBOX</span>
+            <span class="cd__spec-value">{{ getTransmission() }}</span>
+          </div>
+        </div>
+        <div class="cd__spec" *ngIf="car.fuelType">
+          <div class="cd__spec-icon cd__spec-icon--amber">
+            <ion-icon name="flame-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">FUEL</span>
+            <span class="cd__spec-value">{{ car.fuelType }}</span>
+          </div>
+        </div>
+        <div class="cd__spec" *ngIf="car.color">
+          <div class="cd__spec-icon cd__spec-icon--rose">
+            <ion-icon name="color-palette-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">COLOR</span>
+            <span class="cd__spec-value">{{ car.color }}</span>
+          </div>
+        </div>
+        <div class="cd__spec" *ngIf="car.condition">
+          <div class="cd__spec-icon cd__spec-icon--teal">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">CONDITION</span>
+            <span class="cd__spec-value">{{ getConditionLabel() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Description ─────────────────────────────── -->
+      <ng-container *ngIf="car.description">
+        <p class="cd__section-title">Description</p>
+        <p class="cd__description">{{ car.description }}</p>
+      </ng-container>
+
+      <!-- ─── VIN ──────────────────────────────────────── -->
+      <div class="cd__vin" *ngIf="car.vin">
+        <span class="cd__vin-label">VIN</span>
+        <span class="cd__vin-value">{{ car.vin }}</span>
+      </div>
+
+      <!-- ─── Dealer ───────────────────────────────────── -->
+      <ng-container *ngIf="car.dealerName">
+        <p class="cd__section-title">Dealer</p>
+        <div class="cd__dealer">
+          <div class="cd__dealer-left">
+            <div class="cd__dealer-avatar">
+              <span>{{ car.dealerName.charAt(0).toUpperCase() }}</span>
+            </div>
+            <div class="cd__dealer-info">
+              <span class="cd__dealer-name">{{ car.dealerName }}</span>
+              <span class="cd__dealer-loc" *ngIf="car.location">
+                <ion-icon name="location-outline"></ion-icon>
+                {{ car.location }}
+              </span>
+              <span class="cd__dealer-badge">
+                <ion-icon name="checkmark-circle"></ion-icon>
+                VERIFIED DEALER
+              </span>
+            </div>
+          </div>
+          <div class="cd__dealer-right" *ngIf="car.responseTime">
+            <span class="cd__dealer-rt-label">Responds in</span>
+            <span class="cd__dealer-rt-value">&lt; {{ car.responseTime }}</span>
+          </div>
+        </div>
+        <button class="cd__view-dealer-btn" (click)="viewDealer()">
+          View Dealer Profile
+        </button>
+      </ng-container>
+
+      <!-- ─── Similar Vehicles ─────────────────────────── -->
+      <ng-container *ngIf="similarCars.length > 0">
+        <p class="cd__section-title">Similar Vehicles</p>
+        <div class="cd__similar-scroll">
+          <div
+            class="cd__similar-card"
+            *ngFor="let sc of similarCars"
+            (click)="openSimilarCar(sc)"
+          >
+            <div class="cd__similar-img-wrap">
+              <img [src]="sc.image" [alt]="sc.name" class="cd__similar-img" />
+              <span class="cd__similar-year">{{ sc.year }}</span>
+            </div>
+            <div class="cd__similar-info">
+              <h3 class="cd__similar-name">{{ sc.name }}</h3>
+              <p class="cd__similar-price">{{ sc.price }} FCFA</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="cd__bottom-pad"></div>
     </div>
   </div>
 
   <!-- ─── Sticky CTA ──────────────────────────────────── -->
-  <div class="sticky-cta" *ngIf="car">
-    <button class="cta-btn" [ngClass]="ctaClass" (click)="onCta()">
-      <ion-icon name="key-outline" *ngIf="car.forRent && !isOwned"></ion-icon>
-      <ion-icon name="bag-handle-outline" *ngIf="car.forSale && !isOwned"></ion-icon>
+  <div class="cd__cta" *ngIf="car">
+    <button class="cd__cta-secondary" (click)="messageSeller()">
+      <ion-icon name="chatbubble-outline"></ion-icon>
+      Message
+    </button>
+    <button class="cd__cta-primary" (click)="onCta()">
+      <ion-icon name="heart-outline" *ngIf="!isOwned"></ion-icon>
       <ion-icon name="create-outline" *ngIf="isOwned"></ion-icon>
       {{ ctaLabel }}
     </button>

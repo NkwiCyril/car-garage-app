@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 
@@ -8,10 +8,20 @@ import { IonContent } from '@ionic/angular/standalone';
   styleUrls: ['./splash.page.scss'],
   imports: [IonContent],
 })
-export class SplashPage {
+export class SplashPage implements OnInit, OnDestroy {
+  private advanceTimer?: ReturnType<typeof setTimeout>;
+
   constructor(private router: Router) {}
 
-  goToNext(): void {
-    this.router.navigate(['/onboarding/step-one']);
+  ngOnInit(): void {
+    this.advanceTimer = setTimeout(() => {
+      this.router.navigate(['/onboarding/step-one']);
+    }, 2500);
+  }
+
+  ngOnDestroy(): void {
+    if (this.advanceTimer) {
+      clearTimeout(this.advanceTimer);
+    }
   }
 }

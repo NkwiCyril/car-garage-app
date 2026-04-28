@@ -19,6 +19,10 @@ export interface Car {
   ownerId?: string;
   location?: string;
   isAvailable?: boolean;
+  isVerified?: boolean;
+  fuelType?: 'gasoline' | 'diesel' | 'electric' | 'hybrid';
+  dealerName?: string;
+  responseTime?: string;
   createdAt?: string;
 }
 
