@@ -17,15 +17,36 @@
 
     <!-- ─── Hero (full-bleed, nav floats on top) ───────── -->
     <div class="cd__hero">
-      <img
-        *ngIf="getFirstImage()"
-        [src]="getFirstImage()!"
-        class="cd__hero-img"
-        alt=""
-      />
-      <div class="cd__hero-placeholder" *ngIf="!getFirstImage()">
-        <ion-icon name="car-sport-outline"></ion-icon>
+
+      <!-- Image slider -->
+      <div class="cd__img-track" #imgTrack (scroll)="onImgScroll()">
+        <ng-container *ngIf="getAllImages().length > 0">
+          <div class="cd__img-slide" *ngFor="let img of getAllImages()">
+            <img [src]="img" class="cd__hero-img" alt="" />
+          </div>
+        </ng-container>
+        <div class="cd__img-slide" *ngIf="getAllImages().length === 0">
+          <div class="cd__hero-placeholder">
+            <ion-icon name="car-sport-outline"></ion-icon>
+          </div>
+        </div>
       </div>
+
+      <!-- Prev / Next buttons -->
+      <button
+        class="cd__img-nav cd__img-nav--prev"
+        *ngIf="getAllImages().length > 1"
+        (click)="prevImage()"
+      >
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </button>
+      <button
+        class="cd__img-nav cd__img-nav--next"
+        *ngIf="getAllImages().length > 1"
+        (click)="nextImage()"
+      >
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </button>
 
       <!-- Bottom gradient -->
       <div class="cd__hero-grad"></div>
@@ -75,12 +96,32 @@
             {{ car.location }}
           </p>
         </div>
-        <div class="cd__price-block">
+        <!-- Single price — only when NOT both for rent and for sale -->
+        <div class="cd__price-block" *ngIf="!(car.forRent && car.forSale)">
           <span class="cd__price-value">
             {{ formatPrice(car.forRent && car.rentalPrice ? car.rentalPrice : car.price) }}
           </span>
           <span class="cd__price-unit">FCFA</span>
           <span class="cd__price-per" *ngIf="car.forRent && car.rentalPrice">/day</span>
+        </div>
+      </div>
+
+      <!-- Dual price card — shown when car is both for rent AND for sale -->
+      <div class="cd__price-dual" *ngIf="car.forRent && car.forSale">
+        <div class="cd__price-half">
+          <span class="cd__price-half-label">SALE PRICE</span>
+          <div class="cd__price-half-row">
+            <span class="cd__price-half-val">{{ formatPrice(car.price) }}</span>
+            <span class="cd__price-half-cur">FCFA</span>
+          </div>
+        </div>
+        <div class="cd__price-half-sep"></div>
+        <div class="cd__price-half">
+          <span class="cd__price-half-label cd__price-half-label--rent">RENTAL / DAY</span>
+          <div class="cd__price-half-row">
+            <span class="cd__price-half-val">{{ formatPrice(car.rentalPrice ?? 0) }}</span>
+            <span class="cd__price-half-cur">FCFA</span>
+          </div>
         </div>
       </div>
 

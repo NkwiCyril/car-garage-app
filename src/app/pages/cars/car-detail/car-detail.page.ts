@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonContent, IonIcon, ViewWillEnter } from '@ionic/angular/standalone';
@@ -25,6 +25,8 @@ import {
   bookmarkOutline,
   bookmark,
   pricetagOutline,
+  chevronBackOutline,
+  chevronForwardOutline,
 } from 'ionicons/icons';
 import { Car } from '../../../core/models/car.model';
 import { CarService } from '../../../core/services/car.service';
@@ -44,6 +46,8 @@ interface SimilarCar {
   imports: [CommonModule, IonContent, IonIcon],
 })
 export class CarDetailPage implements OnInit, ViewWillEnter {
+  @ViewChild('imgTrack') imgTrackRef!: ElementRef<HTMLElement>;
+
   car: Car | null = null;
   isOwned = false;
   isBookmarked = false;
@@ -74,6 +78,8 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
       bookmarkOutline,
       bookmark,
       pricetagOutline,
+      chevronBackOutline,
+      chevronForwardOutline,
     });
   }
 
@@ -88,9 +94,6 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
       this.fromRoute = nav.fromRoute ?? null;
       sessionStorage.removeItem('pendingCarNav');
     }
-    if (this.car) {
-      this.loadSimilarCars();
-    }
   }
 
   goBack(): void {
@@ -104,6 +107,28 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
 
   selectImage(index: number): void {
     this.activeImageIndex = index;
+    const track = this.imgTrackRef?.nativeElement;
+    if (track) {
+      track.scrollTo({ left: index * track.offsetWidth, behavior: 'smooth' });
+    }
+  }
+
+  prevImage(): void {
+    const total = this.getAllImages().length;
+    this.selectImage((this.activeImageIndex - 1 + total) % total);
+  }
+
+  nextImage(): void {
+    const total = this.getAllImages().length;
+    this.selectImage((this.activeImageIndex + 1) % total);
+  }
+
+  onImgScroll(): void {
+    const track = this.imgTrackRef?.nativeElement;
+    if (!track) return;
+    const total = this.getAllImages().length;
+    const index = Math.round(track.scrollLeft / track.offsetWidth);
+    this.activeImageIndex = Math.max(0, Math.min(index, total - 1));
   }
 
   getCarName(): string {
@@ -166,24 +191,5 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
 
   openSimilarCar(car: SimilarCar): void {
     // TODO: navigate to similar car detail
-  }
-
-  private loadSimilarCars(): void {
-    this.similarCars = [
-      {
-        id: 's1',
-        name: 'Mercedes-AMG GT',
-        image: 'assets/images/cars/amg-gt.png',
-        year: 2023,
-        price: '38,500,000',
-      },
-      {
-        id: 's2',
-        name: 'BMW M4 Competition',
-        image: 'assets/images/cars/bmw-m4.png',
-        year: 2022,
-        price: '42,000,000',
-      },
-    ];
   }
 }

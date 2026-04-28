@@ -6,9 +6,11 @@ import {
   IonContent,
   IonIcon,
   IonSpinner,
+  ModalController,
   ToastController,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
+import { FiltersSheet } from './filters/filters.sheet';
 import { addIcons } from 'ionicons';
 import {
   locationOutline,
@@ -90,6 +92,7 @@ export class AutoPage implements OnInit, ViewWillEnter {
     private carService: CarService,
     private authService: AuthService,
     private toastController: ToastController,
+    private modalController: ModalController,
   ) {
     addIcons({
       locationOutline,
@@ -216,8 +219,15 @@ export class AutoPage implements OnInit, ViewWillEnter {
     this.activeFilterIndex = this.activeFilterIndex === index ? -1 : index;
   }
 
-  openFilters(): void {
-    // TODO: open full filter modal
+  async openFilters(): Promise<void> {
+    const modal = await this.modalController.create({
+      component: FiltersSheet,
+      initialBreakpoint: 0.93,
+      breakpoints: [0, 0.93],
+      handle: true,
+      cssClass: 'filters-modal',
+    });
+    await modal.present();
   }
 
   toggleFavorite(car: Car): void {
@@ -276,7 +286,7 @@ export class AutoPage implements OnInit, ViewWillEnter {
   formatPrice(price: number): string {
     if (!price) return '0';
     if (price >= 1000000) {
-      return (price / 1000).toFixed(0) + 'K';
+      return (price / 1000000).toFixed(0) + 'M';
     }
     return price.toLocaleString('fr-CM');
   }

@@ -100,6 +100,26 @@ ion-content {
   background: darken($bg, 3%);
 }
 
+// ─── Image Slider ────────────────────────────────────
+.cd__img-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.cd__img-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  position: relative;
+}
+
 .cd__hero-img {
   width: 100%;
   height: 100%;
@@ -241,6 +261,36 @@ ion-content {
   }
 }
 
+// ─── Prev / Next nav buttons ─────────────────────────
+.cd__img-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: $white;
+  }
+
+  &:active { background: rgba(255, 255, 255, 0.35); }
+
+  &--prev { left: clamp(12px, 3vw, 16px); }
+  &--next { right: clamp(12px, 3vw, 16px); }
+}
+
 // ─── Info Card ───────────────────────────────────────
 .cd__info {
   background: $white;
@@ -334,6 +384,61 @@ ion-content {
   color: $gray;
   font-weight: 500;
   margin-top: 2px;
+}
+
+// ─── Dual Price Card ─────────────────────────────────
+.cd__price-dual {
+  display: flex;
+  align-items: stretch;
+  background: $bg;
+  border: 1.5px solid $gray-light;
+  border-radius: clamp(16px, 4vw, 20px);
+  overflow: hidden;
+  margin-bottom: clamp(16px, 3.5dvh, 22px);
+}
+
+.cd__price-half {
+  flex: 1;
+  padding: clamp(14px, 3.5vw, 18px) clamp(16px, 4vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cd__price-half-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: $accent;
+
+  &--rent { color: $success; }
+}
+
+.cd__price-half-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.cd__price-half-val {
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.5px;
+}
+
+.cd__price-half-cur {
+  font-size: clamp(10px, 2.8vw, 12px);
+  font-weight: 600;
+  color: $gray;
+  letter-spacing: 0.3px;
+}
+
+.cd__price-half-sep {
+  width: 1px;
+  background: $gray-light;
+  margin: 14px 0;
 }
 
 // ─── Tags ────────────────────────────────────────────
