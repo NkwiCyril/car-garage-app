@@ -214,7 +214,9 @@ export class DashboardPage implements OnInit, OnDestroy {
           : Array.isArray(res)
             ? res
             : [];
-        this.allFeaturedCars = cars.map((c) => this.carToFeatured(c));
+        this.allFeaturedCars = cars
+          .filter((c) => c.verified === 'verified')
+          .map((c) => this.carToFeatured(c));
         this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
         this.isLoadingCars = false;
       },
@@ -312,7 +314,8 @@ export class DashboardPage implements OnInit, OnDestroy {
       )
       .subscribe((res) => {
         this.isSearchLoading = false;
-        this.searchResults = Array.isArray(res?.data) ? res.data : [];
+        const raw: Car[] = Array.isArray(res?.data) ? res.data : [];
+        this.searchResults = raw.filter((c) => c.verified === 'verified');
       });
   }
 

@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
 
   readonly actionItems: MenuItem[] = [
     { icon: 'add-circle-outline', label: 'Start a Listing', route: '/cars/sell', bg: '#fef3c7', color: '#d97706' },
-    { icon: 'card-outline',       label: 'Payment Methods', route: '/tabs/profile', bg: '#f5f3ff', color: '#7c3aed' },
+    { icon: 'heart-outline',       label: 'My Wishlist', route: '/profile/wishlist', bg: '#f5f3ff', color: '#7c3aed' },
   ];
 
   readonly accountItems: MenuItem[] = [
