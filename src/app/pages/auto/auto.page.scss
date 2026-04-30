@@ -214,69 +214,164 @@ ion-content {
   }
 }
 
-// ─── Filter Pills ────────────────────────────────────
-.mp__filters {
+// ─── Search Row ──────────────────────────────────────
+.mp__search-row {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   padding: 0 clamp(20px, 6vw, 32px);
-  margin-bottom: clamp(12px, 2.5dvh, 16px);
-  overflow-x: auto;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  margin-bottom: clamp(10px, 2dvh, 14px);
 
   @media (min-width: $bp-tablet) {
     padding: 0 40px;
-    gap: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 }
 
-.mp__filter {
-  display: inline-flex;
+.mp__search-wrap {
+  flex: 1;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 9px 16px;
-  border: 1.5px solid $gray-light;
-  border-radius: 9999px;
+  gap: 8px;
   background: $white;
-  font-family: inherit;
-  font-size: clamp(12px, 3.2vw, 13px);
-  font-weight: 600;
+  border: 1.5px solid $gray-light;
+  border-radius: 12px;
+  padding: 0 12px;
+  height: 46px;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: $accent;
+  }
+}
+
+.mp__search-icon {
+  font-size: 17px;
   color: $gray;
-  cursor: pointer;
-  white-space: nowrap;
   flex-shrink: 0;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.mp__search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: clamp(13px, 3.4vw, 14px);
+  color: $primary;
+
+  &::placeholder {
+    color: lighten($gray, 15%);
+  }
+}
+
+.mp__search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: $gray-light;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  transition: background 0.15s ease;
 
   ion-icon {
-    font-size: 15px;
+    font-size: 13px;
+    color: $gray;
   }
 
-  &--main {
-    border-color: $primary;
-    color: $primary;
+  &:active { background: darken($gray-light, 8%); }
+}
+
+.mp__filter-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  ion-icon {
+    font-size: 20px;
+    color: $gray;
+    transition: color 0.15s ease;
   }
 
   &--active {
-    background: $primary;
     border-color: $primary;
-    color: $white;
+    background: $primary;
+
+    ion-icon { color: $white; }
   }
 
-  &:active {
-    background: darken($bg, 3%);
-  }
+  &:active { transform: scale(0.93); }
+}
+
+.mp__filter-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 1.5px solid $white;
+}
+
+// ─── Active Filter Chips ─────────────────────────────
+.mp__active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 clamp(20px, 6vw, 32px);
+  margin-bottom: clamp(8px, 1.5dvh, 12px);
 
   @media (min-width: $bp-tablet) {
-    padding: 10px 20px;
-    font-size: 13px;
+    padding: 0 40px;
+  }
+}
 
-    &:not(.mp__filter--active):not(.mp__filter--main):hover {
-      border-color: darken($gray-light, 10%);
-      color: $primary;
-    }
+.mp__active-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba($accent, 0.1);
+  color: $accent;
+  font-size: clamp(11px, 3vw, 12px);
+  font-weight: 600;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.mp__clear-filters {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  border: 1.5px solid $gray-light;
+  background: transparent;
+  color: $gray;
+  font-family: inherit;
+  font-size: clamp(11px, 3vw, 12px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:active {
+    background: $gray-light;
+    color: $primary;
   }
 }
 

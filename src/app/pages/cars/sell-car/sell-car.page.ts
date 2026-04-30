@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonIcon } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonIcon,
+  IonSpinner,
+  ToastController,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
   arrowBackOutline,
@@ -26,6 +31,9 @@ import {
   listOutline,
   homeOutline,
 } from 'ionicons/icons';
+import { CarService } from '../../../core/services/car.service';
+
+const DRAFT_KEY = 'sc_listing_draft';
 
 interface SellListing {
   make: string;
@@ -58,11 +66,12 @@ interface DocumentItem {
   selector: 'app-sell-car',
   templateUrl: './sell-car.page.html',
   styleUrls: ['./sell-car.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonIcon],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner],
 })
 export class SellCarPage implements OnInit {
   step = 1;
   readonly totalSteps = 5;
+  isSubmitting = false;
 
   listing: SellListing = {
     make: '',
@@ -99,32 +108,47 @@ export class SellCarPage implements OnInit {
   colors    = ['Black', 'White', 'Silver', 'Grey', 'Red', 'Blue', 'Green', 'Brown', 'Obsidian Black', 'GT Silver Metallic', 'Pearl White'];
   bodyTypes = ['SUV', 'Sedan', 'Hatchback', 'Coupe', 'Pickup', 'Van', 'Wagon', 'Convertible', 'Sports'];
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private carService: CarService,
+    private toastController: ToastController,
+  ) {
     addIcons({
-      arrowBackOutline,
-      arrowForwardOutline,
-      checkmarkOutline,
-      checkmarkCircle,
-      addOutline,
-      cameraOutline,
-      documentTextOutline,
-      cloudUploadOutline,
-      lockClosedOutline,
-      informationCircleOutline,
-      alertCircleOutline,
-      chevronDownOutline,
-      carOutline,
-      speedometerOutline,
-      settingsOutline,
-      flameOutline,
-      rocketOutline,
-      timeOutline,
-      listOutline,
-      homeOutline,
+      arrowBackOutline, arrowForwardOutline, checkmarkOutline, checkmarkCircle,
+      addOutline, cameraOutline, documentTextOutline, cloudUploadOutline,
+      lockClosedOutline, informationCircleOutline, alertCircleOutline,
+      chevronDownOutline, carOutline, speedometerOutline, settingsOutline,
+      flameOutline, rocketOutline, timeOutline, listOutline, homeOutline,
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.restoreDraft();
+  }
+
+  // ─── Draft persistence ───────────────────────────────
+
+  private saveDraft(): void {
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(this.listing));
+    } catch {}
+  }
+
+  private restoreDraft(): void {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as Partial<SellListing>;
+        this.listing = { ...this.listing, ...saved };
+      }
+    } catch {}
+  }
+
+  private clearDraft(): void {
+    localStorage.removeItem(DRAFT_KEY);
+  }
+
+  // ─── Computed getters ────────────────────────────────
 
   get stepProgress(): number[] {
     return Array.from({ length: this.totalSteps }, (_, i) => i + 1);
@@ -149,9 +173,10 @@ export class SellCarPage implements OnInit {
   }
 
   get ctaLabel(): string {
+    if (this.isSubmitting) return 'Submitting…';
     const l: Record<number, string> = {
-      1: 'Next: Photos', 2: 'Next: Verification', 3: 'Review Listing',
-      4: 'Next: Pricing', 5: 'Submit Listing',
+      1: 'Next: Photos', 2: 'Next: Verification', 3: 'Next: Pricing',
+      4: 'Next: Review', 5: 'Submit Listing',
     };
     return l[this.step] ?? 'Next';
   }
@@ -168,6 +193,8 @@ export class SellCarPage implements OnInit {
     return this.documents.filter((d) => d.status === 'uploaded').length;
   }
 
+  // ─── Navigation ──────────────────────────────────────
+
   goBack(): void {
     if (this.step > 1) {
       this.step--;
@@ -177,6 +204,7 @@ export class SellCarPage implements OnInit {
   }
 
   next(): void {
+    this.saveDraft();
     if (this.step < this.totalSteps) {
       this.step++;
       window.scrollTo(0, 0);
@@ -185,10 +213,58 @@ export class SellCarPage implements OnInit {
     }
   }
 
+  // ─── API submission ──────────────────────────────────
+
   private submitListing(): void {
-    // TODO: build FormData and call CarService
-    this.step = 6;
+    this.isSubmitting = true;
+    const formData = this.buildFormData();
+
+    this.carService.addCar(formData).subscribe({
+      next: () => {
+        this.clearDraft();
+        this.isSubmitting = false;
+        this.step = 6;
+      },
+      error: (err: Error) => {
+        this.isSubmitting = false;
+        this.showToast(err.message || 'Failed to submit listing. Please try again.', 'danger');
+      },
+    });
   }
+
+  private buildFormData(): FormData {
+    const fd = new FormData();
+    fd.append('make', this.listing.make);
+    fd.append('model', this.listing.model);
+    fd.append('year', String(this.listing.year));
+    fd.append('price', String(this.listing.price));
+    fd.append('mileage', String(this.listing.mileage));
+    fd.append('transmission', this.listing.transmission);
+    fd.append('fuelType', this.mapFuelType(this.listing.fuelType));
+    fd.append('forSale', 'true');
+    fd.append('condition', 'used');
+    if (this.listing.vin) fd.append('vin', this.listing.vin);
+    if (this.listing.color) fd.append('color', this.listing.color);
+    if (this.listing.bodyType) fd.append('bodyType', this.listing.bodyType);
+    if (this.listing.description) fd.append('description', this.listing.description);
+    this.photos.forEach((p) => {
+      if (p.file) fd.append('images', p.file, p.file.name);
+    });
+    return fd;
+  }
+
+  private mapFuelType(fuel: string): string {
+    const map: Record<string, string> = {
+      'Petrol': 'gasoline',
+      'Diesel': 'diesel',
+      'Hybrid': 'hybrid',
+      'Electric': 'electric',
+      'LPG': 'gasoline',
+    };
+    return map[fuel] ?? fuel.toLowerCase();
+  }
+
+  // ─── Photo slots ─────────────────────────────────────
 
   triggerPhotoSlot(index: number): void {
     this.activePhotoSlot = index;
@@ -224,6 +300,8 @@ export class SellCarPage implements OnInit {
     input.value = '';
   }
 
+  // ─── Document slots ──────────────────────────────────
+
   triggerDocInput(key: string): void {
     (document.getElementById('docInput_' + key) as HTMLInputElement)?.click();
   }
@@ -236,6 +314,8 @@ export class SellCarPage implements OnInit {
     input.value = '';
   }
 
+  // ─── Helpers ─────────────────────────────────────────
+
   formatPrice(price: number): string {
     if (!price) return '0';
     return price.toLocaleString('fr-CM');
@@ -247,5 +327,15 @@ export class SellCarPage implements OnInit {
 
   returnHome(): void {
     this.router.navigate(['/tabs/home']);
+  }
+
+  private async showToast(message: string, color: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 4000,
+      position: 'top',
+      color,
+    });
+    await toast.present();
   }
 }

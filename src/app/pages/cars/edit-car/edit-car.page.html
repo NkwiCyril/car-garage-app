@@ -17,6 +17,61 @@
     <!-- ─── Form ─────────────────────────────────────────── -->
     <div class="ec__form">
 
+      <!-- SECTION: Photos -->
+      <div class="ec__section">
+        <p class="ec__section-head">Photos</p>
+        <div class="ec__section-card">
+
+          <div class="ec__imgs-grid">
+            <!-- Existing images -->
+            <div
+              class="ec__img-slot"
+              *ngFor="let f of existingImages"
+              [class.ec__img-slot--removed]="isMarkedForRemoval(f)"
+            >
+              <img [src]="getImageUrl(f)" class="ec__img-thumb" alt="" />
+              <button class="ec__img-remove" (click)="toggleRemoveExisting(f)" type="button">
+                <ion-icon [name]="isMarkedForRemoval(f) ? 'refresh-outline' : 'close-outline'"></ion-icon>
+              </button>
+              <div class="ec__img-removed-overlay" *ngIf="isMarkedForRemoval(f)">
+                <span>Will be removed</span>
+              </div>
+            </div>
+
+            <!-- Pending new images -->
+            <div class="ec__img-slot" *ngFor="let p of pendingPreviews; let i = index">
+              <img [src]="p" class="ec__img-thumb" alt="" />
+              <button class="ec__img-remove" (click)="removePending(i)" type="button">
+                <ion-icon name="close-outline"></ion-icon>
+              </button>
+              <span class="ec__img-new-badge">New</span>
+            </div>
+
+            <!-- Add photo button -->
+            <button
+              class="ec__img-add"
+              (click)="openFilePicker()"
+              type="button"
+              *ngIf="totalImages < MAX_IMAGES"
+            >
+              <ion-icon name="camera-outline"></ion-icon>
+              <span>Add</span>
+            </button>
+          </div>
+
+          <p class="ec__imgs-hint">{{ totalImages }} / {{ MAX_IMAGES }} photos</p>
+
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            multiple
+            style="display:none"
+            (change)="onFilesPicked($event)"
+          />
+        </div>
+      </div>
+
       <!-- SECTION: Basic Details -->
       <div class="ec__section">
         <p class="ec__section-head">Basic Details</p>

@@ -107,7 +107,10 @@ export class BookingDetailPage implements OnInit, ViewWillEnter {
   }
 
   openSupport(): void {
-    window.open('https://wa.me/237XXXXXXXXX', '_blank');
+    const code = this.booking?.bookingCode ?? '';
+    const title = this.booking?.title ?? 'my booking';
+    const msg = `Hello, I need support regarding my DriveEase booking #${code} (${title}).`;
+    window.open(`https://wa.me/237676541667?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   extendBooking(): void {

@@ -1,0 +1,76 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="wl">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="wl__nav">
+      <button class="wl__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="wl__nav-title">My Wishlist</span>
+      <div class="wl__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="wl__header">
+      <h1 class="wl__title">My<br/>Wishlist</h1>
+      <p class="wl__subtitle">
+        <ng-container *ngIf="!isLoading">
+          {{ cars.length }} saved masterpiece{{ cars.length !== 1 ? 's' : '' }} in your collection
+        </ng-container>
+        <ng-container *ngIf="isLoading">&nbsp;</ng-container>
+      </p>
+    </div>
+
+    <!-- ─── Loading ───────────────────────────────────────── -->
+    <div class="wl__loading" *ngIf="isLoading">
+      <ion-spinner name="crescent" class="wl__spinner"></ion-spinner>
+    </div>
+
+    <!-- ─── Empty State ───────────────────────────────────── -->
+    <div class="wl__empty" *ngIf="!isLoading && cars.length === 0">
+      <div class="wl__empty-icon">
+        <ion-icon name="heart-outline"></ion-icon>
+      </div>
+      <p class="wl__empty-title">No saved vehicles yet</p>
+      <p class="wl__empty-desc">Start exploring and save cars you love to your wishlist.</p>
+      <button class="wl__explore-btn" (click)="explore()">
+        <ion-icon name="car-outline"></ion-icon>
+        Explore Cars
+      </button>
+    </div>
+
+    <!-- ─── Grid ──────────────────────────────────────────── -->
+    <div class="wl__grid" *ngIf="!isLoading && cars.length > 0">
+      <div
+        class="wl__card"
+        *ngFor="let car of cars"
+        (click)="openCar(car)"
+      >
+        <!-- Media -->
+        <div class="wl__card-media">
+          <img
+            *ngIf="getImage(car)"
+            [src]="getImage(car)!"
+            [alt]="car.make + ' ' + car.model"
+            class="wl__card-img"
+          />
+          <div class="wl__card-placeholder" *ngIf="!getImage(car)">
+            <ion-icon name="car-outline"></ion-icon>
+          </div>
+          <!-- Remove heart -->
+          <button class="wl__card-heart" (click)="remove(car, $event)" aria-label="Remove from wishlist">
+            <ion-icon name="heart"></ion-icon>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="wl__card-body">
+          <span class="wl__card-year">{{ car.year }}</span>
+          <p class="wl__card-name">{{ car.make }} {{ car.model }}</p>
+          <p class="wl__card-price">XAF {{ formatPrice(car.price) }}</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
   }
 
   get isVerified(): boolean {
-    return !!(this.authService.currentUser?.isVerified);
+    return this.authService.currentUser?.verified === 'verified';
   }
 
   get maskedPhone(): string {
@@ -119,7 +119,8 @@ export class AppComponent implements OnInit {
 
   async openWhatsApp(): Promise<void> {
     await this.menuController.close('main-menu');
-    window.open('https://wa.me/237XXXXXXXXX', '_blank');
+    const msg = `Hello, I have a general inquiry about DriveEase.`;
+    window.open(`https://wa.me/237676541667?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   async confirmLogout(): Promise<void> {

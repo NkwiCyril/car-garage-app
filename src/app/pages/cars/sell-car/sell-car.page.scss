@@ -1072,13 +1072,27 @@ ion-content {
     font-size: 18px;
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(0.97);
     box-shadow: none;
   }
 
+  &--loading,
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+
+    ion-spinner {
+      --color: #{$white};
+      width: 20px;
+      height: 20px;
+    }
+  }
+
   @media (min-width: $bp-tablet) {
-    &:hover {
+    &:hover:not(:disabled) {
       transform: translateY(-1px);
     }
   }

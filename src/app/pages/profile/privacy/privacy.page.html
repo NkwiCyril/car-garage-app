@@ -1,0 +1,66 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="pv">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="pv__nav">
+      <button class="pv__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="pv__nav-title">Privacy &amp; Security</span>
+      <div class="pv__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="pv__header">
+      <h1 class="pv__title">Privacy &amp;<br/>Security</h1>
+      <p class="pv__subtitle">Control your account security and privacy preferences.</p>
+    </div>
+
+    <!-- ─── Security Section ──────────────────────────────── -->
+    <div class="pv__section">
+      <div class="pv__section-header">
+        <ion-icon name="lock-closed-outline" class="pv__section-icon"></ion-icon>
+        <span class="pv__section-label">SECURITY</span>
+      </div>
+
+      <div class="pv__card">
+        <div class="pv__setting" *ngFor="let s of securitySettings; let last = last">
+          <div class="pv__setting-info">
+            <span class="pv__setting-label">{{ s.label }}</span>
+            <span class="pv__setting-desc">{{ s.desc }}</span>
+          </div>
+          <button
+            class="pv__toggle"
+            [class.pv__toggle--on]="s.enabled"
+            (click)="toggle(s)"
+            [attr.aria-label]="s.label"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Privacy Section ───────────────────────────────── -->
+    <div class="pv__section">
+      <div class="pv__section-header">
+        <ion-icon name="eye-off-outline" class="pv__section-icon"></ion-icon>
+        <span class="pv__section-label">PRIVACY</span>
+      </div>
+
+      <div class="pv__card">
+        <div class="pv__setting" *ngFor="let s of privacySettings; let last = last">
+          <div class="pv__setting-info">
+            <span class="pv__setting-label">{{ s.label }}</span>
+            <span class="pv__setting-desc">{{ s.desc }}</span>
+          </div>
+          <button
+            class="pv__toggle"
+            [class.pv__toggle--on]="s.enabled"
+            (click)="toggle(s)"
+            [attr.aria-label]="s.label"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

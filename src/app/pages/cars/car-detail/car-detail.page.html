@@ -5,17 +5,27 @@
     <div class="no-car__icon">
       <ion-icon name="car-outline"></ion-icon>
     </div>
-    <h3>Car not found</h3>
-    <p>No car data was passed to this screen.</p>
+    <h3>{{ 'cd.notFound' | translate }}</h3>
+    <p>{{ 'cd.noData' | translate }}</p>
     <button class="no-car__btn" (click)="goBack()">
       <ion-icon name="arrow-back-outline"></ion-icon>
-      Go Back
+      {{ 'cd.goBack' | translate }}
+    </button>
+  </div>
+
+  <!-- ─── Fixed nav ────────────────────────────────────── -->
+  <div class="cd__nav" *ngIf="car">
+    <button class="cd__nav-btn" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </button>
+    <button class="cd__nav-btn" *ngIf="!isOwned" (click)="toggleWishlist()">
+      <ion-icon [name]="isWishlisted ? 'bookmark' : 'bookmark-outline'"></ion-icon>
     </button>
   </div>
 
   <div class="cd" *ngIf="car">
 
-    <!-- ─── Hero (full-bleed, nav floats on top) ───────── -->
+    <!-- ─── Hero (sticky — stays fixed while content scrolls over it) -->
     <div class="cd__hero">
 
       <!-- Image slider -->
@@ -51,20 +61,14 @@
       <!-- Bottom gradient -->
       <div class="cd__hero-grad"></div>
 
-      <!-- Floating nav -->
-      <div class="cd__nav">
-        <button class="cd__nav-btn" (click)="goBack()">
-          <ion-icon name="arrow-back-outline"></ion-icon>
-        </button>
-        <button class="cd__nav-btn" (click)="toggleBookmark()">
-          <ion-icon [name]="isBookmarked ? 'bookmark' : 'bookmark-outline'"></ion-icon>
-        </button>
-      </div>
-
-      <!-- Verified badge -->
-      <span class="cd__verified" *ngIf="car.isVerified !== false">
+      <!-- Verification badge -->
+      <span class="cd__verified" *ngIf="car.verified === 'verified'">
         <ion-icon name="checkmark-circle"></ion-icon>
-        VERIFIED
+        {{ 'cd.verified' | translate }}
+      </span>
+      <span class="cd__unverified" *ngIf="car.verified === 'unverified'">
+        <ion-icon name="alert-circle"></ion-icon>
+        Unverified
       </span>
 
       <!-- Image counter -->
@@ -132,37 +136,46 @@
         </span>
         <span class="cd__tag cd__tag--sale" *ngIf="car.forSale && !car.forRent">
           <ion-icon name="pricetag-outline"></ion-icon>
-          For Sale
+          {{ 'cd.forSale' | translate }}
         </span>
         <span class="cd__tag cd__tag--rent" *ngIf="car.forRent && !car.forSale">
           <ion-icon name="key-outline"></ion-icon>
-          For Rent
+          {{ 'cd.forRent' | translate }}
         </span>
         <span class="cd__tag cd__tag--both" *ngIf="car.forSale && car.forRent">
           <ion-icon name="pricetag-outline"></ion-icon>
-          Sale &amp; Rent
+          {{ 'cd.saleAndRent' | translate }}
         </span>
       </div>
 
       <!-- ─── Specifications ──────────────────────────── -->
-      <p class="cd__section-title">Specifications</p>
+      <p class="cd__section-title">{{ 'cd.specifications' | translate }}</p>
       <div class="cd__specs">
         <div class="cd__spec" *ngIf="car.year">
           <div class="cd__spec-icon cd__spec-icon--blue">
             <ion-icon name="calendar-outline"></ion-icon>
           </div>
           <div class="cd__spec-data">
-            <span class="cd__spec-label">YEAR</span>
+            <span class="cd__spec-label">{{ 'cd.year' | translate }}</span>
             <span class="cd__spec-value">{{ car.year }}</span>
           </div>
         </div>
-        <div class="cd__spec" *ngIf="car.mileage">
+        <div class="cd__spec" *ngIf="car.mileage != null">
           <div class="cd__spec-icon cd__spec-icon--green">
             <ion-icon name="speedometer-outline"></ion-icon>
           </div>
           <div class="cd__spec-data">
-            <span class="cd__spec-label">MILEAGE</span>
-            <span class="cd__spec-value">{{ car.mileage }}</span>
+            <span class="cd__spec-label">{{ 'cd.mileage' | translate }}</span>
+            <span class="cd__spec-value">{{ getMileage() }}</span>
+          </div>
+        </div>
+        <div class="cd__spec" *ngIf="car.bodyType">
+          <div class="cd__spec-icon cd__spec-icon--teal">
+            <ion-icon name="car-sport-outline"></ion-icon>
+          </div>
+          <div class="cd__spec-data">
+            <span class="cd__spec-label">{{ 'cd.bodyType' | translate }}</span>
+            <span class="cd__spec-value">{{ car.bodyType }}</span>
           </div>
         </div>
         <div class="cd__spec" *ngIf="car.transmission">
@@ -170,7 +183,7 @@
             <ion-icon name="settings-outline"></ion-icon>
           </div>
           <div class="cd__spec-data">
-            <span class="cd__spec-label">GEARBOX</span>
+            <span class="cd__spec-label">{{ 'cd.gearbox' | translate }}</span>
             <span class="cd__spec-value">{{ getTransmission() }}</span>
           </div>
         </div>
@@ -179,7 +192,7 @@
             <ion-icon name="flame-outline"></ion-icon>
           </div>
           <div class="cd__spec-data">
-            <span class="cd__spec-label">FUEL</span>
+            <span class="cd__spec-label">{{ 'cd.fuel' | translate }}</span>
             <span class="cd__spec-value">{{ car.fuelType }}</span>
           </div>
         </div>
@@ -188,7 +201,7 @@
             <ion-icon name="color-palette-outline"></ion-icon>
           </div>
           <div class="cd__spec-data">
-            <span class="cd__spec-label">COLOR</span>
+            <span class="cd__spec-label">{{ 'cd.color' | translate }}</span>
             <span class="cd__spec-value">{{ car.color }}</span>
           </div>
         </div>
@@ -197,7 +210,7 @@
             <ion-icon name="checkmark-circle-outline"></ion-icon>
           </div>
           <div class="cd__spec-data">
-            <span class="cd__spec-label">CONDITION</span>
+            <span class="cd__spec-label">{{ 'cd.condition' | translate }}</span>
             <span class="cd__spec-value">{{ getConditionLabel() }}</span>
           </div>
         </div>
@@ -205,7 +218,7 @@
 
       <!-- ─── Description ─────────────────────────────── -->
       <ng-container *ngIf="car.description">
-        <p class="cd__section-title">Description</p>
+        <p class="cd__section-title">{{ 'cd.description' | translate }}</p>
         <p class="cd__description">{{ car.description }}</p>
       </ng-container>
 
@@ -215,39 +228,65 @@
         <span class="cd__vin-value">{{ car.vin }}</span>
       </div>
 
-      <!-- ─── Dealer ───────────────────────────────────── -->
-      <ng-container *ngIf="car.dealerName">
-        <p class="cd__section-title">Dealer</p>
-        <div class="cd__dealer">
-          <div class="cd__dealer-left">
-            <div class="cd__dealer-avatar">
-              <span>{{ car.dealerName.charAt(0).toUpperCase() }}</span>
+      <!-- ─── Seller Card ──────────────────────────────── -->
+      <ng-container *ngIf="car.owner?._id || car.dealerName">
+        <p class="cd__section-title">{{ 'cd.seller' | translate }}</p>
+
+        <div class="cd__seller-card">
+
+          <!-- Avatar + info -->
+          <div class="cd__seller-top">
+            <div class="cd__seller-avatar">
+              <span>{{ (car.owner?.name || getSellerName()).charAt(0).toUpperCase() }}</span>
             </div>
-            <div class="cd__dealer-info">
-              <span class="cd__dealer-name">{{ car.dealerName }}</span>
-              <span class="cd__dealer-loc" *ngIf="car.location">
-                <ion-icon name="location-outline"></ion-icon>
-                {{ car.location }}
-              </span>
-              <span class="cd__dealer-badge">
+            <div class="cd__seller-body">
+              <div class="cd__seller-verified" *ngIf="car.verified === 'verified'">
                 <ion-icon name="checkmark-circle"></ion-icon>
-                VERIFIED DEALER
-              </span>
+                {{ 'cd.verifiedDealer' | translate }}
+              </div>
+              <h3 class="cd__seller-name">{{ getSellerName() }}</h3>
+              <div class="cd__seller-meta">
+                <ion-icon name="star" class="cd__seller-star"></ion-icon>
+                <span class="cd__seller-rating">4.9</span>
+                <span class="cd__seller-review-count">(120)</span>
+                <span class="cd__seller-sep" *ngIf="car.location">•</span>
+                <ion-icon name="location-outline" class="cd__seller-loc-icon" *ngIf="car.location"></ion-icon>
+                <span class="cd__seller-loc" *ngIf="car.location">{{ car.location }}</span>
+              </div>
             </div>
           </div>
-          <div class="cd__dealer-right" *ngIf="car.responseTime">
-            <span class="cd__dealer-rt-label">Responds in</span>
-            <span class="cd__dealer-rt-value">&lt; {{ car.responseTime }}</span>
+
+          <!-- Stats row -->
+          <div class="cd__seller-stats">
+            <div class="cd__seller-stat">
+              <span class="cd__seller-stat-val">12</span>
+              <span class="cd__seller-stat-label">{{ 'dp.sold' | translate }}</span>
+            </div>
+            <div class="cd__seller-stat-sep"></div>
+            <div class="cd__seller-stat">
+              <span class="cd__seller-stat-val">4</span>
+              <span class="cd__seller-stat-label">{{ 'dp.active' | translate }}</span>
+            </div>
+            <div class="cd__seller-stat-sep"></div>
+            <div class="cd__seller-stat">
+              <span class="cd__seller-stat-val">3+</span>
+              <span class="cd__seller-stat-label">{{ 'dp.years' | translate }}</span>
+            </div>
           </div>
+
+          <!-- CTAs -->
+          <div class="cd__seller-ctas">
+            <button class="cd__seller-profile" (click)="viewDealer()">
+              {{ 'cd.viewSeller' | translate }}
+            </button>
+          </div>
+
         </div>
-        <button class="cd__view-dealer-btn" (click)="viewDealer()">
-          View Dealer Profile
-        </button>
       </ng-container>
 
       <!-- ─── Similar Vehicles ─────────────────────────── -->
       <ng-container *ngIf="similarCars.length > 0">
-        <p class="cd__section-title">Similar Vehicles</p>
+        <p class="cd__section-title">{{ 'cd.similar' | translate }}</p>
         <div class="cd__similar-scroll">
           <div
             class="cd__similar-card"
@@ -274,12 +313,11 @@
   <div class="cd__cta" *ngIf="car">
     <button class="cd__cta-secondary" (click)="messageSeller()">
       <ion-icon name="chatbubble-outline"></ion-icon>
-      Message
+      {{ 'cd.message' | translate }}
     </button>
-    <button class="cd__cta-primary" (click)="onCta()">
-      <ion-icon name="heart-outline" *ngIf="!isOwned"></ion-icon>
-      <ion-icon name="create-outline" *ngIf="isOwned"></ion-icon>
-      {{ ctaLabel }}
+    <button class="cd__cta-primary" (click)="onCta()" [class.cd__cta-primary--wishlisted]="isWishlisted && !isOwned">
+      <ion-icon [name]="isOwned ? 'create-outline' : (isWishlisted ? 'heart' : 'heart-outline')"></ion-icon>
+      {{ isOwned ? ('cd.manageCar' | translate) : (isWishlisted ? ('cd.removeWishlist' | translate) : ('cd.addWishlist' | translate)) }}
     </button>
   </div>
 

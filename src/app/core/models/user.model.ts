@@ -1,9 +1,17 @@
 export interface User {
   id: string;
+  _id?: string;
   name: string;
   phone: string;
   email?: string;
   avatar?: string;
+  image?: string | null;
+  verified?: 'verified' | 'unverified';
+  role?: string;
+  idCardFront?: string | null;
+  idCardBack?: string | null;
+  cars?: string[];
+  wishlist?: string[];
   createdAt?: string;
 }
 

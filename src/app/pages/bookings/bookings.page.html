@@ -3,27 +3,27 @@
 
     <!-- ─── Header ─────────────────────────────────────── -->
     <div class="bk__header">
-      <h1 class="bk__title">Activity</h1>
-      <p class="bk__subtitle">Your bookings and history</p>
+      <h1 class="bk__title">{{ 'bk.title' | translate }}</h1>
+      <p class="bk__subtitle">{{ 'bk.subtitle' | translate }}</p>
     </div>
 
     <!-- ─── Summary Grid ──────────────────────────────── -->
     <div class="bk__summary">
       <div class="bk__stat">
-        <span class="bk__stat-label">TOTAL</span>
         <span class="bk__stat-val">{{ padNum(bookings.length) }}</span>
+        <span class="bk__stat-label">{{ 'bk.total' | translate }}</span>
       </div>
       <div class="bk__stat bk__stat--active">
-        <span class="bk__stat-label">ACTIVE</span>
         <span class="bk__stat-val">{{ padNum(countByStatus('active')) }}</span>
+        <span class="bk__stat-label">{{ 'bk.active' | translate }}</span>
       </div>
       <div class="bk__stat bk__stat--done">
-        <span class="bk__stat-label">COMPLETED</span>
         <span class="bk__stat-val">{{ padNum(countByStatus('completed')) }}</span>
+        <span class="bk__stat-label">{{ 'bk.completed' | translate }}</span>
       </div>
       <div class="bk__stat bk__stat--cancel">
-        <span class="bk__stat-label">CANCELLED</span>
         <span class="bk__stat-val">{{ padNum(countByStatus('cancelled')) }}</span>
+        <span class="bk__stat-label">{{ 'bk.cancelled' | translate }}</span>
       </div>
     </div>
 
@@ -35,15 +35,33 @@
         [class.bk__pill--active]="activeFilter === f.value"
         (click)="activeFilter = f.value"
       >
-        {{ f.label }}
+        {{ f.label | translate }}
+        <span class="bk__pill-count" *ngIf="f.value !== 'all'">
+          {{ padNum(countByStatus(f.value)) }}
+        </span>
       </button>
     </div>
 
-    <!-- ─── Booking Cards ─────────────────────────────── -->
-    <div class="bk__list" *ngIf="filteredBookings.length > 0">
-      <div class="bk__card" *ngFor="let b of filteredBookings" (click)="onBookingAction(b)">
+    <!-- ─── Loading ─────────────────────────────────────── -->
+    <div class="bk__loading" *ngIf="isLoading">
+      <div class="bk__skeleton" *ngFor="let _ of [1,2,3]">
+        <div class="bk__skeleton-img"></div>
+        <div class="bk__skeleton-body">
+          <div class="bk__skeleton-line bk__skeleton-line--short"></div>
+          <div class="bk__skeleton-line"></div>
+          <div class="bk__skeleton-line bk__skeleton-line--med"></div>
+        </div>
+      </div>
+    </div>
 
-        <!-- Car image -->
+    <!-- ─── Booking Cards ─────────────────────────────── -->
+    <div class="bk__list" *ngIf="!isLoading && filteredBookings.length > 0">
+      <div
+        class="bk__card"
+        *ngFor="let b of filteredBookings"
+        (click)="onBookingAction(b)"
+      >
+        <!-- Image + overlays -->
         <div class="bk__card-img-wrap">
           <img
             *ngIf="b.image"
@@ -54,59 +72,94 @@
           <div class="bk__card-img-placeholder" *ngIf="!b.image">
             <ion-icon name="car-sport-outline"></ion-icon>
           </div>
+          <!-- Gradient -->
+          <div class="bk__card-img-grad"></div>
+          <!-- Booking code badge -->
+          <span class="bk__card-code">{{ b.bookingCode }}</span>
+          <!-- Type badge -->
+          <span class="bk__card-type" [class]="'bk__card-type--' + b.type">
+            <ion-icon [name]="getTypeIcon(b.type)"></ion-icon>
+            {{ getTypeLabel(b.type) | uppercase }}
+          </span>
         </div>
 
         <!-- Card body -->
         <div class="bk__card-body">
-          <!-- Type + Status row -->
-          <div class="bk__card-tags">
-            <span class="bk__type-badge" [class]="'bk__type-badge--' + b.type">
-              <ion-icon [name]="getTypeIcon(b.type)"></ion-icon>
-              {{ getTypeLabel(b.type) | uppercase }}
-            </span>
+
+          <!-- Status + date row -->
+          <div class="bk__card-meta">
             <span class="bk__status-badge" [class]="'bk__status-badge--' + b.status">
-              {{ getStatusLabel(b.status) | uppercase }}
+              <span class="bk__status-dot" *ngIf="b.status === 'active'"></span>
+              {{ getStatusLabel(b.status) }}
+            </span>
+            <span class="bk__card-date" *ngIf="b.dates">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ b.dates }}
             </span>
           </div>
 
           <!-- Car name -->
           <h3 class="bk__card-name">{{ b.title }}</h3>
 
-          <!-- Details row -->
-          <div class="bk__card-details">
-            <div class="bk__card-detail" *ngIf="b.dates">
-              <span class="bk__detail-label">DATES</span>
-              <span class="bk__detail-val">{{ b.dates }}</span>
+          <!-- Price row -->
+          <div class="bk__card-price-row">
+            <div class="bk__card-price">
+              <span class="bk__price-label">{{ b.type === 'rental' ? 'PER DAY' : 'TOTAL' }}</span>
+              <span class="bk__price-val">{{ formatPrice(b.price) }}</span>
+              <span class="bk__price-cur">FCFA</span>
             </div>
-            <div class="bk__card-detail" *ngIf="b.statusNote">
-              <span class="bk__detail-label">STATUS</span>
-              <span class="bk__detail-val">{{ b.statusNote }}</span>
-            </div>
-            <div class="bk__card-detail" *ngIf="b.price">
-              <span class="bk__detail-label">{{ b.type === 'rental' ? 'PRICE' : 'TOTAL PRICE' }}</span>
-              <span class="bk__detail-val">{{ formatPrice(b.price) }} FCFA{{ b.type === 'rental' ? '/day' : '' }}</span>
+            <div class="bk__card-total" *ngIf="b.type === 'rental' && b.totalDays">
+              <span class="bk__total-label">{{ b.totalDays }} DAYS TOTAL</span>
+              <span class="bk__total-val">{{ getTotal(b) }} FCFA</span>
             </div>
           </div>
 
-          <!-- Action button -->
-          <button
-            class="bk__card-btn"
-            [class]="'bk__card-btn--' + b.status"
-            (click)="onBookingAction(b); $event.stopPropagation()"
-          >
-            {{ getActionLabel(b) }}
-          </button>
+          <!-- Mini timeline -->
+          <div class="bk__card-timeline" *ngIf="b.timeline?.length">
+            <ng-container *ngFor="let step of b.timeline; let i = index">
+              <div
+                class="bk__tl-dot"
+                [class.bk__tl-dot--done]="step.state === 'completed'"
+                [class.bk__tl-dot--active]="step.state === 'current'"
+                [class.bk__tl-dot--pending]="step.state === 'pending'"
+              ></div>
+              <div
+                class="bk__tl-line"
+                *ngIf="i < b.timeline.length - 1"
+                [class.bk__tl-line--done]="step.state === 'completed'"
+              ></div>
+            </ng-container>
+          </div>
+          <p class="bk__tl-label" *ngIf="currentStep(b) >= 0">
+            {{ b.timeline[currentStep(b)].label }}
+          </p>
+
+          <!-- Action row -->
+          <div class="bk__card-action-row">
+            <span class="bk__card-status-note" *ngIf="b.statusNote">{{ b.statusNote }}</span>
+            <button
+              class="bk__card-btn"
+              [class]="'bk__card-btn--' + b.status"
+              (click)="onBookingAction(b); $event.stopPropagation()"
+            >
+              {{ getActionLabel(b) }}
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
 
     <!-- ─── Empty State ───────────────────────────────── -->
-    <div class="bk__empty" *ngIf="filteredBookings.length === 0">
+    <div class="bk__empty" *ngIf="!isLoading && filteredBookings.length === 0">
       <div class="bk__empty-icon">
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
       <h3>No bookings yet</h3>
-      <p>You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} bookings. Start by renting or purchasing a vehicle.</p>
+      <p>{{ activeFilter !== 'all' ? ('No ' + activeFilter + ' bookings found.') : 'Start by renting or purchasing a vehicle.' }}</p>
+      <button class="bk__empty-btn" (click)="activeFilter = 'all'" *ngIf="activeFilter !== 'all'">
+        Show all bookings
+      </button>
     </div>
 
     <!-- ─── WhatsApp FAB ───────────────────────────────── -->

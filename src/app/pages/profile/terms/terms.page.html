@@ -1,0 +1,87 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="tos">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="tos__nav">
+      <button class="tos__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="tos__nav-title">Terms of Service</span>
+      <div class="tos__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="tos__header">
+      <span class="tos__badge">LEGAL DOCUMENTATION</span>
+      <h1 class="tos__title">Terms of<br/>Service</h1>
+      <div class="tos__meta">
+        <ion-icon name="time-outline"></ion-icon>
+        <span>Last Updated: October 24, 2023</span>
+      </div>
+    </div>
+
+    <!-- ─── Content ───────────────────────────────────────── -->
+    <div class="tos__content">
+
+      <!-- Section 1 -->
+      <div class="tos__section">
+        <h2 class="tos__section-title">1. Acceptance of Terms</h2>
+        <p class="tos__paragraph">
+          By accessing or using the Cameroon Motors platform, you agree to be bound by these Terms of Service. If you do not agree to all of the terms and conditions, you must not access or use our services.
+        </p>
+        <p class="tos__paragraph">
+          Our platform facilitates the high-end automotive marketplace and concierge services. We reserve the right to update these terms at any time to reflect changes in our business or legal landscape.
+        </p>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="tos__section">
+        <h2 class="tos__section-title">2. User Eligibility</h2>
+        <div class="tos__checklist">
+          <div class="tos__check-item">
+            <ion-icon name="checkmark-circle-outline" class="tos__check-icon"></ion-icon>
+            <span>Must be at least 18 years of age with a valid government ID.</span>
+          </div>
+          <div class="tos__check-item">
+            <ion-icon name="checkmark-circle-outline" class="tos__check-icon"></ion-icon>
+            <span>Possess legal authority to enter into a binding contractual agreement.</span>
+          </div>
+          <div class="tos__check-item">
+            <ion-icon name="checkmark-circle-outline" class="tos__check-icon"></ion-icon>
+            <span>Ensure all registration information is accurate and maintained in good standing.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="tos__section">
+        <h2 class="tos__section-title">3. Premium Marketplace Standards</h2>
+        <p class="tos__paragraph">
+          We maintain a "Signature" marketplace environment. Users are prohibited from listing counterfeit vehicles, misrepresenting mileage, or engaging in "curbstoning." Every vehicle listed must meet our preliminary digital concierge verification standards.
+        </p>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="tos__section">
+        <h2 class="tos__section-title">4. Limitation of Liability</h2>
+        <p class="tos__paragraph">
+          Cameroon Motors provides a platform to connect buyers and sellers. While we facilitate verification, we are not a party to the direct vehicle purchase contract. Users acknowledge that mechanical assessments provided on-platform are based on available data and professional inspections at the time of listing.
+        </p>
+      </div>
+
+      <!-- ─── Contact card ─────────────────────────────────── -->
+      <div class="tos__contact-card">
+        <p class="tos__contact-title">Still have questions?</p>
+        <p class="tos__contact-desc">
+          Our legal team and concierge staff are available to clarify any aspect of our service standards.
+        </p>
+        <button class="tos__contact-btn" (click)="contactSupport()">
+          <ion-icon name="logo-whatsapp"></ion-icon>
+          Contact Support
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

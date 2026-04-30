@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { Subject, Subscription, forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
   IonContent,
   IonIcon,
@@ -10,7 +12,7 @@ import {
   ToastController,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
-import { FiltersSheet } from './filters/filters.sheet';
+import { FiltersSheet, FilterState } from './filters/filters.sheet';
 import { addIcons } from 'ionicons';
 import {
   locationOutline,
@@ -32,10 +34,14 @@ import {
   eyeOutline,
   pencilOutline,
   timeOutline,
+  searchOutline,
+  closeOutline,
 } from 'ionicons/icons';
 import { CarService } from '../../core/services/car.service';
 import { AuthService } from '../../core/services/auth.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 import { Car } from '../../core/models/car.model';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 interface SellStep {
   title: string;
@@ -47,128 +53,126 @@ interface SellStep {
   selector: 'app-auto',
   templateUrl: './auto.page.html',
   styleUrls: ['./auto.page.scss'],
-  imports: [CommonModule, IonContent, IonIcon, IonSpinner],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, TranslatePipe],
 })
-export class AutoPage implements OnInit, ViewWillEnter {
+export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   activeTab: 'buy' | 'rent' | 'sell' = 'buy';
-  activeFilterIndex: number = -1;
 
-  isLoadingAvailable = false;
-  rentCars: Car[] = [];
+  // Base car lists loaded on init
   buyCars: Car[] = [];
-  favoritedIds: Set<string> = new Set();
+  rentCars: Car[] = [];
+  isLoadingAvailable = false;
 
+  // Search / filter results
+  filteredCars: Car[] = [];
+  isFiltered = false;
+  isSearchLoading = false;
+
+  // Search
+  searchQuery = '';
+  private searchSubject = new Subject<void>();
+  private searchSub!: Subscription;
+
+  // Filters from FiltersSheet
+  activeFilters: FilterState | null = null;
+
+  // Wishlist
+  wishlistedIds: Set<string> = new Set();
+
+  // Track images that failed to load so the placeholder shows instead
+  brokenImageIds: Set<string> = new Set();
+
+  // Sell tab
   myListings: Car[] = [];
   isLoadingMyListings = false;
   private myListingsLoaded = false;
 
-  filterOptions = ['SUV', 'Sedan', 'Luxury', 'Sports', 'Pickup'];
-
   sellSteps: SellStep[] = [
-    {
-      title: 'Car Details',
-      desc: 'VIN, mileage, and specific technical features.',
-      icon: 'car-outline',
-    },
-    {
-      title: 'Photos',
-      desc: 'High-resolution exterior and interior gallery.',
-      icon: 'camera-outline',
-    },
-    {
-      title: 'Documents',
-      desc: 'Registration and service history verification.',
-      icon: 'document-text-outline',
-    },
-    {
-      title: 'Price & Description',
-      desc: 'Market analysis and your personal storytelling.',
-      icon: 'pricetag-outline',
-    },
+    { title: 'auto.step1.title', desc: 'auto.step1.desc', icon: 'car-outline' },
+    { title: 'auto.step2.title', desc: 'auto.step2.desc', icon: 'camera-outline' },
+    { title: 'auto.step3.title', desc: 'auto.step3.desc', icon: 'document-text-outline' },
+    { title: 'auto.step4.title', desc: 'auto.step4.desc', icon: 'pricetag-outline' },
   ];
 
   constructor(
     private router: Router,
     private carService: CarService,
     private authService: AuthService,
+    private wishlistService: WishlistService,
     private toastController: ToastController,
     private modalController: ModalController,
   ) {
     addIcons({
-      locationOutline,
-      carOutline,
-      carSportOutline,
-      keyOutline,
-      bagHandleOutline,
-      addOutline,
-      refreshOutline,
-      optionsOutline,
-      heartOutline,
-      heart,
-      logoWhatsapp,
-      shieldCheckmarkOutline,
-      cameraOutline,
-      documentTextOutline,
-      pricetagOutline,
-      arrowForwardOutline,
-      eyeOutline,
-      pencilOutline,
-      timeOutline,
+      locationOutline, carOutline, carSportOutline, keyOutline, bagHandleOutline,
+      addOutline, refreshOutline, optionsOutline, heartOutline, heart, logoWhatsapp,
+      shieldCheckmarkOutline, cameraOutline, documentTextOutline, pricetagOutline,
+      arrowForwardOutline, eyeOutline, pencilOutline, timeOutline, searchOutline, closeOutline,
     });
   }
 
   ngOnInit(): void {
+    this.setupSearch();
     this.loadAvailableCars();
+    this.loadWishlist();
   }
 
   ionViewWillEnter(): void {
-    if (this.activeTab === 'sell') {
+    if (sessionStorage.getItem('listings_needsRefresh')) {
+      sessionStorage.removeItem('listings_needsRefresh');
+      this.myListingsLoaded = false;
+    }
+    if (this.activeTab === 'sell' && !this.myListingsLoaded) {
       this.loadMyListings();
     }
+    this.loadWishlist();
   }
 
-  get currentCars(): Car[] {
-    return this.activeTab === 'rent' ? this.rentCars : this.buyCars;
+  ngOnDestroy(): void {
+    this.searchSub?.unsubscribe();
   }
 
-  padStep(n: number): string {
-    return n.toString().padStart(2, '0');
+  // ─── Computed ────────────────────────────────────────
+
+  get displayCars(): Car[] {
+    const base = this.isFiltered
+      ? this.filteredCars
+      : this.activeTab === 'rent' ? this.rentCars : this.buyCars;
+    return this.applyClientFilters(base);
   }
+
+  get isLoading(): boolean {
+    return this.isLoadingAvailable || this.isSearchLoading;
+  }
+
+  get hasActiveFilters(): boolean {
+    if (!this.activeFilters) return false;
+    const f = this.activeFilters;
+    const priceDefault = f.priceRange.lower <= 10_000_000 && f.priceRange.upper >= 250_000_000;
+    return f.brands.length > 0 || !!f.year || !!f.transmission || !!f.fuelType || !priceDefault;
+  }
+
+  // ─── Data loading ────────────────────────────────────
 
   loadAvailableCars(): void {
     this.isLoadingAvailable = true;
-    let completed = 0;
-    const onComplete = () => {
-      if (++completed >= 2) this.isLoadingAvailable = false;
-    };
+    let done = 0;
+    const finish = () => { if (++done >= 2) this.isLoadingAvailable = false; };
 
     this.carService.getAvailableCars({ forRent: true }).subscribe({
-      next: (response) => {
-        this.rentCars = this.extractCars(response);
-        onComplete();
-      },
-      error: (err) => {
-        onComplete();
-        this.showToast(err.message || 'Failed to load rental cars', 'danger');
-      },
+      next: (res) => { this.rentCars = this.extractCars(res); finish(); },
+      error: (err) => { finish(); this.showToast(err.message || 'Failed to load rental cars', 'danger'); },
     });
 
     this.carService.getAvailableCars({ forSale: true }).subscribe({
-      next: (response) => {
-        this.buyCars = this.extractCars(response);
-        onComplete();
-      },
-      error: (err) => {
-        onComplete();
-        this.showToast(err.message || 'Failed to load cars for sale', 'danger');
-      },
+      next: (res) => { this.buyCars = this.extractCars(res); finish(); },
+      error: (err) => { finish(); this.showToast(err.message || 'Failed to load cars for sale', 'danger'); },
     });
   }
 
   loadMyListings(): void {
-    const userId = this.authService.currentUser?.id;
+    const user = this.authService.currentUser;
+    const userId = user?._id || user?.id;
     if (!userId) return;
-
     this.isLoadingMyListings = true;
     this.myListingsLoaded = false;
 
@@ -182,10 +186,7 @@ export class AutoPage implements OnInit, ViewWillEnter {
         const seen = new Set<string>();
         const combined: Car[] = [];
         for (const car of [...saleCars, ...rentCars]) {
-          if (!seen.has(car._id)) {
-            seen.add(car._id);
-            combined.push(car);
-          }
+          if (!seen.has(car._id)) { seen.add(car._id); combined.push(car); }
         }
         this.myListings = combined;
         this.isLoadingMyListings = false;
@@ -199,25 +200,32 @@ export class AutoPage implements OnInit, ViewWillEnter {
     });
   }
 
-  private extractCars(response: any): Car[] {
-    if (Array.isArray(response)) return response;
-    if (Array.isArray(response.data)) return response.data;
-    if (Array.isArray(response.cars)) return response.cars;
-    if (Array.isArray(response.results)) return response.results;
-    return [];
+  loadWishlist(): void {
+    this.wishlistService.getWishlist().subscribe({
+      next: (ids) => { this.wishlistedIds = new Set(ids); },
+      error: () => {},
+    });
   }
 
-  onTabChange(tab: 'buy' | 'rent' | 'sell'): void {
-    this.activeTab = tab;
-    this.activeFilterIndex = -1;
-    if (tab === 'sell' && !this.myListingsLoaded) {
-      this.loadMyListings();
-    }
+  // ─── Search ──────────────────────────────────────────
+
+  private setupSearch(): void {
+    this.searchSub = this.searchSubject.pipe(
+      debounceTime(350),
+      distinctUntilChanged(),
+    ).subscribe(() => this.runQuery());
   }
 
-  selectFilter(index: number): void {
-    this.activeFilterIndex = this.activeFilterIndex === index ? -1 : index;
+  onSearchChange(): void {
+    this.searchSubject.next();
   }
+
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.runQuery();
+  }
+
+  // ─── Filters ─────────────────────────────────────────
 
   async openFilters(): Promise<void> {
     const modal = await this.modalController.create({
@@ -228,21 +236,132 @@ export class AutoPage implements OnInit, ViewWillEnter {
       cssClass: 'filters-modal',
     });
     await modal.present();
-  }
-
-  toggleFavorite(car: Car): void {
-    const id = (car as any)._id || (car as any).id || '';
-    if (this.favoritedIds.has(id)) {
-      this.favoritedIds.delete(id);
-    } else {
-      this.favoritedIds.add(id);
+    const { data, role } = await modal.onWillDismiss<FilterState>();
+    if (role === 'apply' && data) {
+      this.activeFilters = data;
+      this.runQuery();
     }
   }
 
-  isFavorited(car: Car): boolean {
-    const id = (car as any)._id || (car as any).id || '';
-    return this.favoritedIds.has(id);
+  clearFilters(): void {
+    this.activeFilters = null;
+    this.runQuery();
   }
+
+  // ─── Core query runner ───────────────────────────────
+
+  private runQuery(): void {
+    const q = this.searchQuery.trim();
+    const hasApiFilters = this.activeFilters
+      ? this.activeFilters.brands.length > 0
+        || !!this.activeFilters.year
+        || this.activeFilters.priceRange.lower > 10_000_000
+        || this.activeFilters.priceRange.upper < 250_000_000
+      : false;
+
+    if (!q && !hasApiFilters) {
+      this.isFiltered = false;
+      this.filteredCars = [];
+      return;
+    }
+
+    this.isSearchLoading = true;
+    this.isFiltered = true;
+
+    const params: Parameters<CarService['searchCars']>[0] = { limit: 20 };
+    if (this.activeTab === 'buy') params.forSale = true;
+    if (this.activeTab === 'rent') params.forRent = true;
+    if (q) params.q = q;
+
+    if (this.activeFilters) {
+      const f = this.activeFilters;
+      if (f.brands.length > 0) params.make = f.brands[0];
+      if (f.priceRange.lower > 10_000_000) params.priceMin = f.priceRange.lower;
+      if (f.priceRange.upper < 250_000_000) params.priceMax = f.priceRange.upper;
+      const { yearMin, yearMax } = this.parseYear(f.year);
+      if (yearMin) params.yearMin = yearMin;
+      if (yearMax) params.yearMax = yearMax;
+    }
+
+    this.carService.searchCars(params).subscribe({
+      next: (res) => {
+        this.filteredCars = this.extractCars(res);
+        this.isSearchLoading = false;
+      },
+      error: () => {
+        this.isSearchLoading = false;
+      },
+    });
+  }
+
+  private parseYear(year: string): { yearMin?: number; yearMax?: number } {
+    if (!year) return {};
+    if (year === 'Before 2014') return { yearMax: 2013 };
+    const m = year.match(/(\d{4})\s*[–-]\s*(\d{4})/);
+    if (m) return { yearMin: parseInt(m[1], 10), yearMax: parseInt(m[2], 10) };
+    return {};
+  }
+
+  private applyClientFilters(cars: Car[]): Car[] {
+    if (!this.activeFilters) return cars;
+    const { transmission, fuelType } = this.activeFilters;
+    return cars.filter((c) => {
+      if (transmission && c.transmission !== transmission) return false;
+      if (fuelType && c.fuelType !== fuelType) return false;
+      return true;
+    });
+  }
+
+  private extractCars(response: any): Car[] {
+    let cars: Car[];
+    if (Array.isArray(response)) cars = response;
+    else if (Array.isArray(response?.data)) cars = response.data;
+    else if (Array.isArray(response?.cars)) cars = response.cars;
+    else if (Array.isArray(response?.results)) cars = response.results;
+    else cars = [];
+    return cars.filter((c) => c.verified === 'verified');
+  }
+
+  // ─── Tab ─────────────────────────────────────────────
+
+  onTabChange(tab: 'buy' | 'rent' | 'sell'): void {
+    this.activeTab = tab;
+    if (tab === 'sell') {
+      if (!this.myListingsLoaded) this.loadMyListings();
+      return;
+    }
+    // Re-run query for new tab context (forSale/forRent changes)
+    this.runQuery();
+  }
+
+  // ─── Wishlist ────────────────────────────────────────
+
+  isWishlisted(car: Car): boolean {
+    return this.wishlistedIds.has(car._id);
+  }
+
+  isOwned(car: Car): boolean {
+    const user = this.authService.currentUser;
+    const userId = user?._id || user?.id;
+    return !!userId && (car.owner?._id === userId || car.ownerId === userId);
+  }
+
+  toggleWishlist(car: Car): void {
+    const id = car._id;
+    if (this.wishlistedIds.has(id)) {
+      this.wishlistedIds.delete(id);
+      this.wishlistService.remove(id).subscribe({
+        error: () => this.wishlistedIds.add(id),
+      });
+    } else {
+      this.wishlistedIds.add(id);
+      this.wishlistService.add(id).subscribe({
+        error: () => this.wishlistedIds.delete(id),
+      });
+    }
+  }
+
+  // ─── Car helpers ─────────────────────────────────────
 
   openCarDetail(car: Car): void {
     sessionStorage.setItem(
@@ -260,14 +379,6 @@ export class AutoPage implements OnInit, ViewWillEnter {
     this.router.navigate(['/cars/detail']);
   }
 
-  onAddCar(): void {
-    this.router.navigate(['/cars/add']);
-  }
-
-  onStartListing(): void {
-    this.router.navigate(['/cars/sell']);
-  }
-
   getCarName(car: Car): string {
     return `${car.make ?? ''} ${car.model ?? ''}`.trim();
   }
@@ -278,16 +389,20 @@ export class AutoPage implements OnInit, ViewWillEnter {
   }
 
   getFirstImage(car: Car): string | null {
-    return car.images && car.images.length > 0
-      ? this.carService.imageUrl(car.images[0])
-      : null;
+    return car.images?.length ? this.carService.imageUrl(car.images[0]) : null;
+  }
+
+  onCarImgError(carId: string): void {
+    this.brokenImageIds.add(carId);
+  }
+
+  hasImage(car: Car): boolean {
+    return !!this.getFirstImage(car) && !this.brokenImageIds.has(car._id);
   }
 
   formatPrice(price: number): string {
     if (!price) return '0';
-    if (price >= 1000000) {
-      return (price / 1000000).toFixed(0) + 'M';
-    }
+    if (price >= 1_000_000) return (price / 1_000_000).toFixed(0) + 'M';
     return price.toLocaleString('fr-CM');
   }
 
@@ -310,12 +425,27 @@ export class AutoPage implements OnInit, ViewWillEnter {
     return (car as any).status === 'review';
   }
 
+  padStep(n: number): string {
+    return n.toString().padStart(2, '0');
+  }
+
+  // ─── Navigation ──────────────────────────────────────
+
+  onAddCar(): void {
+    this.router.navigate(['/cars/add']);
+  }
+
+  onStartListing(): void {
+    this.router.navigate(['/cars/sell']);
+  }
+
   goToMyListings(): void {
     this.router.navigate(['/cars/my']);
   }
 
   openWhatsApp(): void {
-    window.open('https://wa.me/237XXXXXXXXX', '_blank');
+    const msg = `Hello, I have an inquiry about the DriveEase auto marketplace.`;
+    window.open(`https://wa.me/237676541667?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   private async showToast(message: string, color: string): Promise<void> {

@@ -1,0 +1,48 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="nt">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="nt__nav">
+      <button class="nt__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="nt__nav-title">{{ 'notif.navTitle' | translate }}</span>
+      <div class="nt__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="nt__header">
+      <h1 class="nt__title">{{ 'notif.title' | translate }}</h1>
+      <p class="nt__subtitle">{{ 'notif.subtitle' | translate }}</p>
+    </div>
+
+    <!-- ─── Single Toggle ────────────────────────────────── -->
+    <div class="nt__section">
+      <div class="nt__section-header">
+        <ion-icon name="notifications-outline" class="nt__section-icon"></ion-icon>
+        <span class="nt__section-label">{{ 'notif.section' | translate }}</span>
+      </div>
+
+      <div class="nt__card">
+        <div class="nt__item">
+          <div class="nt__item-info">
+            <span class="nt__item-label">{{ 'notif.allNotif' | translate }}</span>
+            <span class="nt__item-desc">{{ 'notif.allNotif.desc' | translate }}</span>
+          </div>
+          <button
+            class="nt__toggle"
+            [class.nt__toggle--on]="notificationsEnabled"
+            (click)="toggle()"
+            aria-label="Toggle notifications"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Note ──────────────────────────────────────────── -->
+    <div class="nt__note">
+      <p>{{ 'notif.note' | translate }}</p>
+    </div>
+
+  </div>
+</ion-content>

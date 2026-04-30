@@ -451,10 +451,18 @@
 
     <!-- ─── Fixed CTA ─────────────────────────────────────── -->
     <div class="sc__footer">
-      <button class="sc__cta" (click)="next()">
-        <span>{{ ctaLabel }}</span>
-        <ion-icon name="rocket-outline" *ngIf="step === 5"></ion-icon>
-        <ion-icon name="arrow-forward-outline" *ngIf="step < 5"></ion-icon>
+      <button
+        class="sc__cta"
+        [class.sc__cta--loading]="isSubmitting"
+        [disabled]="isSubmitting"
+        (click)="next()"
+      >
+        <ion-spinner name="crescent" *ngIf="isSubmitting"></ion-spinner>
+        <ng-container *ngIf="!isSubmitting">
+          <span>{{ ctaLabel }}</span>
+          <ion-icon name="rocket-outline" *ngIf="step === 5"></ion-icon>
+          <ion-icon name="arrow-forward-outline" *ngIf="step < 5"></ion-icon>
+        </ng-container>
       </button>
     </div>
 

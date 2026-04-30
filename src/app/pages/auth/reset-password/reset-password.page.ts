@@ -32,6 +32,7 @@ export class ResetPasswordPage {
   }
 
   contactSupport(): void {
-    console.log("Redirected to WhatsApp chat...")
+    const msg = `Hello, I need help resetting my DriveEase account password.`;
+    window.open(`https://wa.me/237676541667?text=${encodeURIComponent(msg)}`, '_blank');
   }
 }

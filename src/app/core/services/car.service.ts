@@ -106,10 +106,55 @@ export class CarService {
       .pipe(catchError(this.handleError));
   }
 
+  // GET /api/cars/search — full-text + faceted search
+  searchCars(params: {
+    q?: string;
+    make?: string;
+    model?: string;
+    forSale?: boolean;
+    forRent?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+    yearMin?: number;
+    yearMax?: number;
+    sort?: 'recent' | 'priceAsc' | 'priceDesc' | 'yearAsc' | 'yearDesc';
+    page?: number;
+    limit?: number;
+  }): Observable<any> {
+    let p = new HttpParams();
+    if (params.q) p = p.set('q', params.q);
+    if (params.make) p = p.set('make', params.make);
+    if (params.model) p = p.set('model', params.model);
+    if (params.forSale !== undefined) p = p.set('forSale', String(params.forSale));
+    if (params.forRent !== undefined) p = p.set('forRent', String(params.forRent));
+    if (params.priceMin !== undefined) p = p.set('priceMin', String(params.priceMin));
+    if (params.priceMax !== undefined) p = p.set('priceMax', String(params.priceMax));
+    if (params.yearMin !== undefined) p = p.set('yearMin', String(params.yearMin));
+    if (params.yearMax !== undefined) p = p.set('yearMax', String(params.yearMax));
+    if (params.sort) p = p.set('sort', params.sort);
+    if (params.page !== undefined) p = p.set('page', String(params.page));
+    if (params.limit !== undefined) p = p.set('limit', String(params.limit));
+    return this.http.get<any>(`${this.apiUrl}/search`, { params: p }).pipe(catchError(this.handleError));
+  }
+
   // DELETE /api/cars/:id — delete an owned car
   deleteCar(id: string): Observable<CarApiResponse> {
     return this.http
       .delete<CarApiResponse>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  // PATCH /api/cars/:id/images — append new images to an existing car listing
+  addCarImages(id: string, formData: FormData): Observable<CarApiResponse> {
+    return this.http
+      .patch<CarApiResponse>(`${this.apiUrl}/${id}/images`, formData)
+      .pipe(catchError(this.handleError));
+  }
+
+  // DELETE /api/cars/:id/images/:filename — remove a specific image from a car
+  removeCarImage(id: string, filename: string): Observable<CarApiResponse> {
+    return this.http
+      .delete<CarApiResponse>(`${this.apiUrl}/${id}/images/${encodeURIComponent(filename)}`)
       .pipe(catchError(this.handleError));
   }
 

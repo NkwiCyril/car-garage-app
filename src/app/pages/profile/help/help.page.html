@@ -1,0 +1,73 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="hp">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="hp__nav">
+      <button class="hp__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="hp__nav-title">Help &amp; Support</span>
+      <div class="hp__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="hp__header">
+      <h1 class="hp__title">Help &amp;<br/>Support</h1>
+      <p class="hp__subtitle">Find answers to common questions or reach our team directly.</p>
+    </div>
+
+    <!-- ─── FAQ ───────────────────────────────────────────── -->
+    <div class="hp__section">
+      <div class="hp__section-header">
+        <ion-icon name="help-circle-outline" class="hp__section-icon"></ion-icon>
+        <span class="hp__section-label">FREQUENTLY ASKED QUESTIONS</span>
+      </div>
+
+      <div class="hp__faq-list">
+        <div class="hp__faq-item" *ngFor="let faq of faqs">
+          <button
+            class="hp__faq-q"
+            [class.hp__faq-q--open]="faq.open"
+            (click)="toggleFaq(faq)"
+          >
+            <span>{{ faq.q }}</span>
+            <ion-icon name="chevron-down-outline"></ion-icon>
+          </button>
+          <div class="hp__faq-a" *ngIf="faq.open">
+            {{ faq.a }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Contact Section ───────────────────────────────── -->
+    <div class="hp__section">
+      <div class="hp__section-header">
+        <span class="hp__section-label">CONTACT US</span>
+      </div>
+
+      <div class="hp__contact-list">
+        <button class="hp__contact-btn hp__contact-btn--whatsapp" (click)="openWhatsApp()">
+          <span class="hp__contact-icon">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+          </span>
+          <div class="hp__contact-info">
+            <span class="hp__contact-name">WhatsApp Support</span>
+            <span class="hp__contact-desc">Typically replies within 1 hour</span>
+          </div>
+        </button>
+
+        <button class="hp__contact-btn hp__contact-btn--email" (click)="sendEmail()">
+          <span class="hp__contact-icon">
+            <ion-icon name="mail-outline"></ion-icon>
+          </span>
+          <div class="hp__contact-info">
+            <span class="hp__contact-name">Email Support</span>
+            <span class="hp__contact-desc">support@driveease.cm</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
