@@ -1,0 +1,84 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="pm">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="pm__nav">
+      <button class="pm__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="pm__nav-title">Payment Methods</span>
+      <div class="pm__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="pm__header">
+      <h1 class="pm__title">Payment<br/>Methods</h1>
+      <p class="pm__subtitle">Manage your saved payment methods for fast and secure checkout.</p>
+    </div>
+
+    <!-- ─── Saved Methods ─────────────────────────────────── -->
+    <div class="pm__section">
+      <p class="pm__section-label">SAVED METHODS</p>
+
+      <div class="pm__empty-methods" *ngIf="methods.length === 0">
+        <ion-icon name="card-outline"></ion-icon>
+        <span>No payment methods saved yet.</span>
+      </div>
+
+      <div class="pm__method-list" *ngIf="methods.length > 0">
+        <div class="pm__method-card" *ngFor="let method of methods">
+          <!-- Icon circle -->
+          <div class="pm__method-icon" [style.background]="method.color + '22'">
+            <ion-icon
+              [name]="method.type === 'visa' || method.type === 'mastercard' ? 'card-outline' : 'phone-portrait-outline'"
+              [style.color]="method.color"
+            ></ion-icon>
+          </div>
+
+          <!-- Info -->
+          <div class="pm__method-info">
+            <span class="pm__method-name">{{ method.name }}</span>
+            <span class="pm__method-detail">{{ method.detail }}</span>
+          </div>
+
+          <!-- Remove -->
+          <button class="pm__method-remove" (click)="remove(method.id)" aria-label="Remove payment method">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Add Method ────────────────────────────────────── -->
+    <div class="pm__section">
+      <p class="pm__section-label">ADD NEW METHOD</p>
+      <div class="pm__add-grid">
+        <button class="pm__add-btn" (click)="addMethod('momo')">
+          <span class="pm__add-icon" style="background: #FFCC0022; color: #FFCC00;">
+            <ion-icon name="phone-portrait-outline"></ion-icon>
+          </span>
+          <span class="pm__add-label">MTN Momo</span>
+        </button>
+        <button class="pm__add-btn" (click)="addMethod('orange')">
+          <span class="pm__add-icon" style="background: #FF660022; color: #FF6600;">
+            <ion-icon name="phone-portrait-outline"></ion-icon>
+          </span>
+          <span class="pm__add-label">Orange Money</span>
+        </button>
+        <button class="pm__add-btn" (click)="addMethod('visa')">
+          <span class="pm__add-icon" style="background: #1a3eb822; color: #1a3eb8;">
+            <ion-icon name="card-outline"></ion-icon>
+          </span>
+          <span class="pm__add-label">Visa Card</span>
+        </button>
+        <button class="pm__add-btn" (click)="addMethod('mastercard')">
+          <span class="pm__add-icon" style="background: #eb1a1a22; color: #eb1a1a;">
+            <ion-icon name="card-outline"></ion-icon>
+          </span>
+          <span class="pm__add-label">Mastercard</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

@@ -5,17 +5,17 @@ import {
   IonContent,
   IonIcon,
   AlertController,
+  ViewWillEnter,
 } from '@ionic/angular/standalone';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { addIcons } from 'ionicons';
 import {
   personOutline,
-  cardOutline,
   carOutline,
   shieldCheckmarkOutline,
   heartOutline,
-  lockClosedOutline,
   languageOutline,
-  notificationsOutline,
   helpCircleOutline,
   documentTextOutline,
   logOutOutline,
@@ -23,8 +23,15 @@ import {
   checkmarkCircle,
   logoWhatsapp,
   cameraOutline,
+  alertCircle,
+  checkmark,
+  alert,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
+import { WishlistService } from '../../core/services/wishlist.service';
+import { BookingService } from '../../core/services/booking.service';
+import { CarService } from '../../core/services/car.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 interface MenuItem {
   icon: string;
@@ -40,46 +47,40 @@ interface MenuItem {
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  imports: [CommonModule, IonContent, IonIcon],
+  imports: [CommonModule, IonContent, IonIcon, TranslatePipe],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, ViewWillEnter {
   userName = '';
   userPhone = '';
   userAvatar: string | null = null;
 
   stats = {
-    bookings: 12,
-    vehicles: 4,
-    wishlist: 28,
+    bookings: 0,
+    vehicles: 0,
+    wishlist: 0,
   };
 
   accountItems: MenuItem[] = [
     {
       icon: 'person-outline',
-      label: 'Personal Information',
-      subtitle: 'Manage your profile details',
+      label: 'pf.personalInfo',
+      subtitle: 'pf.personalInfoSub',
       color: 'blue',
       route: '/profile/personal-info',
     },
     {
       icon: 'shield-checkmark-outline',
-      label: 'ID Verification',
-      subtitle: 'Status: Verified Account',
+      label: 'pf.idVerification',
+      subtitle: 'pf.idVerificationSub',
       color: 'green',
       badge: true,
       route: '/profile/verification',
     },
-    {
-      icon: 'card-outline',
-      label: 'Payment Methods',
-      subtitle: 'Momo, Orange, Cards',
-      color: 'purple',
-      route: null,
-    },
+    // { icon: 'card-outline', label: 'pf.paymentMethods', subtitle: 'pf.paymentMethodsSub', color: 'purple', route: '/profile/payment' },
     {
       icon: 'car-outline',
-      label: 'My Listings',
-      subtitle: 'Manage your fleet',
+      label: 'pf.myListings',
+      subtitle: 'pf.myListingsSub',
       color: 'dark',
       route: '/cars/my',
     },
@@ -88,45 +89,35 @@ export class ProfilePage implements OnInit {
   prefItems: MenuItem[] = [
     {
       icon: 'heart-outline',
-      label: 'My Wishlist',
+      label: 'pf.myWishlist',
       color: 'danger',
-      route: null,
+      route: '/profile/wishlist',
     },
-    {
-      icon: 'lock-closed-outline',
-      label: 'Privacy & Security',
-      color: 'blue',
-      route: null,
-    },
+    // { icon: 'lock-closed-outline', label: 'pf.privacySecurity', color: 'blue', route: '/profile/privacy' },
     {
       icon: 'language-outline',
-      label: 'Language',
+      label: 'pf.language',
       color: 'blue',
       meta: 'English (US)',
-      route: null,
+      route: '/profile/language',
     },
-    {
-      icon: 'notifications-outline',
-      label: 'Notifications',
-      color: 'blue',
-      route: null,
-    },
+    // { icon: 'notifications-outline', label: 'pf.notifications', color: 'blue', route: '/profile/notifications' },
   ];
 
   constructor(
     private authService: AuthService,
+    private wishlistService: WishlistService,
+    private bookingService: BookingService,
+    private carService: CarService,
     private router: Router,
     private alertController: AlertController,
   ) {
     addIcons({
       personOutline,
-      cardOutline,
       carOutline,
       shieldCheckmarkOutline,
       heartOutline,
-      lockClosedOutline,
       languageOutline,
-      notificationsOutline,
       helpCircleOutline,
       documentTextOutline,
       logOutOutline,
@@ -134,7 +125,20 @@ export class ProfilePage implements OnInit {
       checkmarkCircle,
       logoWhatsapp,
       cameraOutline,
+      alertCircle,
+      checkmark,
+      alert,
     });
+  }
+
+  private static readonly LANG_LABELS: Record<string, string> = {
+    en: 'English (US)', fr: 'French', es: 'Spanish',
+    zh: 'Chinese', ar: 'Arabic', nl: 'Dutch',
+  };
+
+  private getCurrentLanguageLabel(): string {
+    const code = localStorage.getItem('app_language') ?? 'en';
+    return ProfilePage.LANG_LABELS[code] ?? 'English (US)';
   }
 
   ngOnInit(): void {
@@ -143,12 +147,47 @@ export class ProfilePage implements OnInit {
       this.userName = user.name || 'User';
       this.userPhone = user.phone || '';
     }
+    const langItem = this.prefItems.find(i => i.route === '/profile/language');
+    if (langItem) langItem.meta = this.getCurrentLanguageLabel();
+  }
+
+  ionViewWillEnter(): void {
+    this.loadStats();
+  }
+
+  private loadStats(): void {
+    const user = this.authService.currentUser;
+    if (!user) return;
+    const userId = user._id || user.id;
+
+    const wishlist$ = this.wishlistService.getWishlist().pipe(
+      catchError(() => of([] as string[])),
+    );
+    const bookings$ = this.bookingService.getBookings().pipe(
+      catchError(() => of([] as any[])),
+    );
+    const toArr = (res: any): any[] =>
+      Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+    const sale$ = this.carService.getUserCarsForSale(userId).pipe(
+      map(toArr), catchError(() => of([] as any[])),
+    );
+    const rent$ = this.carService.getUserCarsForRent(userId).pipe(
+      map(toArr), catchError(() => of([] as any[])),
+    );
+
+    forkJoin([wishlist$, bookings$, sale$, rent$]).subscribe(([wishlist, bookings, sale, rent]) => {
+      const seen = new Set<string>();
+      [...sale, ...rent].forEach((c: any) => { if (c._id) seen.add(c._id); });
+      this.stats = {
+        bookings: bookings.length,
+        vehicles: seen.size,
+        wishlist: wishlist.length,
+      };
+    });
   }
 
   get isVerified(): boolean {
-    return this.accountItems.some(
-      item => item.route === '/profile/verification' && item.badge,
-    );
+    return this.authService.currentUser?.verified === 'verified';
   }
 
   get maskedPhone(): string {
@@ -193,6 +232,7 @@ export class ProfilePage implements OnInit {
   }
 
   openWhatsApp(): void {
-    window.open('https://wa.me/237XXXXXXXXX', '_blank');
+    const msg = `Hello, I need assistance with my DriveEase account.`;
+    window.open(`https://wa.me/237676541667?text=${encodeURIComponent(msg)}`, '_blank');
   }
 }

@@ -1,0 +1,219 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$radius: 14px;
+$page-max: 520px;
+$bp-tablet: 768px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$white};
+}
+
+.lg {
+  min-height: 100%;
+  padding-bottom: 100px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $page-max;
+    margin: 0 auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.lg__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 14px;
+  background: $white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.lg__nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+.lg__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+}
+
+.lg__nav-spacer {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+// ─── Header ──────────────────────────────────────────
+.lg__header {
+  padding: 8px 24px 24px;
+}
+
+.lg__title {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 7.5vw, 36px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+}
+
+.lg__subtitle {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: $gray;
+  line-height: 1.5;
+}
+
+// ─── Language List ────────────────────────────────────
+.lg__list {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lg__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: $white;
+  border-radius: $radius;
+  border: 1.5px solid $gray-light;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: border-color 0.15s ease;
+
+  &--active {
+    border-color: $accent;
+  }
+
+  &:active { opacity: 0.8; }
+}
+
+.lg__flag {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: $bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+}
+
+.lg__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lg__lang-name {
+  font-size: clamp(14px, 3.8vw, 16px);
+  font-weight: 700;
+  color: $primary;
+}
+
+.lg__lang-native {
+  font-size: 13px;
+  color: $gray;
+}
+
+// ─── Radio ───────────────────────────────────────────
+.lg__radio {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid $gray-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+
+  &--selected {
+    border-color: $accent;
+  }
+}
+
+.lg__radio-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: $accent;
+}
+
+// ─── Fixed Footer ─────────────────────────────────────
+.lg__footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 14px 24px calc(env(safe-area-inset-bottom) + 14px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid $gray-light;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $page-max;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-left: 1px solid $gray-light;
+    border-right: 1px solid $gray-light;
+  }
+}
+
+.lg__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: $radius;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(14px, 3.8vw, 15px);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -4px rgba(0, 67, 235, 0.35);
+
+  ion-icon { font-size: 18px; }
+  &:active { transform: scale(0.97); box-shadow: none; }
+}

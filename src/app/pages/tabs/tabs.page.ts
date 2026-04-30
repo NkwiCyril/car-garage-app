@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   IonTabs,
   IonTabBar,
@@ -17,21 +18,25 @@ import {
   personOutline,
   person,
 } from 'ionicons/icons';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslatePipe } from '../../core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
   imports: [
+    CommonModule,
     IonTabs,
     IonTabBar,
     IonTabButton,
     IonIcon,
     IonLabel,
+    TranslatePipe,
   ],
 })
 export class TabsPage {
-  constructor() {
+  constructor(public translationService: TranslationService) {
     addIcons({
       homeOutline,
       home,

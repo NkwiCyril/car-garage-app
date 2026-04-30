@@ -104,6 +104,44 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/profile/verification/verification.page').then((m) => m.VerificationPage),
   },
+  {
+    path: 'profile/wishlist',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/wishlist/wishlist.page').then((m) => m.WishlistPage),
+  },
+  {
+    path: 'profile/language',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/language/language.page').then((m) => m.LanguagePage),
+  },
+  {
+    path: 'profile/terms',
+    loadComponent: () => import('./pages/profile/terms/terms.page').then((m) => m.TermsPage),
+  },
+  {
+    path: 'profile/payment',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/payment/payment.page').then((m) => m.PaymentPage),
+  },
+  {
+    path: 'profile/privacy',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/privacy/privacy.page').then((m) => m.PrivacyPage),
+  },
+  {
+    path: 'profile/notifications',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/notifications/notifications.page').then((m) => m.NotificationsPage),
+  },
+  {
+    path: 'profile/help',
+    loadComponent: () => import('./pages/profile/help/help.page').then((m) => m.HelpPage),
+  },
+  {
+    path: 'profile/dealer',
+    canActivate: [authGuard],
+    loadComponent: () => import('./pages/profile/dealer/dealer.page').then((m) => m.DealerPage),
+  },
 
   // Bookings (protected full-screen pages, no tab bar)
   {

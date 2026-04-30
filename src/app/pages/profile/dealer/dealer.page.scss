@@ -1,0 +1,388 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gold: #f59e0b;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$dark-card: #111827;
+$radius: 14px;
+$page-max: 520px;
+$bp-tablet: 768px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$white};
+}
+
+.dp {
+  min-height: 100%;
+  padding-bottom: 32px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $page-max;
+    margin: 0 auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.dp__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 14px;
+  background: $white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.dp__nav-back,
+.dp__nav-share {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+.dp__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 8px;
+}
+
+// ─── Profile ─────────────────────────────────────────
+.dp__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 24px 20px;
+  text-align: center;
+}
+
+.dp__avatar-wrap {
+  margin-bottom: 12px;
+}
+
+.dp__avatar {
+  width: clamp(88px, 22vw, 110px);
+  height: clamp(88px, 22vw, 110px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, $accent 0%, #1a56eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0, 67, 235, 0.3);
+
+  span {
+    font-size: clamp(36px, 9vw, 44px);
+    font-weight: 800;
+    color: $white;
+    line-height: 1;
+  }
+}
+
+.dp__verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: $accent;
+  color: $white;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+
+  ion-icon {
+    font-size: 14px;
+  }
+}
+
+.dp__name {
+  margin: 0 0 10px;
+  font-size: clamp(20px, 5.5vw, 26px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.4px;
+}
+
+.dp__meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: clamp(12px, 3vw, 13px);
+  color: $gray;
+}
+
+.dp__star {
+  color: $gold;
+  font-size: 14px;
+}
+
+.dp__rating {
+  font-weight: 700;
+  color: $primary;
+}
+
+.dp__sep {
+  color: $gray-light;
+}
+
+.dp__loc-icon {
+  font-size: 14px;
+  color: $gray;
+}
+
+// ─── Stats ───────────────────────────────────────────
+.dp__stats-row {
+  display: flex;
+  align-items: center;
+  margin: 0 20px 24px;
+  background: $bg;
+  border-radius: $radius;
+  padding: 16px 8px;
+}
+
+.dp__stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.dp__stat-val {
+  font-size: clamp(20px, 5vw, 24px);
+  font-weight: 800;
+  color: $primary;
+  line-height: 1;
+}
+
+.dp__stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+.dp__stat-sep {
+  width: 1px;
+  height: 32px;
+  background: $gray-light;
+  flex-shrink: 0;
+}
+
+// ─── CTAs ────────────────────────────────────────────
+.dp__ctas {
+  display: flex;
+  gap: 12px;
+  padding: 0 20px 24px;
+}
+
+.dp__cta-whatsapp {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 52px;
+  border-radius: $radius;
+  background: $accent;
+  color: $white;
+  border: none;
+  font-size: clamp(14px, 3.5vw, 15px);
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: opacity 0.15s;
+
+  ion-icon { font-size: 20px; }
+  &:active { opacity: 0.85; }
+}
+
+.dp__cta-call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: $radius;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+
+  ion-icon { font-size: 20px; color: $primary; }
+  &:active { background: $bg; }
+}
+
+// ─── Inventory ───────────────────────────────────────
+.dp__inventory {
+  padding: 0 20px;
+}
+
+.dp__inv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dp__inv-title {
+  margin: 0;
+  font-size: clamp(16px, 4vw, 18px);
+  font-weight: 800;
+  color: $primary;
+}
+
+.dp__inv-viewall {
+  background: none;
+  border: none;
+  color: $accent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+// Loading / empty
+.dp__loading {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+  color: $accent;
+}
+
+.dp__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 20px;
+  color: $gray;
+
+  ion-icon { font-size: 48px; opacity: 0.4; }
+  p { margin: 0; font-size: 14px; }
+}
+
+// ─── Car Grid ────────────────────────────────────────
+.dp__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.dp__card {
+  background: $dark-card;
+  border-radius: $radius;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s;
+
+  &:active { transform: scale(0.97); }
+}
+
+.dp__card-media {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #1c2433;
+}
+
+.dp__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dp__card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon { font-size: 40px; color: rgba(255, 255, 255, 0.2); }
+}
+
+.dp__card-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: $accent;
+  color: $white;
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.dp__card-info {
+  padding: 10px 12px 12px;
+}
+
+.dp__card-name {
+  margin: 0 0 6px;
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 700;
+  color: $white;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dp__card-price {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.dp__card-price-val {
+  font-size: clamp(13px, 3.2vw, 15px);
+  font-weight: 800;
+  color: $accent;
+}
+
+.dp__card-price-cur {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba($white, 0.5);
+}
+
+// ─── Bottom padding ───────────────────────────────────
+.dp__bottom-pad {
+  height: 40px;
+}

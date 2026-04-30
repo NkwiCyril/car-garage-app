@@ -6,6 +6,7 @@ import { IonContent, IonIcon, ToastController, ViewWillEnter } from '@ionic/angu
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, checkmarkOutline } from 'ionicons/icons';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 interface PersonalInfoForm {
   name: string;
@@ -19,7 +20,7 @@ interface PersonalInfoForm {
   selector: 'app-personal-info',
   templateUrl: './personal-info.page.html',
   styleUrls: ['./personal-info.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonIcon],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, TranslatePipe],
 })
 export class PersonalInfoPage implements OnInit, ViewWillEnter {
   isSaving = false;
@@ -60,15 +61,33 @@ export class PersonalInfoPage implements OnInit, ViewWillEnter {
   async saveChanges(): Promise<void> {
     if (this.isSaving) return;
     this.isSaving = true;
-    // TODO: call profile update API
-    await new Promise((r) => setTimeout(r, 800));
-    this.isSaving = false;
-    const toast = await this.toastController.create({
-      message: 'Profile updated successfully.',
-      duration: 2500,
-      position: 'top',
-      color: 'success',
+    this.authService.updateProfile({
+      name: this.form.name,
+      email: this.form.email,
+      phone: this.form.phone,
+      dob: this.form.dob,
+      address: this.form.address,
+    }).subscribe({
+      next: async () => {
+        this.isSaving = false;
+        const toast = await this.toastController.create({
+          message: 'Profile updated successfully.',
+          duration: 2500,
+          position: 'top',
+          color: 'success',
+        });
+        await toast.present();
+      },
+      error: async (err: Error) => {
+        this.isSaving = false;
+        const toast = await this.toastController.create({
+          message: err.message || 'Failed to update profile.',
+          duration: 3000,
+          position: 'top',
+          color: 'danger',
+        });
+        await toast.present();
+      },
     });
-    await toast.present();
   }
 }

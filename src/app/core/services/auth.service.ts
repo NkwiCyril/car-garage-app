@@ -43,7 +43,6 @@ export class AuthService {
   }
 
   login(phone: string, password: string): Observable<any> {
-    console.log('Login request:', { phone, password });
     const payload: LoginRequest = { phone, password };
     return this.http.post<any>(`${this.apiUrl}/users/login`, payload).pipe(
       tap((response) => {
@@ -84,6 +83,17 @@ export class AuthService {
 
   resetPassword(phone: string, newPassword: string): Observable<any> {
     throw new Error('Reset password not implemented yet');
+  }
+
+  updateProfile(data: { name?: string; email?: string; phone?: string; dob?: string; address?: string }): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/users/me`, data).pipe(
+      tap((response) => {
+        const updated = { ...this.currentUser$.value, ...(response.user ?? response.data ?? {}) };
+        this.storageService.set('currentUser', updated);
+        this.currentUser$.next(updated);
+      }),
+      catchError(this.handleError),
+    );
   }
 
   logout(): void {

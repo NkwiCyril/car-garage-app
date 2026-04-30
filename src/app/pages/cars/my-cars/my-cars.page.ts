@@ -101,7 +101,8 @@ export class MyCarsPage {
   }
 
   private loadMyCars(): void {
-    const userId = this.authService.currentUser?.id;
+    const user = this.authService.currentUser;
+    const userId = user?._id || user?.id;
     if (!userId) return;
 
     this.isLoading = true;

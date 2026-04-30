@@ -1,0 +1,105 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="dp">
+
+    <!-- ─── Nav ──────────────────────────────────────────── -->
+    <div class="dp__nav">
+      <button class="dp__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="dp__nav-title">{{ dealer.dealerName }}</span>
+      <button class="dp__nav-share">
+        <ion-icon name="share-outline"></ion-icon>
+      </button>
+    </div>
+
+    <!-- ─── Profile ──────────────────────────────────────── -->
+    <div class="dp__profile">
+      <div class="dp__avatar-wrap">
+        <div class="dp__avatar">
+          <span>{{ getInitial() }}</span>
+        </div>
+      </div>
+      <div class="dp__verified-badge" *ngIf="dealer.isVerified">
+        <ion-icon name="checkmark-circle"></ion-icon>
+        {{ 'dp.verified' | translate }}
+      </div>
+      <h1 class="dp__name">{{ dealer.dealerName }}</h1>
+      <div class="dp__meta">
+        <ion-icon name="star" class="dp__star"></ion-icon>
+        <span class="dp__rating">4.9</span>
+        <span class="dp__reviews">(120 reviews)</span>
+        <span class="dp__sep">•</span>
+        <ion-icon name="location-outline" class="dp__loc-icon"></ion-icon>
+        <span class="dp__location">{{ dealer.location || 'Douala, Cameroon' }}</span>
+      </div>
+    </div>
+
+    <!-- ─── Stats ─────────────────────────────────────────── -->
+    <div class="dp__stats-row">
+      <div class="dp__stat">
+        <span class="dp__stat-val">{{ stats.sold }}</span>
+        <span class="dp__stat-label">{{ 'dp.sold' | translate }}</span>
+      </div>
+      <div class="dp__stat-sep"></div>
+      <div class="dp__stat">
+        <span class="dp__stat-val">{{ stats.active }}</span>
+        <span class="dp__stat-label">{{ 'dp.active' | translate }}</span>
+      </div>
+      <div class="dp__stat-sep"></div>
+      <div class="dp__stat">
+        <span class="dp__stat-val">{{ stats.years }}+</span>
+        <span class="dp__stat-label">{{ 'dp.years' | translate }}</span>
+      </div>
+    </div>
+
+    <!-- ─── Inventory ─────────────────────────────────────── -->
+    <div class="dp__inventory">
+      <div class="dp__inv-header">
+        <h2 class="dp__inv-title">{{ 'dp.inventory' | translate }}</h2>
+        <button class="dp__inv-viewall">{{ 'dp.viewAll' | translate }}</button>
+      </div>
+
+      <!-- Loading -->
+      <div class="dp__loading" *ngIf="isLoading">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+
+      <!-- Empty -->
+      <div class="dp__empty" *ngIf="!isLoading && dealerCars.length === 0">
+        <ion-icon name="car-sport-outline"></ion-icon>
+        <p>{{ 'dp.noInventory' | translate }}</p>
+      </div>
+
+      <!-- 2-col grid -->
+      <div class="dp__grid" *ngIf="!isLoading && dealerCars.length > 0">
+        <div
+          class="dp__card"
+          *ngFor="let car of dealerCars"
+          (click)="openCarDetail(car)"
+        >
+          <div class="dp__card-media">
+            <img
+              *ngIf="getFirstImage(car)"
+              [src]="getFirstImage(car)!"
+              class="dp__card-img"
+              alt=""
+            />
+            <div class="dp__card-placeholder" *ngIf="!getFirstImage(car)">
+              <ion-icon name="car-sport-outline"></ion-icon>
+            </div>
+            <span class="dp__card-badge" *ngIf="getCarLabel(car)">{{ getCarLabel(car) }}</span>
+          </div>
+          <div class="dp__card-info">
+            <h3 class="dp__card-name">{{ car.make }} {{ car.model }}</h3>
+            <p class="dp__card-price">
+              <span class="dp__card-price-val">{{ formatPrice(car.price) }}</span>
+              <span class="dp__card-price-cur">FCFA</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dp__bottom-pad"></div>
+  </div>
+</ion-content>

@@ -6,32 +6,32 @@
       <button class="pi__nav-back" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </button>
-      <span class="pi__nav-title">Personal Information</span>
+      <span class="pi__nav-title">{{ 'pi.navTitle' | translate }}</span>
       <div class="pi__nav-spacer"></div>
     </div>
 
     <!-- ─── Header ───────────────────────────────────────── -->
     <div class="pi__header">
-      <h1 class="pi__title">Personal<br/>Information</h1>
-      <p class="pi__subtitle">Update your account details and contact preferences.</p>
+      <h1 class="pi__title">{{ 'pi.title' | translate }}</h1>
+      <p class="pi__subtitle">{{ 'pi.subtitle' | translate }}</p>
     </div>
 
     <!-- ─── Form ─────────────────────────────────────────── -->
     <div class="pi__form">
 
       <div class="pi__field">
-        <label class="pi__label">Full Name</label>
+        <label class="pi__label">{{ 'pi.fullName' | translate }}</label>
         <input
           type="text"
           class="pi__input"
           [(ngModel)]="form.name"
-          placeholder="Your full name"
+          [placeholder]="'pi.fullName' | translate"
           autocomplete="name"
         />
       </div>
 
       <div class="pi__field">
-        <label class="pi__label">Email Address</label>
+        <label class="pi__label">{{ 'pi.email' | translate }}</label>
         <input
           type="email"
           class="pi__input"
@@ -43,7 +43,7 @@
       </div>
 
       <div class="pi__field">
-        <label class="pi__label">Phone Number</label>
+        <label class="pi__label">{{ 'pi.phone' | translate }}</label>
         <input
           type="tel"
           class="pi__input"
@@ -55,7 +55,7 @@
       </div>
 
       <div class="pi__field">
-        <label class="pi__label">Date of Birth</label>
+        <label class="pi__label">{{ 'pi.dob' | translate }}</label>
         <input
           type="text"
           class="pi__input"
@@ -67,11 +67,11 @@
       </div>
 
       <div class="pi__field">
-        <label class="pi__label">Residential Address</label>
+        <label class="pi__label">{{ 'pi.address' | translate }}</label>
         <textarea
           class="pi__textarea"
           [(ngModel)]="form.address"
-          placeholder="Street, district, city, country"
+          [placeholder]="'pi.address' | translate"
           rows="3"
           autocomplete="street-address"
         ></textarea>
@@ -90,8 +90,8 @@
       [class.pi__save-btn--saving]="isSaving"
       [disabled]="isSaving"
     >
-      <span *ngIf="!isSaving">Save Changes</span>
-      <span *ngIf="isSaving">Saving…</span>
+      <span *ngIf="!isSaving">{{ 'pi.save' | translate }}</span>
+      <span *ngIf="isSaving">{{ 'pi.saving' | translate }}</span>
     </button>
   </div>
 

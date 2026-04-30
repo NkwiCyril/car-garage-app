@@ -13,9 +13,13 @@
           />
           <span *ngIf="!userAvatar">{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
         </div>
-        <button class="pf__avatar-edit" title="Edit photo">
-          <ion-icon name="camera-outline"></ion-icon>
-        </button>
+        <!-- Verification badge overlaid on avatar -->
+        <div
+          class="pf__avatar-badge"
+          [class.pf__avatar-badge--verified]="isVerified"
+        >
+          <ion-icon [name]="isVerified ? 'checkmark' : 'alert'"></ion-icon>
+        </div>
       </div>
 
       <div class="pf__hero-info">
@@ -28,6 +32,11 @@
           ></ion-icon>
         </div>
         <p class="pf__phone">{{ maskedPhone }}</p>
+        <!-- Shown only when account is not yet verified -->
+        <div class="pf__unverified-chip" *ngIf="!isVerified">
+          <ion-icon name="alert-circle"></ion-icon>
+          Not Verified
+        </div>
       </div>
     </div>
 
@@ -36,24 +45,24 @@
       <div class="pf__stats">
         <div class="pf__stat pf__stat--bookings">
           <span class="pf__stat-val">{{ padNum(stats.bookings) }}</span>
-          <span class="pf__stat-label">BOOKINGS</span>
+          <span class="pf__stat-label">{{ 'pf.bookingsStat' | translate }}</span>
         </div>
         <div class="pf__stat-sep"></div>
         <div class="pf__stat pf__stat--vehicles">
           <span class="pf__stat-val">{{ padNum(stats.vehicles) }}</span>
-          <span class="pf__stat-label">VEHICLES</span>
+          <span class="pf__stat-label">{{ 'pf.vehiclesStat' | translate }}</span>
         </div>
         <div class="pf__stat-sep"></div>
         <div class="pf__stat pf__stat--wishlist">
           <span class="pf__stat-val">{{ padNum(stats.wishlist) }}</span>
-          <span class="pf__stat-label">WISHLIST</span>
+          <span class="pf__stat-label">{{ 'pf.wishlistStat' | translate }}</span>
         </div>
       </div>
     </div>
 
     <!-- ─── Account Management ─────────────────────────── -->
     <div class="pf__section">
-      <p class="pf__section-title">ACCOUNT MANAGEMENT</p>
+      <p class="pf__section-title">{{ 'profile.account' | translate }}</p>
       <div class="pf__menu-group">
         <div
           class="pf__menu-item"
@@ -64,15 +73,16 @@
             <ion-icon [name]="item.icon"></ion-icon>
           </div>
           <div class="pf__menu-text">
-            <span class="pf__menu-label">{{ item.label }}</span>
-            <span class="pf__menu-sub" *ngIf="item.subtitle">{{ item.subtitle }}</span>
+            <span class="pf__menu-label">{{ item.label | translate }}</span>
+            <span class="pf__menu-sub" *ngIf="item.subtitle">{{ item.subtitle | translate }}</span>
           </div>
           <div class="pf__menu-right">
-            <ion-icon
-              *ngIf="item.badge"
-              name="checkmark-circle"
-              class="pf__badge-check"
-            ></ion-icon>
+            <ng-container *ngIf="item.badge">
+              <ion-icon
+                [name]="isVerified ? 'checkmark-circle' : 'alert-circle'"
+                [class]="isVerified ? 'pf__badge-check' : 'pf__badge-warn'"
+              ></ion-icon>
+            </ng-container>
             <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
           </div>
         </div>
@@ -81,7 +91,7 @@
 
     <!-- ─── Preferences & Security ─────────────────────── -->
     <div class="pf__section">
-      <p class="pf__section-title">PREFERENCES &amp; SECURITY</p>
+      <p class="pf__section-title">{{ 'profile.preferences' | translate }}</p>
       <div class="pf__menu-group">
         <div
           class="pf__menu-item"
@@ -92,7 +102,7 @@
             <ion-icon [name]="item.icon"></ion-icon>
           </div>
           <div class="pf__menu-text">
-            <span class="pf__menu-label">{{ item.label }}</span>
+            <span class="pf__menu-label">{{ item.label | translate }}</span>
           </div>
           <div class="pf__menu-right">
             <span class="pf__menu-meta" *ngIf="item.meta">{{ item.meta }}</span>
@@ -104,26 +114,26 @@
 
     <!-- ─── Support ────────────────────────────────────── -->
     <div class="pf__section">
-      <p class="pf__section-title">SUPPORT</p>
+      <p class="pf__section-title">{{ 'profile.support' | translate }}</p>
       <div class="pf__menu-group">
-        <div class="pf__menu-item" (click)="onMenuItemClick({ route: null })">
+        <div class="pf__menu-item" (click)="onMenuItemClick({ route: '/profile/help' })">
           <div class="pf__menu-icon pf__menu-icon--neutral">
             <ion-icon name="help-circle-outline"></ion-icon>
           </div>
           <div class="pf__menu-text">
-            <span class="pf__menu-label">Help &amp; Support</span>
+            <span class="pf__menu-label">{{ 'pf.helpSupport' | translate }}</span>
           </div>
           <div class="pf__menu-right">
             <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
           </div>
         </div>
 
-        <div class="pf__menu-item" (click)="onMenuItemClick({ route: null })">
+        <div class="pf__menu-item" (click)="onMenuItemClick({ route: '/profile/terms' })">
           <div class="pf__menu-icon pf__menu-icon--neutral">
             <ion-icon name="document-text-outline"></ion-icon>
           </div>
           <div class="pf__menu-text">
-            <span class="pf__menu-label">Terms of Service</span>
+            <span class="pf__menu-label">{{ 'pf.terms' | translate }}</span>
           </div>
           <div class="pf__menu-right">
             <ion-icon name="chevron-forward-outline" class="pf__menu-arrow"></ion-icon>
@@ -135,7 +145,7 @@
             <ion-icon name="log-out-outline"></ion-icon>
           </div>
           <div class="pf__menu-text">
-            <span class="pf__menu-label pf__menu-label--danger">Log Out</span>
+            <span class="pf__menu-label pf__menu-label--danger">{{ 'pf.logout' | translate }}</span>
           </div>
           <div class="pf__menu-right">
             <ion-icon name="chevron-forward-outline" class="pf__menu-arrow pf__menu-arrow--danger"></ion-icon>

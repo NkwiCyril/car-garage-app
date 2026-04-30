@@ -1,0 +1,206 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$radius: 14px;
+$page-max: 520px;
+$bp-tablet: 768px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$white};
+}
+
+.tos {
+  min-height: 100%;
+  padding-bottom: 40px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $page-max;
+    margin: 0 auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.tos__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 14px;
+  background: $white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tos__nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+.tos__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+}
+
+.tos__nav-spacer {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+// ─── Header ──────────────────────────────────────────
+.tos__header {
+  padding: 8px 20px 24px;
+}
+
+.tos__badge {
+  display: inline-flex;
+  padding: 4px 12px;
+  background: rgba($accent, 0.1);
+  color: $accent;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+
+.tos__title {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 7.5vw, 36px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+}
+
+.tos__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: $gray;
+
+  ion-icon {
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+}
+
+// ─── Content ─────────────────────────────────────────
+.tos__content {
+  padding: 0 20px;
+}
+
+.tos__section {
+  margin-bottom: 28px;
+}
+
+.tos__section-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: $primary;
+  line-height: 1.3;
+}
+
+.tos__paragraph {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: $gray;
+  line-height: 1.7;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+// ─── Checklist ───────────────────────────────────────
+.tos__checklist {
+  background: $bg;
+  border-radius: $radius;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tos__check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: $gray;
+  line-height: 1.5;
+}
+
+.tos__check-icon {
+  font-size: 18px;
+  color: $accent;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+// ─── Contact Card ────────────────────────────────────
+.tos__contact-card {
+  background: $primary;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  margin: 8px 0 0;
+}
+
+.tos__contact-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: $white;
+}
+
+.tos__contact-desc {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: rgba($white, 0.7);
+  line-height: 1.6;
+}
+
+.tos__contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: $radius;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px -4px rgba(0, 67, 235, 0.5);
+
+  ion-icon { font-size: 18px; }
+  &:active { transform: scale(0.97); box-shadow: none; }
+}

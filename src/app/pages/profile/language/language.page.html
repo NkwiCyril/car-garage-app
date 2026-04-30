@@ -1,0 +1,53 @@
+<ion-content [fullscreen]="true" [scrollY]="true">
+  <div class="lg">
+
+    <!-- ─── Nav ───────────────────────────────────────────── -->
+    <div class="lg__nav">
+      <button class="lg__nav-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </button>
+      <span class="lg__nav-title">{{ 'lang.navTitle' | translate }}</span>
+      <div class="lg__nav-spacer"></div>
+    </div>
+
+    <!-- ─── Header ────────────────────────────────────────── -->
+    <div class="lg__header">
+      <h1 class="lg__title">{{ 'lang.title' | translate }}</h1>
+      <p class="lg__subtitle">{{ 'lang.subtitle' | translate }}</p>
+    </div>
+
+    <!-- ─── Language List ─────────────────────────────────── -->
+    <div class="lg__list">
+      <button
+        class="lg__item"
+        *ngFor="let lang of languages"
+        [class.lg__item--active]="selectedLang === lang.code"
+        (click)="select(lang.code)"
+      >
+        <!-- Flag -->
+        <div class="lg__flag">{{ lang.flag }}</div>
+
+        <!-- Info -->
+        <div class="lg__info">
+          <span class="lg__lang-name">{{ lang.name }}</span>
+          <span class="lg__lang-native">Native: {{ lang.native }}</span>
+        </div>
+
+        <!-- Radio -->
+        <div class="lg__radio" [class.lg__radio--selected]="selectedLang === lang.code">
+          <div class="lg__radio-dot" *ngIf="selectedLang === lang.code"></div>
+        </div>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ─── Fixed Footer CTA ──────────────────────────────── -->
+  <div class="lg__footer">
+    <button class="lg__cta" (click)="confirm()">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      {{ 'lang.confirm' | translate }}
+    </button>
+  </div>
+
+</ion-content>

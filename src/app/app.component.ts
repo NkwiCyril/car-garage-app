@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
 
   readonly actionItems: MenuItem[] = [
     { icon: 'add-circle-outline', label: 'Start a Listing', route: '/cars/sell', bg: '#fef3c7', color: '#d97706' },
-    { icon: 'card-outline',       label: 'Payment Methods', route: '/tabs/profile', bg: '#f5f3ff', color: '#7c3aed' },
+    { icon: 'heart-outline',       label: 'My Wishlist', route: '/profile/wishlist', bg: '#f5f3ff', color: '#7c3aed' },
   ];
 
   readonly accountItems: MenuItem[] = [
@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
   }
 
   get isVerified(): boolean {
-    return !!(this.authService.currentUser?.isVerified);
+    return this.authService.currentUser?.verified === 'verified';
   }
 
   get maskedPhone(): string {
@@ -119,7 +119,8 @@ export class AppComponent implements OnInit {
 
   async openWhatsApp(): Promise<void> {
     await this.menuController.close('main-menu');
-    window.open('https://wa.me/237XXXXXXXXX', '_blank');
+    const msg = `Hello, I have a general inquiry about DriveEase.`;
+    window.open(`https://wa.me/237676541667?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   async confirmLogout(): Promise<void> {

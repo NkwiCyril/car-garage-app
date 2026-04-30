@@ -1,0 +1,233 @@
+$white: #ffffff;
+$primary: #0b1b2b;
+$accent: #0043eb;
+$gray: #6b7280;
+$gray-light: #e2e4e9;
+$bg: #f5f5f3;
+$radius: 14px;
+$page-max: 520px;
+$bp-tablet: 768px;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+ion-content {
+  --background: #{$white};
+}
+
+.pm {
+  min-height: 100%;
+  padding-bottom: 32px;
+
+  @media (min-width: $bp-tablet) {
+    max-width: $page-max;
+    margin: 0 auto;
+  }
+}
+
+// ─── Nav ─────────────────────────────────────────────
+.pm__nav {
+  display: flex;
+  align-items: center;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 14px;
+  background: $white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.pm__nav-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 20px;
+    color: $primary;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+.pm__nav-title {
+  flex: 1;
+  text-align: center;
+  font-size: clamp(13px, 3.5vw, 15px);
+  font-weight: 700;
+  color: $primary;
+  letter-spacing: 0.2px;
+}
+
+.pm__nav-spacer {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+// ─── Header ──────────────────────────────────────────
+.pm__header {
+  padding: 8px 24px 24px;
+}
+
+.pm__title {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 7.5vw, 36px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+}
+
+.pm__subtitle {
+  margin: 0;
+  font-size: clamp(13px, 3.5vw, 14px);
+  color: $gray;
+  line-height: 1.5;
+}
+
+// ─── Section ─────────────────────────────────────────
+.pm__section {
+  padding: 0 20px;
+  margin-bottom: 28px;
+}
+
+.pm__section-label {
+  margin: 0 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: $gray;
+  text-transform: uppercase;
+}
+
+// ─── Empty Methods ────────────────────────────────────
+.pm__empty-methods {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 16px;
+  background: $bg;
+  border-radius: $radius;
+  font-size: 14px;
+  color: $gray;
+
+  ion-icon { font-size: 20px; }
+}
+
+// ─── Method List ──────────────────────────────────────
+.pm__method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pm__method-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: $white;
+  border-radius: $radius;
+  border: 1.5px solid $gray-light;
+}
+
+.pm__method-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 22px; }
+}
+
+.pm__method-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pm__method-name {
+  font-size: clamp(13px, 3.5vw, 14px);
+  font-weight: 700;
+  color: $primary;
+}
+
+.pm__method-detail {
+  font-size: 13px;
+  color: $gray;
+}
+
+.pm__method-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1.5px solid #ffe0e0;
+  background: #fff5f5;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 17px;
+    color: #e53935;
+  }
+
+  &:active { opacity: 0.7; }
+}
+
+// ─── Add Grid ─────────────────────────────────────────
+.pm__add-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pm__add-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 12px;
+  background: $white;
+  border-radius: $radius;
+  border: 1.5px solid $gray-light;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:active {
+    border-color: $accent;
+    opacity: 0.8;
+  }
+}
+
+.pm__add-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon { font-size: 22px; }
+}
+
+.pm__add-label {
+  font-size: clamp(12px, 3.2vw, 13px);
+  font-weight: 600;
+  color: $primary;
+  text-align: center;
+}
