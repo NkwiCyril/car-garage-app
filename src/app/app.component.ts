@@ -15,7 +15,6 @@ import {
   closeOutline,
   homeOutline,
   storefrontOutline,
-  calendarOutline,
   carOutline,
   addCircleOutline,
   personOutline,
@@ -46,7 +45,6 @@ export class AppComponent implements OnInit {
   readonly navItems: MenuItem[] = [
     { icon: 'home-outline',       label: 'Home',        route: '/tabs/home',     bg: '#dbeafe', color: '#0043eb' },
     { icon: 'storefront-outline', label: 'Marketplace', route: '/tabs/auto',     bg: '#ede9fe', color: '#7c3aed' },
-    { icon: 'calendar-outline',   label: 'Bookings',    route: '/tabs/bookings', bg: '#fce7f3', color: '#db2777' },
     { icon: 'car-outline',        label: 'My Listings', route: '/cars/my',       bg: '#f1f5f9', color: '#0b1b2b' },
   ];
 
@@ -70,7 +68,6 @@ export class AppComponent implements OnInit {
       closeOutline,
       homeOutline,
       storefrontOutline,
-      calendarOutline,
       carOutline,
       addCircleOutline,
       personOutline,

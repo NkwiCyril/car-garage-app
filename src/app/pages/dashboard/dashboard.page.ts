@@ -41,11 +41,13 @@ import {
   keyOutline,
   pricetagOutline,
   closeOutline,
+  refreshOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
 import { CarService } from '../../core/services/car.service';
 import { AdvertService } from '../../core/services/advert.service';
 import { TranslationService } from '../../core/services/translation.service';
+import { GeolocationService } from '../../core/services/geolocation.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { Car } from '../../core/models/car.model';
 import { Advert } from '../../core/models/advert.model';
@@ -90,7 +92,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   searchFieldRef!: ElementRef<HTMLInputElement>;
 
   userName = '';
-  currentLocation = 'Douala, CM';
+  currentLocation = 'Locating…';
+  isLocating = false;
+  locationError = false;
   activeCategoryIndex = 0;
 
   // Promo slider
@@ -145,6 +149,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     private advertService: AdvertService,
     private menuController: MenuController,
     public translationService: TranslationService,
+    private geolocationService: GeolocationService,
   ) {
     addIcons({
       locationOutline,
@@ -165,6 +170,7 @@ export class DashboardPage implements OnInit, OnDestroy {
       keyOutline,
       pricetagOutline,
       closeOutline,
+      refreshOutline,
     });
     this.countdownTarget = new Date(
       Date.now() + (4 * 3600 + 12 * 60 + 45) * 1000,
@@ -178,12 +184,41 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.loadAdverts();
     this.loadFeaturedCars();
     this.setupSearch();
+    this.loadLocation();
   }
 
   ngOnDestroy(): void {
     if (this.countdownInterval) clearInterval(this.countdownInterval);
     this.stopAutoSlide();
     this.searchSub?.unsubscribe();
+  }
+
+  // ─── Location ────────────────────────────────────────
+
+  private loadLocation(force = false): void {
+    const cached = this.geolocationService.current;
+    if (cached && !force) {
+      this.currentLocation = cached.display;
+      return;
+    }
+    this.isLocating = true;
+    this.locationError = false;
+    this.geolocationService.getLocation(force).subscribe({
+      next: (loc) => {
+        this.currentLocation = loc.display;
+        this.isLocating = false;
+      },
+      error: () => {
+        this.isLocating = false;
+        this.locationError = true;
+        this.currentLocation = 'Set location';
+      },
+    });
+  }
+
+  refreshLocation(): void {
+    if (this.isLocating) return;
+    this.loadLocation(true);
   }
 
   // ─── Data loading ─────────────────────────────────────

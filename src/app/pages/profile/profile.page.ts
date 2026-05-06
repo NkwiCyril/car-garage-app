@@ -87,12 +87,7 @@ export class ProfilePage implements OnInit, ViewWillEnter {
   ];
 
   prefItems: MenuItem[] = [
-    {
-      icon: 'heart-outline',
-      label: 'pf.myWishlist',
-      color: 'danger',
-      route: '/profile/wishlist',
-    },
+    // { icon: 'heart-outline', label: 'pf.myWishlist', color: 'danger', route: '/profile/wishlist' },
     // { icon: 'lock-closed-outline', label: 'pf.privacySecurity', color: 'blue', route: '/profile/privacy' },
     {
       icon: 'language-outline',

@@ -65,8 +65,13 @@ export class RegisterPage {
       next: async (response) => {
         this.isLoading = false;
         if (response.success) {
-          await this.showToast('Registration successful! Please login.', 'success');
-          this.router.navigate(['/auth/login']);
+          if (response.token) {
+            await this.showToast('Welcome to DriveEase!', 'success');
+            this.router.navigate(['/tabs/home']);
+          } else {
+            await this.showToast('Registration successful! Please login.', 'success');
+            this.router.navigate(['/auth/login']);
+          }
         }
       },
       error: async (error) => {

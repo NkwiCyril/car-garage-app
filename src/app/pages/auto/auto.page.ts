@@ -230,8 +230,8 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   async openFilters(): Promise<void> {
     const modal = await this.modalController.create({
       component: FiltersSheet,
-      initialBreakpoint: 0.93,
-      breakpoints: [0, 0.93],
+      initialBreakpoint: 1,
+      breakpoints: [0, 1],
       handle: true,
       cssClass: 'filters-modal',
     });

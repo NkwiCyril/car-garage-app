@@ -13,8 +13,8 @@ import {
   home,
   storefrontOutline,
   storefront,
-  calendarOutline,
-  calendar,
+  heartOutline,
+  heart,
   personOutline,
   person,
 } from 'ionicons/icons';
@@ -42,8 +42,8 @@ export class TabsPage {
       home,
       storefrontOutline,
       storefront,
-      calendarOutline,
-      calendar,
+      heartOutline,
+      heart,
       personOutline,
       person,
     });

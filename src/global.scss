@@ -396,6 +396,7 @@ ion-menu ion-content {
 // ─── Filters bottom-sheet modal ──────────────────────
 .filters-modal {
   --border-radius: 24px 24px 0 0;
+  --height: 100%;
   align-items: flex-end;
 
   &::part(handle) {
@@ -403,6 +404,13 @@ ion-menu ion-content {
     width: 36px;
     height: 4px;
     border-radius: 4px;
+    margin-top: 10px;
+  }
+
+  &::part(content) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 }
 

@@ -65,6 +65,14 @@ export class AuthService {
       repeatPassword
     };
     return this.http.post<any>(`${this.apiUrl}/users/register`, payload).pipe(
+      tap((response) => {
+        if (response.success && response.token) {
+          this.storageService.set('authToken', response.token);
+          this.storageService.set('currentUser', response.user);
+          this.isAuthenticated$.next(true);
+          this.currentUser$.next(response.user);
+        }
+      }),
       catchError(this.handleError)
     );
   }
@@ -86,7 +94,12 @@ export class AuthService {
   }
 
   updateProfile(data: { name?: string; email?: string; phone?: string; dob?: string; address?: string }): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/users/me`, data).pipe(
+    const user = this.currentUser$.value;
+    const userId = user?._id || user?.id;
+    if (!userId) {
+      return throwError(() => new Error('Not authenticated'));
+    }
+    return this.http.patch<any>(`${this.apiUrl}/users/${userId}`, data).pipe(
       tap((response) => {
         const updated = { ...this.currentUser$.value, ...(response.user ?? response.data ?? {}) };
         this.storageService.set('currentUser', updated);

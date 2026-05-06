@@ -7,6 +7,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'HOME',
     'tab.auto': 'MARKETPLACE',
     'tab.bookings': 'BOOKINGS',
+    'tab.wishlist': 'WISHLIST',
     'tab.profile': 'PROFILE',
 
     // ── Language ──────────────────────────────────────────────────────────────
@@ -175,6 +176,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'ACCUEIL',
     'tab.auto': 'MARCHÉ',
     'tab.bookings': 'RÉSERVATIONS',
+    'tab.wishlist': 'FAVORIS',
     'tab.profile': 'PROFIL',
 
     // ── Language ──────────────────────────────────────────────────────────────
@@ -343,6 +345,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'INICIO',
     'tab.auto': 'MERCADO',
     'tab.bookings': 'RESERVAS',
+    'tab.wishlist': 'FAVORITOS',
     'tab.profile': 'PERFIL',
 
     // ── Language ──────────────────────────────────────────────────────────────
@@ -511,6 +514,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': '首页',
     'tab.auto': '市场',
     'tab.bookings': '预订',
+    'tab.wishlist': '心愿单',
     'tab.profile': '我的',
 
     // ── Language ──────────────────────────────────────────────────────────────
@@ -679,6 +683,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'الرئيسية',
     'tab.auto': 'السوق',
     'tab.bookings': 'الحجوزات',
+    'tab.wishlist': 'المفضلة',
     'tab.profile': 'الملف',
 
     // ── Language ──────────────────────────────────────────────────────────────
@@ -847,6 +852,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'START',
     'tab.auto': 'MARKTPLAATS',
     'tab.bookings': 'BOEKINGEN',
+    'tab.wishlist': 'VERLANGLIJST',
     'tab.profile': 'PROFIEL',
 
     // ── Language ──────────────────────────────────────────────────────────────

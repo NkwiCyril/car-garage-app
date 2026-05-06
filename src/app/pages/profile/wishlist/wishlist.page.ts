@@ -30,6 +30,10 @@ export class WishlistPage implements ViewWillEnter {
     this.load();
   }
 
+  get isTabRoute(): boolean {
+    return this.router.url.startsWith('/tabs/wishlist');
+  }
+
   load(): void {
     this.isLoading = true;
     this.wishlistService.getWishlistCars().subscribe({

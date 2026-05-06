@@ -107,10 +107,16 @@ ion-content {
 }
 
 .dash__location {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   margin-top: 1px;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
 
   ion-icon {
     font-size: 11px;
@@ -122,6 +128,29 @@ ion-content {
     color: $gray;
     font-weight: 400;
   }
+
+  &:active span,
+  &:active ion-icon {
+    opacity: 0.6;
+  }
+
+  &--error span {
+    color: $accent;
+    text-decoration: underline;
+  }
+}
+
+.dash__location-spinner {
+  --color: #{$gray};
+  width: 14px;
+  height: 14px;
+}
+
+.dash__location-refresh {
+  font-size: 10px !important;
+  color: $gray;
+  opacity: 0.6;
+  margin-left: 1px;
 }
 
 .dash__header-right {

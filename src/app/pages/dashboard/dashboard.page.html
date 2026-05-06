@@ -10,10 +10,18 @@
         <div class="dash__greeting">
           <p class="dash__greeting-time">{{ greeting }}</p>
           <p class="dash__greeting-name">{{ userName || 'Driver' }}</p>
-          <div class="dash__location">
-            <ion-icon name="location-outline"></ion-icon>
+          <button
+            type="button"
+            class="dash__location"
+            [class.dash__location--loading]="isLocating"
+            [class.dash__location--error]="locationError"
+            (click)="refreshLocation(); $event.stopPropagation()"
+          >
+            <ion-spinner *ngIf="isLocating" name="dots" class="dash__location-spinner"></ion-spinner>
+            <ion-icon *ngIf="!isLocating" name="location-outline"></ion-icon>
             <span>{{ currentLocation }}</span>
-          </div>
+            <ion-icon *ngIf="!isLocating && !locationError" name="refresh-outline" class="dash__location-refresh"></ion-icon>
+          </button>
         </div>
       </div>
       <div class="dash__header-right">
