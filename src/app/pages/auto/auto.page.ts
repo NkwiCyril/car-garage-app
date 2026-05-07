@@ -8,10 +8,15 @@ import {
   IonContent,
   IonIcon,
   IonSpinner,
+  IonRefresher,
+  IonRefresherContent,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
   ModalController,
   ToastController,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
+import { parsePage } from '../../core/utils/pagination.util';
 import { FiltersSheet, FilterState } from './filters/filters.sheet';
 import { addIcons } from 'ionicons';
 import {
@@ -53,20 +58,28 @@ interface SellStep {
   selector: 'app-auto',
   templateUrl: './auto.page.html',
   styleUrls: ['./auto.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, TranslatePipe],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, IonRefresher, IonRefresherContent, IonInfiniteScroll, IonInfiniteScrollContent, TranslatePipe],
 })
 export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   activeTab: 'buy' | 'rent' | 'sell' = 'buy';
 
-  // Base car lists loaded on init
+  // Base car lists loaded on init (paginated per tab)
   buyCars: Car[] = [];
   rentCars: Car[] = [];
   isLoadingAvailable = false;
+  private buyPage = 1;
+  private rentPage = 1;
+  private buyHasMore = true;
+  private rentHasMore = true;
+  readonly PAGE_SIZE = 20;
 
-  // Search / filter results
+  // Search / filter results (also paginated)
   filteredCars: Car[] = [];
   isFiltered = false;
   isSearchLoading = false;
+  private filteredPage = 1;
+  private filteredHasMore = false;
+  private lastSearchParams: any = null;
 
   // Search
   searchQuery = '';
@@ -131,6 +144,21 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     this.searchSub?.unsubscribe();
   }
 
+  // ─── Pull to refresh ─────────────────────────────────
+
+  onRefresh(event: CustomEvent): void {
+    this.brokenImageIds.clear();
+    if (this.activeTab === 'sell') {
+      this.myListingsLoaded = false;
+      this.loadMyListings();
+    } else {
+      this.loadAvailableCars();
+      if (this.isFiltered) this.runQuery();
+    }
+    this.loadWishlist();
+    setTimeout(() => (event.target as HTMLIonRefresherElement)?.complete(), 600);
+  }
+
   // ─── Computed ────────────────────────────────────────
 
   get displayCars(): Car[] {
@@ -155,18 +183,91 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
 
   loadAvailableCars(): void {
     this.isLoadingAvailable = true;
+    this.buyPage = 1;
+    this.rentPage = 1;
+    this.buyHasMore = true;
+    this.rentHasMore = true;
     let done = 0;
     const finish = () => { if (++done >= 2) this.isLoadingAvailable = false; };
 
-    this.carService.getAvailableCars({ forRent: true }).subscribe({
-      next: (res) => { this.rentCars = this.extractCars(res); finish(); },
+    this.carService.getAvailableCars({ forRent: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
+      next: (res) => {
+        const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
+        this.rentCars = this.filterVerified(items);
+        this.rentHasMore = meta.hasMore;
+        finish();
+      },
       error: (err) => { finish(); this.showToast(err.message || 'Failed to load rental cars', 'danger'); },
     });
 
-    this.carService.getAvailableCars({ forSale: true }).subscribe({
-      next: (res) => { this.buyCars = this.extractCars(res); finish(); },
+    this.carService.getAvailableCars({ forSale: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
+      next: (res) => {
+        const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
+        this.buyCars = this.filterVerified(items);
+        this.buyHasMore = meta.hasMore;
+        finish();
+      },
       error: (err) => { finish(); this.showToast(err.message || 'Failed to load cars for sale', 'danger'); },
     });
+  }
+
+  private filterVerified(cars: Car[]): Car[] {
+    return cars.filter((c) => c.verified === 'verified');
+  }
+
+  // ─── Infinite scroll ─────────────────────────────────
+
+  get canLoadMore(): boolean {
+    if (this.activeTab === 'sell') return false;
+    if (this.isFiltered) return this.filteredHasMore;
+    return this.activeTab === 'rent' ? this.rentHasMore : this.buyHasMore;
+  }
+
+  loadMore(event: CustomEvent): void {
+    const target = event.target as HTMLIonInfiniteScrollElement;
+    if (!this.canLoadMore) {
+      target.complete();
+      return;
+    }
+
+    if (this.isFiltered) {
+      this.filteredPage += 1;
+      const params = { ...this.lastSearchParams, page: this.filteredPage, limit: this.PAGE_SIZE };
+      this.carService.searchCars(params).subscribe({
+        next: (res) => {
+          const { items, meta } = parsePage<Car>(res, this.filteredPage, this.PAGE_SIZE);
+          this.filteredCars = [...this.filteredCars, ...this.filterVerified(items)];
+          this.filteredHasMore = meta.hasMore;
+          target.complete();
+        },
+        error: () => { this.filteredPage -= 1; target.complete(); },
+      });
+      return;
+    }
+
+    if (this.activeTab === 'rent') {
+      this.rentPage += 1;
+      this.carService.getAvailableCars({ forRent: true, page: this.rentPage, limit: this.PAGE_SIZE }).subscribe({
+        next: (res) => {
+          const { items, meta } = parsePage<Car>(res, this.rentPage, this.PAGE_SIZE);
+          this.rentCars = [...this.rentCars, ...this.filterVerified(items)];
+          this.rentHasMore = meta.hasMore;
+          target.complete();
+        },
+        error: () => { this.rentPage -= 1; target.complete(); },
+      });
+    } else {
+      this.buyPage += 1;
+      this.carService.getAvailableCars({ forSale: true, page: this.buyPage, limit: this.PAGE_SIZE }).subscribe({
+        next: (res) => {
+          const { items, meta } = parsePage<Car>(res, this.buyPage, this.PAGE_SIZE);
+          this.buyCars = [...this.buyCars, ...this.filterVerified(items)];
+          this.buyHasMore = meta.hasMore;
+          target.complete();
+        },
+        error: () => { this.buyPage -= 1; target.complete(); },
+      });
+    }
   }
 
   loadMyListings(): void {
@@ -262,34 +363,43 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     if (!q && !hasApiFilters) {
       this.isFiltered = false;
       this.filteredCars = [];
+      this.filteredHasMore = false;
+      this.lastSearchParams = null;
       return;
     }
 
     this.isSearchLoading = true;
     this.isFiltered = true;
+    this.filteredPage = 1;
 
-    const params: Parameters<CarService['searchCars']>[0] = { limit: 20 };
-    if (this.activeTab === 'buy') params.forSale = true;
-    if (this.activeTab === 'rent') params.forRent = true;
-    if (q) params.q = q;
+    const baseParams: Parameters<CarService['searchCars']>[0] = {};
+    if (this.activeTab === 'buy') baseParams.forSale = true;
+    if (this.activeTab === 'rent') baseParams.forRent = true;
+    if (q) baseParams.q = q;
 
     if (this.activeFilters) {
       const f = this.activeFilters;
-      if (f.brands.length > 0) params.make = f.brands[0];
-      if (f.priceRange.lower > 10_000_000) params.priceMin = f.priceRange.lower;
-      if (f.priceRange.upper < 250_000_000) params.priceMax = f.priceRange.upper;
+      if (f.brands.length > 0) baseParams.make = f.brands[0];
+      if (f.priceRange.lower > 10_000_000) baseParams.priceMin = f.priceRange.lower;
+      if (f.priceRange.upper < 250_000_000) baseParams.priceMax = f.priceRange.upper;
       const { yearMin, yearMax } = this.parseYear(f.year);
-      if (yearMin) params.yearMin = yearMin;
-      if (yearMax) params.yearMax = yearMax;
+      if (yearMin) baseParams.yearMin = yearMin;
+      if (yearMax) baseParams.yearMax = yearMax;
     }
+
+    this.lastSearchParams = baseParams;
+    const params = { ...baseParams, page: 1, limit: this.PAGE_SIZE };
 
     this.carService.searchCars(params).subscribe({
       next: (res) => {
-        this.filteredCars = this.extractCars(res);
+        const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
+        this.filteredCars = this.filterVerified(items);
+        this.filteredHasMore = meta.hasMore;
         this.isSearchLoading = false;
       },
       error: () => {
         this.isSearchLoading = false;
+        this.filteredHasMore = false;
       },
     });
   }
@@ -312,15 +422,6 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     });
   }
 
-  private extractCars(response: any): Car[] {
-    let cars: Car[];
-    if (Array.isArray(response)) cars = response;
-    else if (Array.isArray(response?.data)) cars = response.data;
-    else if (Array.isArray(response?.cars)) cars = response.cars;
-    else if (Array.isArray(response?.results)) cars = response.results;
-    else cars = [];
-    return cars.filter((c) => c.verified === 'verified');
-  }
 
   // ─── Tab ─────────────────────────────────────────────
 

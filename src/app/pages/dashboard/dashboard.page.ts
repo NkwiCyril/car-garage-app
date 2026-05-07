@@ -12,6 +12,8 @@ import {
   IonContent,
   IonIcon,
   IonSpinner,
+  IonRefresher,
+  IonRefresherContent,
   MenuController,
 } from '@ionic/angular/standalone';
 import { Subject, EMPTY, Subscription } from 'rxjs';
@@ -51,6 +53,7 @@ import { GeolocationService } from '../../core/services/geolocation.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { Car } from '../../core/models/car.model';
 import { Advert } from '../../core/models/advert.model';
+import { parsePage } from '../../core/utils/pagination.util';
 
 interface FeaturedCar {
   id: string;
@@ -83,7 +86,7 @@ interface Promo {
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, TranslatePipe],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, IonRefresher, IonRefresherContent, TranslatePipe],
 })
 export class DashboardPage implements OnInit, OnDestroy {
   @ViewChild('promoTrack', { static: false })
@@ -108,10 +111,14 @@ export class DashboardPage implements OnInit, OnDestroy {
   private countdownTarget: Date;
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
-  // Featured cars
+  // Featured cars (paginated)
   allFeaturedCars: FeaturedCar[] = [];
   featuredCars: FeaturedCar[] = [];
   isLoadingCars = true;
+  isLoadingMoreCars = false;
+  featuredHasMore = true;
+  private featuredPage = 1;
+  readonly FEATURED_PAGE_SIZE = 12;
 
   // Search
   isSearchMode = false;
@@ -221,6 +228,18 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.loadLocation(true);
   }
 
+  // ─── Pull to refresh ─────────────────────────────────
+
+  onRefresh(event: CustomEvent): void {
+    this.isLoadingPromos = true;
+    this.isLoadingCars = true;
+    this.stopAutoSlide();
+    this.loadAdverts();
+    this.loadFeaturedCars();
+    this.loadLocation(true);
+    setTimeout(() => (event.target as HTMLIonRefresherElement)?.complete(), 600);
+  }
+
   // ─── Data loading ─────────────────────────────────────
 
   private loadAdverts(): void {
@@ -242,21 +261,44 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   private loadFeaturedCars(): void {
-    this.carService.getAvailableCars({ limit: 20 }).subscribe({
+    this.featuredPage = 1;
+    this.featuredHasMore = true;
+    this.isLoadingCars = true;
+    this.carService.getAvailableCars({ page: 1, limit: this.FEATURED_PAGE_SIZE }).subscribe({
       next: (res) => {
-        const cars: Car[] = Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res)
-            ? res
-            : [];
-        this.allFeaturedCars = cars
+        const { items, meta } = parsePage<Car>(res, 1, this.FEATURED_PAGE_SIZE);
+        this.allFeaturedCars = items
           .filter((c) => c.verified === 'verified')
           .map((c) => this.carToFeatured(c));
         this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
+        this.featuredHasMore = meta.hasMore;
         this.isLoadingCars = false;
       },
       error: () => {
         this.isLoadingCars = false;
+        this.featuredHasMore = false;
+      },
+    });
+  }
+
+  loadMoreFeatured(): void {
+    if (!this.featuredHasMore || this.isLoadingMoreCars) return;
+    this.isLoadingMoreCars = true;
+    this.featuredPage += 1;
+    this.carService.getAvailableCars({ page: this.featuredPage, limit: this.FEATURED_PAGE_SIZE }).subscribe({
+      next: (res) => {
+        const { items, meta } = parsePage<Car>(res, this.featuredPage, this.FEATURED_PAGE_SIZE);
+        const more = items
+          .filter((c) => c.verified === 'verified')
+          .map((c) => this.carToFeatured(c));
+        this.allFeaturedCars = [...this.allFeaturedCars, ...more];
+        this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
+        this.featuredHasMore = meta.hasMore;
+        this.isLoadingMoreCars = false;
+      },
+      error: () => {
+        this.featuredPage -= 1;
+        this.isLoadingMoreCars = false;
       },
     });
   }

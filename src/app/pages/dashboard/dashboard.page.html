@@ -1,4 +1,11 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      refreshingSpinner="crescent"
+    ></ion-refresher-content>
+  </ion-refresher>
+
   <div class="dash">
 
     <!-- ─── Header ─────────────────────────────────────── -->
@@ -276,6 +283,15 @@
               </p>
             </div>
           </div>
+        </div>
+
+        <!-- Load more -->
+        <div class="dash__load-more-wrap" *ngIf="!isLoadingCars && featuredHasMore && featuredCars.length > 0 && activeCategoryIndex === 0">
+          <button class="dash__load-more" (click)="loadMoreFeatured()" [disabled]="isLoadingMoreCars">
+            <ion-spinner *ngIf="isLoadingMoreCars" name="crescent"></ion-spinner>
+            <span *ngIf="!isLoadingMoreCars">{{ 'dash.loadMore' | translate }}</span>
+            <ion-icon *ngIf="!isLoadingMoreCars" name="arrow-forward-outline"></ion-icon>
+          </button>
         </div>
       </div>
 

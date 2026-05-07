@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest } from '../models/user.model';
 import { StorageService } from './storage.service';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({
   providedIn: 'root'
@@ -121,20 +122,6 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'An error occurred';
-    
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = error.error.message;
-    } else {
-      if (error.error?.message) {
-        errorMessage = error.error.message;
-      } else if (error.error?.errors) {
-        errorMessage = error.error.errors.map((e: any) => e.msg).join(', ');
-      } else {
-        errorMessage = `Server error: ${error.status}`;
-      }
-    }
-    
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

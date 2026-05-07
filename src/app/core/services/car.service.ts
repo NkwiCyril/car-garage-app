@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CarApiResponse, SellCarRequest, RentListRequest } from '../models/car.model';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({
   providedIn: 'root',
@@ -159,14 +160,6 @@ export class CarService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'An error occurred';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = error.error.message;
-    } else if (error.error?.message) {
-      errorMessage = error.error.message;
-    } else {
-      errorMessage = `Server error: ${error.status}`;
-    }
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

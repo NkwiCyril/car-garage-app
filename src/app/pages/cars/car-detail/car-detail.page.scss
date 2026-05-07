@@ -182,31 +182,39 @@ ion-content {
 }
 
 .cd__nav-btn {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.15s ease;
+  box-shadow:
+    0 6px 16px rgba(11, 27, 43, 0.28),
+    0 1px 2px rgba(11, 27, 43, 0.18);
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 
   ion-icon {
-    font-size: 20px;
-    color: $white;
+    font-size: 22px;
+    color: $primary;
   }
 
   &:active {
-    background: rgba(255, 255, 255, 0.3);
+    background: $white;
+    transform: scale(0.94);
+    box-shadow: 0 3px 8px rgba(11, 27, 43, 0.22);
   }
 
   @media (min-width: $bp-tablet) {
     &:hover {
-      background: rgba(255, 255, 255, 0.28);
+      background: $white;
+      box-shadow:
+        0 8px 22px rgba(11, 27, 43, 0.32),
+        0 2px 4px rgba(11, 27, 43, 0.2);
     }
   }
 }

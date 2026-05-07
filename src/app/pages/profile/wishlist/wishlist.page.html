@@ -1,4 +1,11 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      refreshingSpinner="crescent"
+    ></ion-refresher-content>
+  </ion-refresher>
+
   <div class="wl">
 
     <!-- ─── Nav ───────────────────────────────────────────── -->
