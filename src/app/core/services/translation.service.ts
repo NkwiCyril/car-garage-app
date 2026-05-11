@@ -9,6 +9,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.bookings': 'BOOKINGS',
     'tab.wishlist': 'WISHLIST',
     'tab.profile': 'PROFILE',
+    'auth.signIn': 'Sign In',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Language Selection',
@@ -44,7 +45,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.greeting.evening': 'Good evening',
 
     // ── Auto / Marketplace ────────────────────────────────────────────────────
-    'auto.title': 'Auto Market',
+    'auto.title': 'DriveEase Official',
     'auto.subtitle': 'Find your next dream vehicle',
     'auto.purchase': 'Purchase',
     'auto.rent': 'Rent',
@@ -179,6 +180,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.bookings': 'RÉSERVATIONS',
     'tab.wishlist': 'FAVORIS',
     'tab.profile': 'PROFIL',
+    'auth.signIn': 'Se connecter',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Sélection de la Langue',
@@ -349,6 +351,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.bookings': 'RESERVAS',
     'tab.wishlist': 'FAVORITOS',
     'tab.profile': 'PERFIL',
+    'auth.signIn': 'Iniciar sesión',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Selección de Idioma',
@@ -519,6 +522,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.bookings': '预订',
     'tab.wishlist': '心愿单',
     'tab.profile': '我的',
+    'auth.signIn': '登录',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': '语言选择',
@@ -689,6 +693,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.bookings': 'الحجوزات',
     'tab.wishlist': 'المفضلة',
     'tab.profile': 'الملف',
+    'auth.signIn': 'تسجيل الدخول',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'اختيار اللغة',
@@ -859,6 +864,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.bookings': 'BOEKINGEN',
     'tab.wishlist': 'VERLANGLIJST',
     'tab.profile': 'PROFIEL',
+    'auth.signIn': 'Inloggen',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Taal Selectie',

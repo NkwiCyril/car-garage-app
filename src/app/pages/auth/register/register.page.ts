@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -37,10 +37,16 @@ export class RegisterPage {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private toastController: ToastController
   ) {
     addIcons({ arrowForwardOutline });
+  }
+
+  private get returnUrl(): string {
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    return url && url.startsWith('/') && !url.startsWith('/auth/') ? url : '/tabs/home';
   }
 
   async register(): Promise<void> {
@@ -67,10 +73,10 @@ export class RegisterPage {
         if (response.success) {
           if (response.token) {
             await this.showToast('Welcome to DriveEase!', 'success');
-            this.router.navigate(['/tabs/home']);
+            this.router.navigateByUrl(this.returnUrl);
           } else {
             await this.showToast('Registration successful! Please login.', 'success');
-            this.router.navigate(['/auth/login']);
+            this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
           }
         }
       },
@@ -82,7 +88,8 @@ export class RegisterPage {
   }
 
   goToLogin(): void {
-    this.router.navigate(['/auth/login']);
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigate(['/auth/login'], url ? { queryParams: { returnUrl: url } } : {});
   }
 
   private async showToast(message: string, color: string = 'primary'): Promise<void> {

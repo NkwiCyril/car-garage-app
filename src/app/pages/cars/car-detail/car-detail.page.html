@@ -18,8 +18,8 @@
     <button class="cd__nav-btn" (click)="goBack()">
       <ion-icon name="arrow-back-outline"></ion-icon>
     </button>
-    <button class="cd__nav-btn" *ngIf="!isOwned" (click)="toggleWishlist()">
-      <ion-icon [name]="isWishlisted ? 'bookmark' : 'bookmark-outline'"></ion-icon>
+    <button class="cd__nav-btn" (click)="share()" aria-label="Share this vehicle">
+      <ion-icon name="share-social-outline"></ion-icon>
     </button>
   </div>
 

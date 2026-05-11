@@ -139,7 +139,6 @@
             <ion-icon name="chevron-down-outline" class="sc__select-icon"></ion-icon>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -195,6 +194,15 @@
             class="sc__photo-img"
             alt="Photo"
           />
+          <button
+            type="button"
+            class="sc__photo-remove"
+            *ngIf="photos[i].file"
+            aria-label="Remove photo"
+            (click)="removePhoto(i, $event)"
+          >
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
           <div class="sc__photo-empty" *ngIf="!photos[i].preview">
             <ion-icon name="add-outline"></ion-icon>
             <span>ADD {{ label }}</span>

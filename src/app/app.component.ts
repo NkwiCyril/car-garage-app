@@ -81,12 +81,18 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn;
+  }
+
   get userName(): string {
-    return this.authService.currentUser?.name?.split(' ')[0] || 'Driver';
+    return this.authService.currentUser?.name?.split(' ')[0]
+      || (this.isLoggedIn ? this.authService.currentUser?.name?.split(' ')[0] : 'Welcome to DriveEase');
   }
 
   get userInitial(): string {
-    return (this.authService.currentUser?.name?.charAt(0) || 'D').toUpperCase();
+    const initial = this.authService.currentUser?.name?.charAt(0);
+    return (initial || (this.isLoggedIn ? this.authService.currentUser?.name?.charAt(0) : 'G')).toUpperCase();
   }
 
   get userPhone(): string {
@@ -107,7 +113,34 @@ export class AppComponent implements OnInit {
 
   async navigate(route: string): Promise<void> {
     await this.menuController.close('main-menu');
+    if (!this.isLoggedIn && this.isProtectedRoute(route)) {
+      this.router.navigate(['/auth/login'], { queryParams: { returnUrl: route } });
+      return;
+    }
     this.router.navigate([route]);
+  }
+
+  private isProtectedRoute(route: string): boolean {
+    return (
+      route.startsWith('/cars/sell') ||
+      route.startsWith('/cars/my') ||
+      route.startsWith('/cars/add') ||
+      route.startsWith('/cars/park') ||
+      route.startsWith('/cars/edit') ||
+      route.startsWith('/profile/') ||
+      route.startsWith('/tabs/wishlist') ||
+      route.startsWith('/tabs/profile')
+    );
+  }
+
+  async goToLogin(): Promise<void> {
+    await this.menuController.close('main-menu');
+    this.router.navigate(['/auth/login']);
+  }
+
+  async goToRegister(): Promise<void> {
+    await this.menuController.close('main-menu');
+    this.router.navigate(['/auth/register']);
   }
 
   async closeMenu(): Promise<void> {

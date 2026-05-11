@@ -33,7 +33,7 @@ interface EditCarForm {
   mileage: number;
   condition: 'new' | 'like-new' | 'used' | '';
   transmission: 'automatic' | 'manual' | '';
-  fuelType: 'gasoline' | 'diesel' | 'electric' | 'hybrid' | '';
+  fuelType: 'petrol' | 'diesel' | 'electric' | 'hybrid' | '';
   color: string;
   vin: string;
   description: string;
@@ -91,7 +91,7 @@ export class EditCarPage {
   ];
 
   readonly fuelTypes: Array<{ value: EditCarForm['fuelType']; label: string }> = [
-    { value: 'gasoline', label: 'Gasoline' },
+    { value: 'petrol', label: 'Petrol' },
     { value: 'diesel', label: 'Diesel' },
     { value: 'electric', label: 'Electric' },
     { value: 'hybrid', label: 'Hybrid' },

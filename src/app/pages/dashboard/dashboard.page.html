@@ -12,11 +12,11 @@
     <div class="dash__header">
       <div class="dash__header-left" (click)="openMenu()">
         <div class="dash__avatar">
-          <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
+          <span>{{ userInitial }}</span>
         </div>
         <div class="dash__greeting">
           <p class="dash__greeting-time">{{ greeting }}</p>
-          <p class="dash__greeting-name">{{ userName || 'Driver' }}</p>
+          <p class="dash__greeting-name">{{ displayName }}</p>
           <button
             type="button"
             class="dash__location"
@@ -32,10 +32,17 @@
         </div>
       </div>
       <div class="dash__header-right">
-        <button class="dash__notif-btn" (click)="openNotifications()">
+        <button
+          *ngIf="isGuest"
+          class="dash__signin-btn"
+          (click)="navigateTo('/auth/login')"
+        >
+          {{ 'auth.signIn' | translate }}
+        </button>
+        <!-- <button *ngIf="!isGuest" class="dash__notif-btn" (click)="openNotifications()">
           <ion-icon name="notifications-outline"></ion-icon>
           <span class="dash__notif-dot"></span>
-        </button>
+        </button> -->
         <span class="dash__brand">DriveEase</span>
       </div>
     </div>

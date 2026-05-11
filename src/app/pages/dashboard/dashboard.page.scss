@@ -206,6 +206,24 @@ ion-content {
   border: 1.5px solid $bg;
 }
 
+.dash__signin-btn {
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: none;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(11px, 3vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px -4px rgba(0, 67, 235, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+
+  &:active { transform: scale(0.95); }
+  &:hover { box-shadow: 0 6px 16px -4px rgba(0, 67, 235, 0.55); }
+}
+
 .dash__brand {
   font-size: clamp(16px, 4.5vw, 18px);
   font-weight: 800;

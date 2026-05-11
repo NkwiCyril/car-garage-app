@@ -14,12 +14,19 @@
             <div class="sm__avatar">{{ userInitial }}</div>
             <div class="sm__user-body">
               <p class="sm__user-name">{{ userName }}</p>
-              <p class="sm__user-sub" *ngIf="userPhone">{{ maskedPhone }}</p>
+              <p class="sm__user-sub" *ngIf="isLoggedIn && userPhone">{{ maskedPhone }}</p>
+              <p class="sm__user-sub" *ngIf="!isLoggedIn">Sign in to unlock all features</p>
             </div>
-            <div class="sm__badge" *ngIf="isVerified">
+            <div class="sm__badge" *ngIf="isLoggedIn && isVerified">
               <ion-icon name="shield-checkmark-outline"></ion-icon>
               Verified
             </div>
+          </div>
+
+          <!-- Guest CTAs -->
+          <div class="sm__guest-ctas" *ngIf="!isLoggedIn">
+            <button class="sm__guest-primary" (click)="goToLogin()">Sign In</button>
+            <button class="sm__guest-secondary" (click)="goToRegister()">Create Account</button>
           </div>
         </div>
 
@@ -48,7 +55,7 @@
             </button>
           </div>
 
-          <div class="sm__section">
+          <div class="sm__section" *ngIf="isLoggedIn">
             <p class="sm__section-label">Account</p>
             <button class="sm__item" *ngFor="let item of accountItems" (click)="navigate(item.route)">
               <div class="sm__item-icon" [style.background]="item.bg">
@@ -72,8 +79,8 @@
 
         </div>
 
-        <!-- Logout -->
-        <div class="sm__footer">
+        <!-- Logout (only when signed in) -->
+        <div class="sm__footer" *ngIf="isLoggedIn">
           <button class="sm__logout" (click)="confirmLogout()">
             <ion-icon name="log-out-outline"></ion-icon>
             Sign Out

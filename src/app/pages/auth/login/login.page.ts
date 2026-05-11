@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -35,10 +35,16 @@ export class LoginPage {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private toastController: ToastController
   ) {
     addIcons({ logoGoogle, logoApple, eyeOffOutline, eyeOutline });
+  }
+
+  private get returnUrl(): string {
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    return url && url.startsWith('/') && !url.startsWith('/auth/') ? url : '/tabs/home';
   }
 
   async login(): Promise<void> {
@@ -54,7 +60,7 @@ export class LoginPage {
         this.isLoading = false;
         if (response.success) {
           await this.showToast('Login successful!', 'success');
-          this.router.navigate(['/tabs/home']);
+          this.router.navigateByUrl(this.returnUrl);
         }
       },
       error: async (error) => {
@@ -73,7 +79,8 @@ export class LoginPage {
   }
 
   goToRegister(): void {
-    this.router.navigate(['/auth/register']);
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigate(['/auth/register'], url ? { queryParams: { returnUrl: url } } : {});
   }
 
   goToForgotPassword(): void {

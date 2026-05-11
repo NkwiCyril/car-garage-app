@@ -44,6 +44,7 @@ import {
 } from 'ionicons/icons';
 import { CarService } from '../../core/services/car.service';
 import { AuthService } from '../../core/services/auth.service';
+import { AuthPromptService } from '../../core/services/auth-prompt.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { Car } from '../../core/models/car.model';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
@@ -111,6 +112,7 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     private router: Router,
     private carService: CarService,
     private authService: AuthService,
+    private authPrompt: AuthPromptService,
     private wishlistService: WishlistService,
     private toastController: ToastController,
     private modalController: ModalController,
@@ -302,6 +304,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   loadWishlist(): void {
+    if (!this.authService.isLoggedIn) {
+      this.wishlistedIds = new Set();
+      return;
+    }
     this.wishlistService.getWishlist().subscribe({
       next: (ids) => { this.wishlistedIds = new Set(ids); },
       error: () => {},
@@ -426,6 +432,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   // ─── Tab ─────────────────────────────────────────────
 
   onTabChange(tab: 'buy' | 'rent' | 'sell'): void {
+    if (tab === 'sell' && !this.authService.isLoggedIn) {
+      this.authPrompt.requireAuth('Sign in to sell or list your vehicles', '/tabs/auto');
+      return;
+    }
     this.activeTab = tab;
     if (tab === 'sell') {
       if (!this.myListingsLoaded) this.loadMyListings();
@@ -448,6 +458,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   toggleWishlist(car: Car): void {
+    if (!this.authService.isLoggedIn) {
+      this.authPrompt.requireAuth('Sign in to save vehicles to your wishlist', '/tabs/auto');
+      return;
+    }
     const id = car._id;
     if (this.wishlistedIds.has(id)) {
       this.wishlistedIds.delete(id);
@@ -490,6 +504,7 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   getFirstImage(car: Car): string | null {
+    console.log("FIRST CAR IMAGE: ", car)
     return car.images?.length ? this.carService.imageUrl(car.images[0]) : null;
   }
 
@@ -533,15 +548,24 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   // ─── Navigation ──────────────────────────────────────
 
   onAddCar(): void {
+    if (!this.authPromptOk('Sign in to add a vehicle', '/cars/add')) return;
     this.router.navigate(['/cars/add']);
   }
 
   onStartListing(): void {
+    if (!this.authPromptOk('Sign in to list a vehicle for sale', '/cars/sell')) return;
     this.router.navigate(['/cars/sell']);
   }
 
   goToMyListings(): void {
+    if (!this.authPromptOk('Sign in to view your listings', '/cars/my')) return;
     this.router.navigate(['/cars/my']);
+  }
+
+  private authPromptOk(message: string, returnUrl: string): boolean {
+    if (this.authService.isLoggedIn) return true;
+    this.authPrompt.requireAuth(message, returnUrl);
+    return false;
   }
 
   openWhatsApp(): void {

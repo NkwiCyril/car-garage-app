@@ -46,6 +46,7 @@ import {
   refreshOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
+import { AuthPromptService } from '../../core/services/auth-prompt.service';
 import { CarService } from '../../core/services/car.service';
 import { AdvertService } from '../../core/services/advert.service';
 import { TranslationService } from '../../core/services/translation.service';
@@ -94,7 +95,6 @@ export class DashboardPage implements OnInit, OnDestroy {
   @ViewChild('searchField')
   searchFieldRef!: ElementRef<HTMLInputElement>;
 
-  userName = '';
   currentLocation = 'Locating…';
   isLocating = false;
   locationError = false;
@@ -152,6 +152,7 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private authPrompt: AuthPromptService,
     private carService: CarService,
     private advertService: AdvertService,
     private menuController: MenuController,
@@ -185,13 +186,29 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const user = this.authService.currentUser;
-    if (user) this.userName = user.name?.split(' ')[0] || 'Driver';
     this.startCountdown();
     this.loadAdverts();
     this.loadFeaturedCars();
     this.setupSearch();
     this.loadLocation();
+  }
+
+  get isGuest(): boolean {
+    return !this.authService.isLoggedIn;
+  }
+
+  get userName(): string {
+    return this.authService.currentUser?.name?.split(' ')[0]?.trim() ?? '';
+  }
+
+  get userInitial(): string {
+    const name = this.authService.currentUser?.name?.trim();
+    if (name) return name.charAt(0).toUpperCase();
+    return this.isGuest ? 'G' : '?';
+  }
+
+  get displayName(): string {
+    return this.userName || (this.isGuest ? 'Guest' : 'Welcome');
   }
 
   ngOnDestroy(): void {
@@ -520,6 +537,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   toggleFavorite(car: FeaturedCar): void {
+    if (!this.authService.isLoggedIn) {
+      this.authPrompt.requireAuth('Sign in to save vehicles to your wishlist', '/tabs/home');
+      return;
+    }
     car.isFavorite = !car.isFavorite;
   }
 

@@ -29,7 +29,7 @@ export interface Car {
   isAvailable?: boolean;
   isVerified?: boolean;
   verified?: 'verified' | 'unverified';
-  fuelType?: 'gasoline' | 'diesel' | 'electric' | 'hybrid';
+  fuelType?: 'petrol' | 'diesel' | 'electric' | 'hybrid';
   dealerName?: string;
   responseTime?: string;
   carteGrise?: string | null;

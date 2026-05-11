@@ -35,6 +35,13 @@ export class CarService {
       );
   }
 
+  // GET /api/cars/:id — fetch a single car by id (used by shareable links)
+  getCarById(id: string): Observable<CarApiResponse> {
+    return this.http
+      .get<CarApiResponse>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
   // GET /api/cars/user/:userId/sale — list the user's own cars for sale
   getUserCarsForSale(userId: string): Observable<CarApiResponse> {
     return this.http

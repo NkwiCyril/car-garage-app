@@ -423,6 +423,31 @@ ion-content {
   justify-content: space-between;
   padding: 8px;
   background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 40%, rgba(0,0,0,0.35) 100%);
+  pointer-events: none;
+}
+
+.sc__photo-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 5;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(11, 27, 43, 0.85);
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(11, 27, 43, 0.32);
+  transition: background 0.15s ease, transform 0.12s ease;
+
+  ion-icon { font-size: 16px; color: $white; }
+
+  &:hover { background: rgba(11, 27, 43, 0.95); }
+  &:active { transform: scale(0.9); }
 }
 
 .sc__photo-badge {
