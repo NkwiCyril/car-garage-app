@@ -50,18 +50,18 @@ export class RegisterPage {
   }
 
   async register(): Promise<void> {
-    if (!this.fullName || !this.phone || !this.password || !this.confirmPassword) {
-      await this.showToast('Please fill in all fields', 'warning');
+    if (!this.fullName.trim() || !this.phone.trim() || !this.password || !this.confirmPassword) {
+      await this.showToast('Please fill in every field so we can create your account.', 'warning');
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      await this.showToast('Passwords do not match', 'warning');
+      await this.showToast('Those passwords don’t match. Please try again.', 'warning');
       return;
     }
 
     if (this.password.length < 6) {
-      await this.showToast('Password must be at least 6 characters', 'warning');
+      await this.showToast('Choose a password with at least 6 characters.', 'warning');
       return;
     }
 
@@ -71,19 +71,30 @@ export class RegisterPage {
       next: async (response) => {
         this.isLoading = false;
         if (response.success) {
-          if (response.token) {
-            await this.showToast('Welcome to DriveEase!', 'success');
-            this.router.navigateByUrl(this.returnUrl);
-          } else {
-            await this.showToast('Registration successful! Please login.', 'success');
-            this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.returnUrl } });
-          }
+          await this.showToast(
+            response.message || `We just sent a verification code to ${this.phone}.`,
+            'success',
+          );
+          this.router.navigate(['/auth/verify-otp'], {
+            queryParams: {
+              phone: this.phone,
+              returnUrl: this.returnUrl,
+            },
+          });
+        } else {
+          await this.showToast(
+            response?.message || 'We couldn’t create your account. Please try again.',
+            'danger',
+          );
         }
       },
       error: async (error) => {
         this.isLoading = false;
-        await this.showToast(error.message || 'Registration failed', 'danger');
-      }
+        await this.showToast(
+          error.message || 'Sign-up failed. Please check your details and try again.',
+          'danger',
+        );
+      },
     });
   }
 

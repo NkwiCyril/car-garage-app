@@ -21,10 +21,9 @@
 
     <!-- Title -->
     <div class="otp__welcome">
-      <h1 class="otp__title">OTP Verification</h1>
+      <h1 class="otp__title">Verify Your Phone</h1>
       <p class="otp__subtitle">
-        Enter the code sent to +237 670 &#8226;&#8226;&#8226;
-        &#8226;&#8226;&#8226;
+        Enter the code we sent to <strong>{{ maskedPhone }}</strong>
       </p>
     </div>
 
@@ -76,6 +75,16 @@
         type="tel"
         maxlength="1"
         [(ngModel)]="otp5"
+        (ionInput)="onOtpInput($event, null)"
+        fill="outline"
+        mode="md"
+      ></ion-input>
+      <ion-input
+        id="otp6"
+        class="otp__box"
+        type="tel"
+        maxlength="1"
+        [(ngModel)]="otp6"
         (ionInput)="onOtpInput($event, null)"
         fill="outline"
         mode="md"

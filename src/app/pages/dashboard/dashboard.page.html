@@ -256,7 +256,7 @@
         <!-- Car grid -->
         <div class="dash__car-grid" *ngIf="!isLoadingCars && featuredCars.length > 0">
           <div
-            class="dash__car-card"
+            class="dash__car-card dash__car-card--premium"
             *ngFor="let car of featuredCars"
             (click)="openCarDetail(car)"
           >
@@ -272,6 +272,13 @@
                 <ion-icon name="car-sport-outline"></ion-icon>
               </div>
               <div class="dash__car-media-grad"></div>
+
+              <!-- Premium ribbon -->
+              <span class="dash__car-premium-ribbon">
+                <ion-icon name="diamond-outline"></ion-icon>
+                PREMIUM
+              </span>
+
               <button
                 class="dash__car-fav"
                 [class.dash__car-fav--active]="car.isFavorite"

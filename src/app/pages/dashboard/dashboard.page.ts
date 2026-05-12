@@ -44,6 +44,7 @@ import {
   pricetagOutline,
   closeOutline,
   refreshOutline,
+  diamondOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
 import { AuthPromptService } from '../../core/services/auth-prompt.service';
@@ -179,6 +180,7 @@ export class DashboardPage implements OnInit, OnDestroy {
       pricetagOutline,
       closeOutline,
       refreshOutline,
+      diamondOutline,
     });
     this.countdownTarget = new Date(
       Date.now() + (4 * 3600 + 12 * 60 + 45) * 1000,
@@ -281,12 +283,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     this.featuredPage = 1;
     this.featuredHasMore = true;
     this.isLoadingCars = true;
-    this.carService.getAvailableCars({ page: 1, limit: this.FEATURED_PAGE_SIZE }).subscribe({
+    this.carService.getHomeCars({ page: 1, limit: this.FEATURED_PAGE_SIZE }).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.FEATURED_PAGE_SIZE);
-        this.allFeaturedCars = items
-          .filter((c) => c.verified === 'verified')
-          .map((c) => this.carToFeatured(c));
+        this.allFeaturedCars = items.map((c) => this.carToFeatured(c));
         this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
         this.featuredHasMore = meta.hasMore;
         this.isLoadingCars = false;
@@ -302,12 +302,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     if (!this.featuredHasMore || this.isLoadingMoreCars) return;
     this.isLoadingMoreCars = true;
     this.featuredPage += 1;
-    this.carService.getAvailableCars({ page: this.featuredPage, limit: this.FEATURED_PAGE_SIZE }).subscribe({
+    this.carService.getHomeCars({ page: this.featuredPage, limit: this.FEATURED_PAGE_SIZE }).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, this.featuredPage, this.FEATURED_PAGE_SIZE);
-        const more = items
-          .filter((c) => c.verified === 'verified')
-          .map((c) => this.carToFeatured(c));
+        const more = items.map((c) => this.carToFeatured(c));
         this.allFeaturedCars = [...this.allFeaturedCars, ...more];
         this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
         this.featuredHasMore = meta.hasMore;

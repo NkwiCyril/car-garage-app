@@ -48,8 +48,8 @@ export class LoginPage {
   }
 
   async login(): Promise<void> {
-    if (!this.phone || !this.password) {
-      await this.showToast('Please enter phone and password', 'warning');
+    if (!this.phone.trim() || !this.password) {
+      await this.showToast('Enter your phone number and password to continue.', 'warning');
       return;
     }
 
@@ -59,23 +59,33 @@ export class LoginPage {
       next: async (response) => {
         this.isLoading = false;
         if (response.success) {
-          await this.showToast('Login successful!', 'success');
+          const firstName = response.user?.name?.split(' ')[0];
+          const greeting = firstName ? `Welcome back, ${firstName}!` : 'Welcome back!';
+          await this.showToast(greeting, 'success');
           this.router.navigateByUrl(this.returnUrl);
+        } else {
+          await this.showToast(
+            response?.message || 'We couldn’t sign you in. Please try again.',
+            'danger',
+          );
         }
       },
       error: async (error) => {
         this.isLoading = false;
-        await this.showToast(error.message || 'Login failed', 'danger');
-      }
+        await this.showToast(
+          error.message || 'Sign-in failed. Please check your phone and password.',
+          'danger',
+        );
+      },
     });
   }
 
   loginWithGoogle(): void {
-    this.showToast('Google OAuth not available yet', 'warning');
+    this.showToast('Google sign-in is coming soon.', 'medium');
   }
 
   loginWithApple(): void {
-    this.showToast('Apple Sign In not available yet', 'warning');
+    this.showToast('Apple sign-in is coming soon.', 'medium');
   }
 
   goToRegister(): void {

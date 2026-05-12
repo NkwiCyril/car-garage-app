@@ -61,16 +61,6 @@
       <!-- Bottom gradient -->
       <div class="cd__hero-grad"></div>
 
-      <!-- Verification badge -->
-      <span class="cd__verified" *ngIf="car.verified === 'verified'">
-        <ion-icon name="checkmark-circle"></ion-icon>
-        {{ 'cd.verified' | translate }}
-      </span>
-      <span class="cd__unverified" *ngIf="car.verified === 'unverified'">
-        <ion-icon name="alert-circle"></ion-icon>
-        Unverified
-      </span>
-
       <!-- Image counter -->
       <span class="cd__img-counter" *ngIf="getAllImages().length > 1">
         {{ activeImageIndex + 1 }} / {{ getAllImages().length }}
@@ -240,10 +230,6 @@
               <span>{{ (car.owner?.name || getSellerName()).charAt(0).toUpperCase() }}</span>
             </div>
             <div class="cd__seller-body">
-              <div class="cd__seller-verified" *ngIf="car.verified === 'verified'">
-                <ion-icon name="checkmark-circle"></ion-icon>
-                {{ 'cd.verifiedDealer' | translate }}
-              </div>
               <h3 class="cd__seller-name">{{ getSellerName() }}</h3>
               <div class="cd__seller-meta">
                 <ion-icon name="star" class="cd__seller-star"></ion-icon>
@@ -276,6 +262,10 @@
 
           <!-- CTAs -->
           <div class="cd__seller-ctas">
+            <button class="cd__seller-whatsapp" (click)="messageSeller()">
+              <ion-icon name="logo-whatsapp"></ion-icon>
+              {{ 'cd.message' | translate }}
+            </button>
             <button class="cd__seller-profile" (click)="viewDealer()">
               {{ 'cd.viewSeller' | translate }}
             </button>

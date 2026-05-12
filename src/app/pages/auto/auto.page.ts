@@ -192,29 +192,25 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     let done = 0;
     const finish = () => { if (++done >= 2) this.isLoadingAvailable = false; };
 
-    this.carService.getAvailableCars({ forRent: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
+    this.carService.getMarketplaceCars({ forRent: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
-        this.rentCars = this.filterVerified(items);
+        this.rentCars = items;
         this.rentHasMore = meta.hasMore;
         finish();
       },
       error: (err) => { finish(); this.showToast(err.message || 'Failed to load rental cars', 'danger'); },
     });
 
-    this.carService.getAvailableCars({ forSale: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
+    this.carService.getMarketplaceCars({ forSale: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
-        this.buyCars = this.filterVerified(items);
+        this.buyCars = items;
         this.buyHasMore = meta.hasMore;
         finish();
       },
       error: (err) => { finish(); this.showToast(err.message || 'Failed to load cars for sale', 'danger'); },
     });
-  }
-
-  private filterVerified(cars: Car[]): Car[] {
-    return cars.filter((c) => c.verified === 'verified');
   }
 
   // ─── Infinite scroll ─────────────────────────────────
@@ -238,7 +234,7 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
       this.carService.searchCars(params).subscribe({
         next: (res) => {
           const { items, meta } = parsePage<Car>(res, this.filteredPage, this.PAGE_SIZE);
-          this.filteredCars = [...this.filteredCars, ...this.filterVerified(items)];
+          this.filteredCars = [...this.filteredCars, ...items];
           this.filteredHasMore = meta.hasMore;
           target.complete();
         },
@@ -249,10 +245,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
 
     if (this.activeTab === 'rent') {
       this.rentPage += 1;
-      this.carService.getAvailableCars({ forRent: true, page: this.rentPage, limit: this.PAGE_SIZE }).subscribe({
+      this.carService.getMarketplaceCars({ forRent: true, page: this.rentPage, limit: this.PAGE_SIZE }).subscribe({
         next: (res) => {
           const { items, meta } = parsePage<Car>(res, this.rentPage, this.PAGE_SIZE);
-          this.rentCars = [...this.rentCars, ...this.filterVerified(items)];
+          this.rentCars = [...this.rentCars, ...items];
           this.rentHasMore = meta.hasMore;
           target.complete();
         },
@@ -260,10 +256,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
       });
     } else {
       this.buyPage += 1;
-      this.carService.getAvailableCars({ forSale: true, page: this.buyPage, limit: this.PAGE_SIZE }).subscribe({
+      this.carService.getMarketplaceCars({ forSale: true, page: this.buyPage, limit: this.PAGE_SIZE }).subscribe({
         next: (res) => {
           const { items, meta } = parsePage<Car>(res, this.buyPage, this.PAGE_SIZE);
-          this.buyCars = [...this.buyCars, ...this.filterVerified(items)];
+          this.buyCars = [...this.buyCars, ...items];
           this.buyHasMore = meta.hasMore;
           target.complete();
         },
@@ -399,7 +395,7 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     this.carService.searchCars(params).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
-        this.filteredCars = this.filterVerified(items);
+        this.filteredCars = items;
         this.filteredHasMore = meta.hasMore;
         this.isSearchLoading = false;
       },

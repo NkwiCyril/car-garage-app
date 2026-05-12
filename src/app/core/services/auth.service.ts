@@ -43,39 +43,75 @@ export class AuthService {
     }
   }
 
+  /**
+   * Login — single step. Returns a session token immediately on success.
+   * (Phone verification via OTP happens at registration time, not here.)
+   */
   login(phone: string, password: string): Observable<any> {
     const payload: LoginRequest = { phone, password };
     return this.http.post<any>(`${this.apiUrl}/users/login`, payload).pipe(
       tap((response) => {
-        if (response.success && response.token) {
+        if (response?.success && response.token) {
           this.storageService.set('authToken', response.token);
           this.storageService.set('currentUser', response.user);
           this.isAuthenticated$.next(true);
           this.currentUser$.next(response.user);
         }
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
+  /**
+   * Step 1 of registration — creates the user and triggers an OTP for phone verification.
+   * The session token is only issued after `verifyOtp()` succeeds.
+   */
   register(fullName: string, phone: string, password: string, repeatPassword: string): Observable<any> {
     const payload: RegisterRequest & { repeatPassword: string } = {
       name: fullName,
       phone,
       password,
-      repeatPassword
+      repeatPassword,
     };
     return this.http.post<any>(`${this.apiUrl}/users/register`, payload).pipe(
       tap((response) => {
-        if (response.success && response.token) {
+        if (response?.success) {
+          console.log("REGISTRATION RESPONSE: ", response);
+          this.storageService.set('pendingAuthPhone', phone);
+        }
+      }),
+      catchError(this.handleError),
+    );
+  }
+
+  /**
+   * Step 2 of registration — confirms the OTP for the pending phone. On success
+   * the API returns a session token + user, which we store to authenticate.
+   */
+  verifyOtp(phone: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/verify-otp`, { phone, otp }).pipe(
+      tap((response) => {
+        if (response?.success && response.token) {
           this.storageService.set('authToken', response.token);
           this.storageService.set('currentUser', response.user);
+          this.storageService.remove('pendingAuthPhone');
           this.isAuthenticated$.next(true);
           this.currentUser$.next(response.user);
         }
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
+  }
+
+  /** Re-issue the OTP for a phone that is mid-registration. */
+  resendOtp(phone: string): Observable<any> {
+    return this.http
+      .post<any>(`${this.apiUrl}/users/resend-otp`, { phone })
+      .pipe(catchError(this.handleError));
+  }
+
+  get pendingAuthPhone(): string | null {
+    return this.storageService.get<string>('pendingAuthPhone');
   }
 
   loginWithGoogle(): Observable<any> {
@@ -84,10 +120,6 @@ export class AuthService {
 
   forgotPassword(phone: string): Observable<any> {
     throw new Error('Forgot password not implemented yet');
-  }
-
-  verifyOtp(phone: string, otp: string): Observable<any> {
-    throw new Error('OTP verification not implemented yet');
   }
 
   resetPassword(phone: string, newPassword: string): Observable<any> {
@@ -113,6 +145,7 @@ export class AuthService {
   logout(): void {
     this.storageService.remove('authToken');
     this.storageService.remove('currentUser');
+    this.storageService.remove('pendingAuthPhone');
     this.isAuthenticated$.next(false);
     this.currentUser$.next(null);
   }

@@ -1183,6 +1183,116 @@ ion-content {
   100% { background-position: -200% 0; }
 }
 
+// ─── Premium card treatment ──────────────────────────
+$gold: #d4a64a;
+$gold-deep: #b88130;
+$ink: #0b1b2b;
+
+.dash__car-card--premium {
+  position: relative;
+  border: none;
+  border-radius: clamp(18px, 4.4vw, 22px);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fbf9f4 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 36px -16px rgba(11, 27, 43, 0.22),
+    0 2px 6px -2px rgba(11, 27, 43, 0.06);
+
+  // gold hairline frame
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(135deg, $gold 0%, rgba(212, 166, 74, 0.15) 35%, transparent 60%, rgba(212, 166, 74, 0.35) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  // gold underline accent
+  &::after {
+    content: '';
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, $gold 50%, transparent 100%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .dash__car-media {
+    background: linear-gradient(160deg, #1f2937 0%, #0b1b2b 100%);
+  }
+
+  .dash__car-media-grad {
+    height: 65%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(11, 27, 43, 0.55) 100%);
+  }
+
+  .dash__car-info {
+    padding-top: 12px;
+  }
+
+  .dash__car-name {
+    color: $ink;
+    letter-spacing: -0.3px;
+  }
+
+  .dash__car-price-value,
+  .dash__car-price-currency {
+    color: $gold-deep;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 28px 48px -18px rgba(11, 27, 43, 0.32),
+        0 4px 10px -2px rgba(212, 166, 74, 0.18);
+    }
+  }
+}
+
+.dash__car-premium-ribbon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px 5px 9px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: $gold;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow:
+    0 4px 10px -2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(212, 166, 74, 0.55) inset;
+
+  ion-icon {
+    font-size: 11px;
+    color: $gold;
+  }
+}
+
 // ─── Load more button ────────────────────────────────
 .dash__load-more-wrap {
   display: flex;
