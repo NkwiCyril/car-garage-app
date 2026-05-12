@@ -1,4 +1,11 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      refreshingSpinner="crescent"
+    ></ion-refresher-content>
+  </ion-refresher>
+
   <div class="mp">
 
     <!-- ─── Header ─────────────────────────────────────── -->
@@ -102,7 +109,7 @@
       </p>
 
       <!-- Loading -->
-      <div class="mp__loading" *ngIf="isLoading">
+      <div class="mp__loading" *ngIf="isLoading && displayCars.length === 0">
         <ion-spinner name="crescent"></ion-spinner>
         <p>{{ 'auto.loadingVehicles' | translate }}</p>
       </div>
@@ -122,7 +129,7 @@
       </div>
 
       <!-- Car Grid -->
-      <div class="mp__grid" *ngIf="!isLoading && displayCars.length > 0">
+      <div class="mp__grid" *ngIf="displayCars.length > 0">
         <div
           class="mp__card"
           *ngFor="let car of displayCars"
@@ -187,6 +194,18 @@
           </div>
         </div>
       </div>
+
+      <!-- Infinite scroll -->
+      <ion-infinite-scroll
+        threshold="200px"
+        [disabled]="!canLoadMore"
+        (ionInfinite)="loadMore($event)"
+      >
+        <ion-infinite-scroll-content
+          loadingSpinner="crescent"
+          loadingText="Loading more…"
+        ></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
 
     </ng-container>
 

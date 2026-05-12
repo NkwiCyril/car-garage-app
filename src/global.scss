@@ -286,6 +286,44 @@ ion-menu ion-content {
   font-family: monospace;
 }
 
+.sm__guest-ctas {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.sm__guest-primary,
+.sm__guest-secondary {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.sm__guest-primary {
+  border: none;
+  background: #0043eb;
+  color: #ffffff;
+  box-shadow: 0 6px 16px -4px rgba(0, 67, 235, 0.45);
+
+  &:active { opacity: 0.85; }
+  &:hover { background: #1a56eb; }
+}
+
+.sm__guest-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+
+  &:active { background: rgba(255, 255, 255, 0.12); }
+  &:hover { background: rgba(255, 255, 255, 0.1); }
+}
+
 .sm__badge {
   display: inline-flex;
   align-items: center;
@@ -396,6 +434,7 @@ ion-menu ion-content {
 // ─── Filters bottom-sheet modal ──────────────────────
 .filters-modal {
   --border-radius: 24px 24px 0 0;
+  --height: 100%;
   align-items: flex-end;
 
   &::part(handle) {
@@ -403,6 +442,13 @@ ion-menu ion-content {
     width: 36px;
     height: 4px;
     border-radius: 4px;
+    margin-top: 10px;
+  }
+
+  &::part(content) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 }
 

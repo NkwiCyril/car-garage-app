@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import {
   IonContent,
   IonIcon,
+  IonRefresher,
+  IonRefresherContent,
   AlertController,
   ViewWillEnter,
 } from '@ionic/angular/standalone';
@@ -47,7 +49,7 @@ interface MenuItem {
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  imports: [CommonModule, IonContent, IonIcon, TranslatePipe],
+  imports: [CommonModule, IonContent, IonIcon, IonRefresher, IonRefresherContent, TranslatePipe],
 })
 export class ProfilePage implements OnInit, ViewWillEnter {
   userName = '';
@@ -87,12 +89,7 @@ export class ProfilePage implements OnInit, ViewWillEnter {
   ];
 
   prefItems: MenuItem[] = [
-    {
-      icon: 'heart-outline',
-      label: 'pf.myWishlist',
-      color: 'danger',
-      route: '/profile/wishlist',
-    },
+    // { icon: 'heart-outline', label: 'pf.myWishlist', color: 'danger', route: '/profile/wishlist' },
     // { icon: 'lock-closed-outline', label: 'pf.privacySecurity', color: 'blue', route: '/profile/privacy' },
     {
       icon: 'language-outline',
@@ -153,6 +150,16 @@ export class ProfilePage implements OnInit, ViewWillEnter {
 
   ionViewWillEnter(): void {
     this.loadStats();
+  }
+
+  onRefresh(event: CustomEvent): void {
+    this.loadStats();
+    const user = this.authService.currentUser;
+    if (user) {
+      this.userName = user.name || 'User';
+      this.userPhone = user.phone || '';
+    }
+    setTimeout(() => (event.target as HTMLIonRefresherElement)?.complete(), 600);
   }
 
   private loadStats(): void {

@@ -17,11 +17,11 @@ export class StepThreePage {
 
   getStarted(): void {
     this.storageService.setOnboarded();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/tabs/home']);
   }
 
   reviewListingPolicy(): void {
     this.storageService.setOnboarded();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/tabs/home']);
   }
 }

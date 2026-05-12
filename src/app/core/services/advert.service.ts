@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({ providedIn: 'root' })
 export class AdvertService {
@@ -33,7 +34,6 @@ export class AdvertService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    const msg = error.error?.message ?? `Server error: ${error.status}`;
-    return throwError(() => new Error(msg));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

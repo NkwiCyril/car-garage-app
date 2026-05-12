@@ -12,6 +12,8 @@ import {
   IonContent,
   IonIcon,
   IonSpinner,
+  IonRefresher,
+  IonRefresherContent,
   MenuController,
 } from '@ionic/angular/standalone';
 import { Subject, EMPTY, Subscription } from 'rxjs';
@@ -41,14 +43,19 @@ import {
   keyOutline,
   pricetagOutline,
   closeOutline,
+  refreshOutline,
+  diamondOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../core/services/auth.service';
+import { AuthPromptService } from '../../core/services/auth-prompt.service';
 import { CarService } from '../../core/services/car.service';
 import { AdvertService } from '../../core/services/advert.service';
 import { TranslationService } from '../../core/services/translation.service';
+import { GeolocationService } from '../../core/services/geolocation.service';
 import { TranslatePipe } from '../../core/pipes/translate.pipe';
 import { Car } from '../../core/models/car.model';
 import { Advert } from '../../core/models/advert.model';
+import { parsePage } from '../../core/utils/pagination.util';
 
 interface FeaturedCar {
   id: string;
@@ -81,7 +88,7 @@ interface Promo {
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
-  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, TranslatePipe],
+  imports: [CommonModule, FormsModule, IonContent, IonIcon, IonSpinner, IonRefresher, IonRefresherContent, TranslatePipe],
 })
 export class DashboardPage implements OnInit, OnDestroy {
   @ViewChild('promoTrack', { static: false })
@@ -89,8 +96,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   @ViewChild('searchField')
   searchFieldRef!: ElementRef<HTMLInputElement>;
 
-  userName = '';
-  currentLocation = 'Douala, CM';
+  currentLocation = 'Locating…';
+  isLocating = false;
+  locationError = false;
   activeCategoryIndex = 0;
 
   // Promo slider
@@ -104,10 +112,14 @@ export class DashboardPage implements OnInit, OnDestroy {
   private countdownTarget: Date;
   private countdownInterval: ReturnType<typeof setInterval> | null = null;
 
-  // Featured cars
+  // Featured cars (paginated)
   allFeaturedCars: FeaturedCar[] = [];
   featuredCars: FeaturedCar[] = [];
   isLoadingCars = true;
+  isLoadingMoreCars = false;
+  featuredHasMore = true;
+  private featuredPage = 1;
+  readonly FEATURED_PAGE_SIZE = 12;
 
   // Search
   isSearchMode = false;
@@ -141,10 +153,12 @@ export class DashboardPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private authPrompt: AuthPromptService,
     private carService: CarService,
     private advertService: AdvertService,
     private menuController: MenuController,
     public translationService: TranslationService,
+    private geolocationService: GeolocationService,
   ) {
     addIcons({
       locationOutline,
@@ -165,6 +179,8 @@ export class DashboardPage implements OnInit, OnDestroy {
       keyOutline,
       pricetagOutline,
       closeOutline,
+      refreshOutline,
+      diamondOutline,
     });
     this.countdownTarget = new Date(
       Date.now() + (4 * 3600 + 12 * 60 + 45) * 1000,
@@ -172,18 +188,75 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const user = this.authService.currentUser;
-    if (user) this.userName = user.name?.split(' ')[0] || 'Driver';
     this.startCountdown();
     this.loadAdverts();
     this.loadFeaturedCars();
     this.setupSearch();
+    this.loadLocation();
+  }
+
+  get isGuest(): boolean {
+    return !this.authService.isLoggedIn;
+  }
+
+  get userName(): string {
+    return this.authService.currentUser?.name?.split(' ')[0]?.trim() ?? '';
+  }
+
+  get userInitial(): string {
+    const name = this.authService.currentUser?.name?.trim();
+    if (name) return name.charAt(0).toUpperCase();
+    return this.isGuest ? 'G' : '?';
+  }
+
+  get displayName(): string {
+    return this.userName || (this.isGuest ? 'Guest' : 'Welcome');
   }
 
   ngOnDestroy(): void {
     if (this.countdownInterval) clearInterval(this.countdownInterval);
     this.stopAutoSlide();
     this.searchSub?.unsubscribe();
+  }
+
+  // ─── Location ────────────────────────────────────────
+
+  private loadLocation(force = false): void {
+    const cached = this.geolocationService.current;
+    if (cached && !force) {
+      this.currentLocation = cached.display;
+      return;
+    }
+    this.isLocating = true;
+    this.locationError = false;
+    this.geolocationService.getLocation(force).subscribe({
+      next: (loc) => {
+        this.currentLocation = loc.display;
+        this.isLocating = false;
+      },
+      error: () => {
+        this.isLocating = false;
+        this.locationError = true;
+        this.currentLocation = 'Set location';
+      },
+    });
+  }
+
+  refreshLocation(): void {
+    if (this.isLocating) return;
+    this.loadLocation(true);
+  }
+
+  // ─── Pull to refresh ─────────────────────────────────
+
+  onRefresh(event: CustomEvent): void {
+    this.isLoadingPromos = true;
+    this.isLoadingCars = true;
+    this.stopAutoSlide();
+    this.loadAdverts();
+    this.loadFeaturedCars();
+    this.loadLocation(true);
+    setTimeout(() => (event.target as HTMLIonRefresherElement)?.complete(), 600);
   }
 
   // ─── Data loading ─────────────────────────────────────
@@ -207,21 +280,40 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   private loadFeaturedCars(): void {
-    this.carService.getAvailableCars({ limit: 20 }).subscribe({
+    this.featuredPage = 1;
+    this.featuredHasMore = true;
+    this.isLoadingCars = true;
+    this.carService.getHomeCars({ page: 1, limit: this.FEATURED_PAGE_SIZE }).subscribe({
       next: (res) => {
-        const cars: Car[] = Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res)
-            ? res
-            : [];
-        this.allFeaturedCars = cars
-          .filter((c) => c.verified === 'verified')
-          .map((c) => this.carToFeatured(c));
+        const { items, meta } = parsePage<Car>(res, 1, this.FEATURED_PAGE_SIZE);
+        this.allFeaturedCars = items.map((c) => this.carToFeatured(c));
         this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
+        this.featuredHasMore = meta.hasMore;
         this.isLoadingCars = false;
       },
       error: () => {
         this.isLoadingCars = false;
+        this.featuredHasMore = false;
+      },
+    });
+  }
+
+  loadMoreFeatured(): void {
+    if (!this.featuredHasMore || this.isLoadingMoreCars) return;
+    this.isLoadingMoreCars = true;
+    this.featuredPage += 1;
+    this.carService.getHomeCars({ page: this.featuredPage, limit: this.FEATURED_PAGE_SIZE }).subscribe({
+      next: (res) => {
+        const { items, meta } = parsePage<Car>(res, this.featuredPage, this.FEATURED_PAGE_SIZE);
+        const more = items.map((c) => this.carToFeatured(c));
+        this.allFeaturedCars = [...this.allFeaturedCars, ...more];
+        this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
+        this.featuredHasMore = meta.hasMore;
+        this.isLoadingMoreCars = false;
+      },
+      error: () => {
+        this.featuredPage -= 1;
+        this.isLoadingMoreCars = false;
       },
     });
   }
@@ -443,6 +535,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   toggleFavorite(car: FeaturedCar): void {
+    if (!this.authService.isLoggedIn) {
+      this.authPrompt.requireAuth('Sign in to save vehicles to your wishlist', '/tabs/home');
+      return;
+    }
     car.isFavorite = !car.isFavorite;
   }
 

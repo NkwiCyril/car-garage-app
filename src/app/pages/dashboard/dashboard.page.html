@@ -1,26 +1,48 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      refreshingSpinner="crescent"
+    ></ion-refresher-content>
+  </ion-refresher>
+
   <div class="dash">
 
     <!-- ─── Header ─────────────────────────────────────── -->
     <div class="dash__header">
       <div class="dash__header-left" (click)="openMenu()">
         <div class="dash__avatar">
-          <span>{{ (userName.charAt(0) || 'D').toUpperCase() }}</span>
+          <span>{{ userInitial }}</span>
         </div>
         <div class="dash__greeting">
           <p class="dash__greeting-time">{{ greeting }}</p>
-          <p class="dash__greeting-name">{{ userName || 'Driver' }}</p>
-          <div class="dash__location">
-            <ion-icon name="location-outline"></ion-icon>
+          <p class="dash__greeting-name">{{ displayName }}</p>
+          <button
+            type="button"
+            class="dash__location"
+            [class.dash__location--loading]="isLocating"
+            [class.dash__location--error]="locationError"
+            (click)="refreshLocation(); $event.stopPropagation()"
+          >
+            <ion-spinner *ngIf="isLocating" name="dots" class="dash__location-spinner"></ion-spinner>
+            <ion-icon *ngIf="!isLocating" name="location-outline"></ion-icon>
             <span>{{ currentLocation }}</span>
-          </div>
+            <ion-icon *ngIf="!isLocating && !locationError" name="refresh-outline" class="dash__location-refresh"></ion-icon>
+          </button>
         </div>
       </div>
       <div class="dash__header-right">
-        <button class="dash__notif-btn" (click)="openNotifications()">
+        <button
+          *ngIf="isGuest"
+          class="dash__signin-btn"
+          (click)="navigateTo('/auth/login')"
+        >
+          {{ 'auth.signIn' | translate }}
+        </button>
+        <!-- <button *ngIf="!isGuest" class="dash__notif-btn" (click)="openNotifications()">
           <ion-icon name="notifications-outline"></ion-icon>
           <span class="dash__notif-dot"></span>
-        </button>
+        </button> -->
         <span class="dash__brand">DriveEase</span>
       </div>
     </div>
@@ -234,7 +256,7 @@
         <!-- Car grid -->
         <div class="dash__car-grid" *ngIf="!isLoadingCars && featuredCars.length > 0">
           <div
-            class="dash__car-card"
+            class="dash__car-card dash__car-card--premium"
             *ngFor="let car of featuredCars"
             (click)="openCarDetail(car)"
           >
@@ -250,6 +272,13 @@
                 <ion-icon name="car-sport-outline"></ion-icon>
               </div>
               <div class="dash__car-media-grad"></div>
+
+              <!-- Premium ribbon -->
+              <span class="dash__car-premium-ribbon">
+                <ion-icon name="diamond-outline"></ion-icon>
+                PREMIUM
+              </span>
+
               <button
                 class="dash__car-fav"
                 [class.dash__car-fav--active]="car.isFavorite"
@@ -268,6 +297,15 @@
               </p>
             </div>
           </div>
+        </div>
+
+        <!-- Load more -->
+        <div class="dash__load-more-wrap" *ngIf="!isLoadingCars && featuredHasMore && featuredCars.length > 0 && activeCategoryIndex === 0">
+          <button class="dash__load-more" (click)="loadMoreFeatured()" [disabled]="isLoadingMoreCars">
+            <ion-spinner *ngIf="isLoadingMoreCars" name="crescent"></ion-spinner>
+            <span *ngIf="!isLoadingMoreCars">{{ 'dash.loadMore' | translate }}</span>
+            <ion-icon *ngIf="!isLoadingMoreCars" name="arrow-forward-outline"></ion-icon>
+          </button>
         </div>
       </div>
 

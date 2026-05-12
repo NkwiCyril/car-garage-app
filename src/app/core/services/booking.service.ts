@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Booking } from '../models/booking.model';
 import { CarService } from './car.service';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
@@ -74,7 +75,6 @@ export class BookingService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    const msg = error.error?.message ?? `Error: ${error.status}`;
-    return throwError(() => new Error(msg));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

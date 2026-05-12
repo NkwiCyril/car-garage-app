@@ -21,6 +21,6 @@ export class StepTwoPage {
 
   skip(): void {
     this.storageService.setOnboarded();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/tabs/home']);
   }
 }

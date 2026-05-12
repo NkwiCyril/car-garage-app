@@ -129,8 +129,17 @@ ion-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.lg__flag-img {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 0 0 0 1px rgba(11, 27, 43, 0.06);
 }
 
 .lg__info {

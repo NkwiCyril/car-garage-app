@@ -30,6 +30,7 @@ import {
   timeOutline,
   listOutline,
   homeOutline,
+  closeOutline,
 } from 'ionicons/icons';
 import { CarService } from '../../../core/services/car.service';
 
@@ -73,13 +74,15 @@ export class SellCarPage implements OnInit {
   readonly totalSteps = 5;
   isSubmitting = false;
 
+  readonly defaultFuelType = 'Petrol';
+
   listing: SellListing = {
     make: '',
     model: '',
     year: new Date().getFullYear(),
     mileage: 0,
     transmission: 'automatic',
-    fuelType: 'Petrol',
+    fuelType: this.defaultFuelType,
     color: '',
     bodyType: 'SUV',
     vin: '',
@@ -119,6 +122,7 @@ export class SellCarPage implements OnInit {
       lockClosedOutline, informationCircleOutline, alertCircleOutline,
       chevronDownOutline, carOutline, speedometerOutline, settingsOutline,
       flameOutline, rocketOutline, timeOutline, listOutline, homeOutline,
+      closeOutline,
     });
   }
 
@@ -140,6 +144,9 @@ export class SellCarPage implements OnInit {
       if (raw) {
         const saved = JSON.parse(raw) as Partial<SellListing>;
         this.listing = { ...this.listing, ...saved };
+        if (!this.listing.fuelType || !this.fuelTypes.includes(this.listing.fuelType)) {
+          this.listing.fuelType = this.defaultFuelType;
+        }
       }
     } catch {}
   }
@@ -255,11 +262,11 @@ export class SellCarPage implements OnInit {
 
   private mapFuelType(fuel: string): string {
     const map: Record<string, string> = {
-      'Petrol': 'gasoline',
+      'Petrol': 'petrol',
       'Diesel': 'diesel',
       'Hybrid': 'hybrid',
       'Electric': 'electric',
-      'LPG': 'gasoline',
+      'LPG': 'petrol',
     };
     return map[fuel] ?? fuel.toLowerCase();
   }
@@ -298,6 +305,11 @@ export class SellCarPage implements OnInit {
       reader.readAsDataURL(file);
     });
     input.value = '';
+  }
+
+  removePhoto(index: number, event: Event): void {
+    event.stopPropagation();
+    this.photos[index] = { file: null, preview: null };
   }
 
   // ─── Document slots ──────────────────────────────────

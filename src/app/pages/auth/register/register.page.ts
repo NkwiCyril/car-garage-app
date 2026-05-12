@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {
@@ -37,25 +37,31 @@ export class RegisterPage {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private toastController: ToastController
   ) {
     addIcons({ arrowForwardOutline });
   }
 
+  private get returnUrl(): string {
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    return url && url.startsWith('/') && !url.startsWith('/auth/') ? url : '/tabs/home';
+  }
+
   async register(): Promise<void> {
-    if (!this.fullName || !this.phone || !this.password || !this.confirmPassword) {
-      await this.showToast('Please fill in all fields', 'warning');
+    if (!this.fullName.trim() || !this.phone.trim() || !this.password || !this.confirmPassword) {
+      await this.showToast('Please fill in every field so we can create your account.', 'warning');
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      await this.showToast('Passwords do not match', 'warning');
+      await this.showToast('Those passwords don’t match. Please try again.', 'warning');
       return;
     }
 
     if (this.password.length < 6) {
-      await this.showToast('Password must be at least 6 characters', 'warning');
+      await this.showToast('Choose a password with at least 6 characters.', 'warning');
       return;
     }
 
@@ -65,19 +71,36 @@ export class RegisterPage {
       next: async (response) => {
         this.isLoading = false;
         if (response.success) {
-          await this.showToast('Registration successful! Please login.', 'success');
-          this.router.navigate(['/auth/login']);
+          await this.showToast(
+            response.message || `We just sent a verification code to ${this.phone}.`,
+            'success',
+          );
+          this.router.navigate(['/auth/verify-otp'], {
+            queryParams: {
+              phone: this.phone,
+              returnUrl: this.returnUrl,
+            },
+          });
+        } else {
+          await this.showToast(
+            response?.message || 'We couldn’t create your account. Please try again.',
+            'danger',
+          );
         }
       },
       error: async (error) => {
         this.isLoading = false;
-        await this.showToast(error.message || 'Registration failed', 'danger');
-      }
+        await this.showToast(
+          error.message || 'Sign-up failed. Please check your details and try again.',
+          'danger',
+        );
+      },
     });
   }
 
   goToLogin(): void {
-    this.router.navigate(['/auth/login']);
+    const url = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigate(['/auth/login'], url ? { queryParams: { returnUrl: url } } : {});
   }
 
   private async showToast(message: string, color: string = 'primary'): Promise<void> {

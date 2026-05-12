@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Car } from '../models/car.model';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({ providedIn: 'root' })
 export class WishlistService {
@@ -49,7 +50,6 @@ export class WishlistService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    const msg = error.error?.message ?? `Error: ${error.status}`;
-    return throwError(() => new Error(msg));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

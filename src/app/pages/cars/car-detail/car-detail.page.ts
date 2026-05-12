@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonContent, IonIcon, ToastController, ViewWillEnter } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -30,10 +30,14 @@ import {
   star,
   logoWhatsapp,
   alertCircle,
+  shareSocialOutline,
 } from 'ionicons/icons';
+import { environment } from '../../../../environments/environment';
 import { Car } from '../../../core/models/car.model';
 import { CarService } from '../../../core/services/car.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { AuthPromptService } from '../../../core/services/auth-prompt.service';
 import { TranslatePipe } from '../../../core/pipes/translate.pipe';
 
 interface SimilarCar {
@@ -62,8 +66,11 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private carService: CarService,
     private wishlistService: WishlistService,
+    private authService: AuthService,
+    private authPrompt: AuthPromptService,
     private toastController: ToastController,
   ) {
     addIcons({
@@ -93,29 +100,67 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
       star,
       logoWhatsapp,
       alertCircle,
+      shareSocialOutline,
     });
   }
 
   ngOnInit(): void {}
 
   ionViewWillEnter(): void {
+    const sharedId = this.route.snapshot.queryParamMap.get('id');
     const raw = sessionStorage.getItem('pendingCarNav') ?? localStorage.getItem('carDetailState');
-    if (raw) {
+
+    if (raw && (!sharedId || this.matchesId(raw, sharedId))) {
       const nav = JSON.parse(raw);
       this.car = nav.car ?? null;
       this.isOwned = nav.isOwned ?? false;
       this.fromRoute = nav.fromRoute ?? null;
       sessionStorage.removeItem('pendingCarNav');
-      // Persist so a hard refresh still shows the car
       localStorage.setItem('carDetailState', raw);
-
-      if (this.car && !this.isOwned) {
-        this.wishlistService.getWishlist().subscribe({
-          next: (ids) => { this.isWishlisted = ids.includes(this.car!._id); },
-          error: () => {},
-        });
-      }
+      this.refreshWishlistFlag();
+    } else if (sharedId) {
+      this.loadCarFromShareLink(sharedId);
     }
+  }
+
+  private matchesId(rawState: string, id: string): boolean {
+    try {
+      return JSON.parse(rawState)?.car?._id === id;
+    } catch { return false; }
+  }
+
+  private loadCarFromShareLink(id: string): void {
+    this.carService.getCarById(id).subscribe({
+      next: (res) => {
+        const car = (res?.data as Car) ?? null;
+        if (!car) return;
+        this.car = car;
+        this.isOwned = false;
+        this.fromRoute = '/tabs/auto';
+        localStorage.setItem(
+          'carDetailState',
+          JSON.stringify({ car, isOwned: false, fromRoute: this.fromRoute }),
+        );
+        this.refreshWishlistFlag();
+      },
+      error: async (err: Error) => {
+        const toast = await this.toastController.create({
+          message: err.message || 'We couldn’t load that vehicle.',
+          duration: 2500,
+          position: 'top',
+          color: 'danger',
+        });
+        await toast.present();
+      },
+    });
+  }
+
+  private refreshWishlistFlag(): void {
+    if (!this.car || this.isOwned || !this.authService.isLoggedIn) return;
+    this.wishlistService.getWishlist().subscribe({
+      next: (ids) => { this.isWishlisted = ids.includes(this.car!._id); },
+      error: () => {},
+    });
   }
 
   goBack(): void {
@@ -126,6 +171,10 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
 
   toggleWishlist(): void {
     if (!this.car || this.isOwned) return;
+    if (!this.authService.isLoggedIn) {
+      this.authPrompt.requireAuth('Sign in to save vehicles to your wishlist', '/cars/detail');
+      return;
+    }
     const wasWishlisted = this.isWishlisted;
     this.isWishlisted = !wasWishlisted;
 
@@ -231,6 +280,55 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
     if (m === undefined || m === null) return '';
     if (typeof m === 'number') return m.toLocaleString('fr-CM') + ' km';
     return m;
+  }
+
+  buildShareUrl(): string {
+    const id = this.car?._id ?? '';
+    const base = (environment.shareBaseUrl?.trim()) || window.location.origin;
+    return `${base.replace(/\/$/, '')}/cars/detail?id=${encodeURIComponent(id)}`;
+  }
+
+  async share(): Promise<void> {
+    if (!this.car) return;
+    const url = this.buildShareUrl();
+    const name = this.getCarName();
+    const yearPrefix = this.car.year ? `${this.car.year} ` : '';
+    const title = `${yearPrefix}${name} on DriveEase`;
+    const priceVal = this.car.forRent && !this.car.forSale && this.car.rentalPrice
+      ? this.car.rentalPrice
+      : this.car.price;
+    const unit = this.car.forRent && !this.car.forSale ? '/day' : '';
+    const text = `Check out this ${yearPrefix}${name} for ${this.formatPrice(priceVal)} XAF${unit} on DriveEase.`;
+
+    const nav = navigator as any;
+    if (nav.share) {
+      try {
+        await nav.share({ title, text, url });
+        return;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return; // user cancelled
+        // fall through to clipboard
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      const toast = await this.toastController.create({
+        message: 'Link copied to clipboard',
+        duration: 1800,
+        position: 'top',
+        color: 'success',
+      });
+      await toast.present();
+    } catch {
+      const toast = await this.toastController.create({
+        message: `Share this link: ${url}`,
+        duration: 4000,
+        position: 'top',
+        color: 'medium',
+      });
+      await toast.present();
+    }
   }
 
   messageSeller(): void {

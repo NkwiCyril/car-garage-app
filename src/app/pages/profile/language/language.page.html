@@ -25,7 +25,9 @@
         (click)="select(lang.code)"
       >
         <!-- Flag -->
-        <div class="lg__flag">{{ lang.flag }}</div>
+        <div class="lg__flag">
+          <img [src]="lang.flag" [alt]="lang.name + ' flag'" class="lg__flag-img" />
+        </div>
 
         <!-- Info -->
         <div class="lg__info">

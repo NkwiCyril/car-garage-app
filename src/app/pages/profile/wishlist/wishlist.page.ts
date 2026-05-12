@@ -1,7 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { IonContent, IonIcon, IonSpinner, ViewWillEnter } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonIcon,
+  IonSpinner,
+  IonRefresher,
+  IonRefresherContent,
+  ViewWillEnter,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { arrowBackOutline, heartOutline, heart, carOutline } from 'ionicons/icons';
 import { WishlistService } from '../../../core/services/wishlist.service';
@@ -12,7 +19,7 @@ import { Car } from '../../../core/models/car.model';
   selector: 'app-wishlist',
   templateUrl: './wishlist.page.html',
   styleUrls: ['./wishlist.page.scss'],
-  imports: [CommonModule, IonContent, IonIcon, IonSpinner],
+  imports: [CommonModule, IonContent, IonIcon, IonSpinner, IonRefresher, IonRefresherContent],
 })
 export class WishlistPage implements ViewWillEnter {
   cars: Car[] = [];
@@ -30,6 +37,10 @@ export class WishlistPage implements ViewWillEnter {
     this.load();
   }
 
+  get isTabRoute(): boolean {
+    return this.router.url.startsWith('/tabs/wishlist');
+  }
+
   load(): void {
     this.isLoading = true;
     this.wishlistService.getWishlistCars().subscribe({
@@ -41,6 +52,11 @@ export class WishlistPage implements ViewWillEnter {
         this.isLoading = false;
       },
     });
+  }
+
+  onRefresh(event: CustomEvent): void {
+    this.load();
+    setTimeout(() => (event.target as HTMLIonRefresherElement)?.complete(), 600);
   }
 
   getImage(car: Car): string | null {

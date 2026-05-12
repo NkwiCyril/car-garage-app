@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { TabsPage } from './tabs.page';
+import { authGuard } from '../../core/guards/auth.guard';
 
 export const tabsRoutes: Routes = [
   {
@@ -17,12 +18,14 @@ export const tabsRoutes: Routes = [
           import('../auto/auto.page').then((m) => m.AutoPage),
       },
       {
-        path: 'bookings',
+        path: 'wishlist',
+        canActivate: [authGuard],
         loadComponent: () =>
-          import('../bookings/bookings.page').then((m) => m.BookingsPage),
+          import('../profile/wishlist/wishlist.page').then((m) => m.WishlistPage),
       },
       {
         path: 'profile',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('../profile/profile.page').then((m) => m.ProfilePage),
       },

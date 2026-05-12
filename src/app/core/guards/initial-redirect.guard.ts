@@ -13,12 +13,14 @@ export const initialRedirectGuard: CanActivateFn = () => {
     return false;
   }
 
+  // Guests land on the dashboard so they can browse the platform.
+  // First-time visitors still see the onboarding flow once.
   const hasOnboarded = storageService.get<boolean>('hasOnboarded');
   if (hasOnboarded) {
-    router.navigate(['/auth/login']);
+    router.navigate(['/tabs/home']);
   } else {
     router.navigate(['/onboarding/splash']);
   }
-  
+
   return false;
 };

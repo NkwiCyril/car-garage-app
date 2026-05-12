@@ -7,7 +7,9 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'HOME',
     'tab.auto': 'MARKETPLACE',
     'tab.bookings': 'BOOKINGS',
+    'tab.wishlist': 'WISHLIST',
     'tab.profile': 'PROFILE',
+    'auth.signIn': 'Sign In',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Language Selection',
@@ -36,13 +38,14 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.cancel': 'Cancel',
     'dash.featuredPremium': 'Featured Premium',
     'dash.seeAll': 'See all',
+    'dash.loadMore': 'Load more',
     'dash.noCarsAvailable': 'No cars available right now',
     'dash.greeting.morning': 'Good morning',
     'dash.greeting.afternoon': 'Good afternoon',
     'dash.greeting.evening': 'Good evening',
 
     // ── Auto / Marketplace ────────────────────────────────────────────────────
-    'auto.title': 'Auto Market',
+    'auto.title': 'DriveEase Official',
     'auto.subtitle': 'Find your next dream vehicle',
     'auto.purchase': 'Purchase',
     'auto.rent': 'Rent',
@@ -175,7 +178,9 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'ACCUEIL',
     'tab.auto': 'MARCHÉ',
     'tab.bookings': 'RÉSERVATIONS',
+    'tab.wishlist': 'FAVORIS',
     'tab.profile': 'PROFIL',
+    'auth.signIn': 'Se connecter',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Sélection de la Langue',
@@ -204,6 +209,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.cancel': 'Annuler',
     'dash.featuredPremium': 'Sélection Premium',
     'dash.seeAll': 'Voir tout',
+    'dash.loadMore': 'Voir plus',
     'dash.noCarsAvailable': 'Aucune voiture disponible pour le moment',
     'dash.greeting.morning': 'Bonjour',
     'dash.greeting.afternoon': 'Bon après-midi',
@@ -343,7 +349,9 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'INICIO',
     'tab.auto': 'MERCADO',
     'tab.bookings': 'RESERVAS',
+    'tab.wishlist': 'FAVORITOS',
     'tab.profile': 'PERFIL',
+    'auth.signIn': 'Iniciar sesión',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Selección de Idioma',
@@ -372,6 +380,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.cancel': 'Cancelar',
     'dash.featuredPremium': 'Destacados Premium',
     'dash.seeAll': 'Ver todo',
+    'dash.loadMore': 'Cargar más',
     'dash.noCarsAvailable': 'No hay coches disponibles ahora mismo',
     'dash.greeting.morning': 'Buenos días',
     'dash.greeting.afternoon': 'Buenas tardes',
@@ -511,7 +520,9 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': '首页',
     'tab.auto': '市场',
     'tab.bookings': '预订',
+    'tab.wishlist': '心愿单',
     'tab.profile': '我的',
+    'auth.signIn': '登录',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': '语言选择',
@@ -540,6 +551,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.cancel': '取消',
     'dash.featuredPremium': '精选优质车辆',
     'dash.seeAll': '查看全部',
+    'dash.loadMore': '加载更多',
     'dash.noCarsAvailable': '暂无可用车辆',
     'dash.greeting.morning': '早上好',
     'dash.greeting.afternoon': '下午好',
@@ -679,7 +691,9 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'الرئيسية',
     'tab.auto': 'السوق',
     'tab.bookings': 'الحجوزات',
+    'tab.wishlist': 'المفضلة',
     'tab.profile': 'الملف',
+    'auth.signIn': 'تسجيل الدخول',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'اختيار اللغة',
@@ -708,6 +722,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.cancel': 'إلغاء',
     'dash.featuredPremium': 'المميزة الراقية',
     'dash.seeAll': 'عرض الكل',
+    'dash.loadMore': 'عرض المزيد',
     'dash.noCarsAvailable': 'لا توجد سيارات متاحة الآن',
     'dash.greeting.morning': 'صباح الخير',
     'dash.greeting.afternoon': 'مساء الخير',
@@ -847,7 +862,9 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'tab.home': 'START',
     'tab.auto': 'MARKTPLAATS',
     'tab.bookings': 'BOEKINGEN',
+    'tab.wishlist': 'VERLANGLIJST',
     'tab.profile': 'PROFIEL',
+    'auth.signIn': 'Inloggen',
 
     // ── Language ──────────────────────────────────────────────────────────────
     'lang.navTitle': 'Taal Selectie',
@@ -876,6 +893,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     'dash.cancel': 'Annuleren',
     'dash.featuredPremium': 'Uitgelicht Premium',
     'dash.seeAll': 'Alles bekijken',
+    'dash.loadMore': 'Meer laden',
     'dash.noCarsAvailable': 'Momenteel geen auto\'s beschikbaar',
     'dash.greeting.morning': 'Goedemorgen',
     'dash.greeting.afternoon': 'Goedemiddag',

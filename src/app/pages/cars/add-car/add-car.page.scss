@@ -303,3 +303,53 @@ ion-content {
     cursor: not-allowed;
   }
 }
+
+// ─── Desktop Responsiveness ────────────────────────────
+@media (min-width: 768px) {
+  .form-container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding-left: var(--de-spacing-xl);
+    padding-right: var(--de-spacing-xl);
+  }
+
+  .title { font-size: 32px; }
+
+  .de-select,
+  .de-textarea {
+    &:hover { border-color: var(--de-gray); }
+  }
+
+  .upload-zone {
+    &:hover { border-color: var(--de-primary); }
+  }
+
+  .back-btn {
+    &:hover { background: var(--de-gray-light); }
+  }
+
+  .preview-item {
+    width: 88px;
+    height: 88px;
+  }
+
+  .submit-btn {
+    max-width: 360px;
+    align-self: center;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(10, 22, 40, 0.25);
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .form-container {
+    max-width: 760px;
+  }
+
+  .form-row-2 {
+    gap: 16px;
+  }
+}

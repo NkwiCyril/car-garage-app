@@ -1,8 +1,15 @@
 <ion-content [fullscreen]="true" [scrollY]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="onRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-outline"
+      refreshingSpinner="crescent"
+    ></ion-refresher-content>
+  </ion-refresher>
+
   <div class="wl">
 
     <!-- ─── Nav ───────────────────────────────────────────── -->
-    <div class="wl__nav">
+    <div class="wl__nav" *ngIf="!isTabRoute">
       <button class="wl__nav-back" (click)="goBack()">
         <ion-icon name="arrow-back-outline"></ion-icon>
       </button>

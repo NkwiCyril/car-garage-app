@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest } from '../models/user.model';
 import { StorageService } from './storage.service';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({
   providedIn: 'root'
@@ -42,31 +43,75 @@ export class AuthService {
     }
   }
 
+  /**
+   * Login — single step. Returns a session token immediately on success.
+   * (Phone verification via OTP happens at registration time, not here.)
+   */
   login(phone: string, password: string): Observable<any> {
     const payload: LoginRequest = { phone, password };
     return this.http.post<any>(`${this.apiUrl}/users/login`, payload).pipe(
       tap((response) => {
-        if (response.success && response.token) {
+        if (response?.success && response.token) {
           this.storageService.set('authToken', response.token);
           this.storageService.set('currentUser', response.user);
           this.isAuthenticated$.next(true);
           this.currentUser$.next(response.user);
         }
       }),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
   }
 
+  /**
+   * Step 1 of registration — creates the user and triggers an OTP for phone verification.
+   * The session token is only issued after `verifyOtp()` succeeds.
+   */
   register(fullName: string, phone: string, password: string, repeatPassword: string): Observable<any> {
     const payload: RegisterRequest & { repeatPassword: string } = {
       name: fullName,
       phone,
       password,
-      repeatPassword
+      repeatPassword,
     };
     return this.http.post<any>(`${this.apiUrl}/users/register`, payload).pipe(
-      catchError(this.handleError)
+      tap((response) => {
+        if (response?.success) {
+          console.log("REGISTRATION RESPONSE: ", response);
+          this.storageService.set('pendingAuthPhone', phone);
+        }
+      }),
+      catchError(this.handleError),
     );
+  }
+
+  /**
+   * Step 2 of registration — confirms the OTP for the pending phone. On success
+   * the API returns a session token + user, which we store to authenticate.
+   */
+  verifyOtp(phone: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/verify-otp`, { phone, otp }).pipe(
+      tap((response) => {
+        if (response?.success && response.token) {
+          this.storageService.set('authToken', response.token);
+          this.storageService.set('currentUser', response.user);
+          this.storageService.remove('pendingAuthPhone');
+          this.isAuthenticated$.next(true);
+          this.currentUser$.next(response.user);
+        }
+      }),
+      catchError(this.handleError),
+    );
+  }
+
+  /** Re-issue the OTP for a phone that is mid-registration. */
+  resendOtp(phone: string): Observable<any> {
+    return this.http
+      .post<any>(`${this.apiUrl}/users/resend-otp`, { phone })
+      .pipe(catchError(this.handleError));
+  }
+
+  get pendingAuthPhone(): string | null {
+    return this.storageService.get<string>('pendingAuthPhone');
   }
 
   loginWithGoogle(): Observable<any> {
@@ -77,16 +122,17 @@ export class AuthService {
     throw new Error('Forgot password not implemented yet');
   }
 
-  verifyOtp(phone: string, otp: string): Observable<any> {
-    throw new Error('OTP verification not implemented yet');
-  }
-
   resetPassword(phone: string, newPassword: string): Observable<any> {
     throw new Error('Reset password not implemented yet');
   }
 
   updateProfile(data: { name?: string; email?: string; phone?: string; dob?: string; address?: string }): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/users/me`, data).pipe(
+    const user = this.currentUser$.value;
+    const userId = user?._id || user?.id;
+    if (!userId) {
+      return throwError(() => new Error('Not authenticated'));
+    }
+    return this.http.patch<any>(`${this.apiUrl}/users/${userId}`, data).pipe(
       tap((response) => {
         const updated = { ...this.currentUser$.value, ...(response.user ?? response.data ?? {}) };
         this.storageService.set('currentUser', updated);
@@ -99,6 +145,7 @@ export class AuthService {
   logout(): void {
     this.storageService.remove('authToken');
     this.storageService.remove('currentUser');
+    this.storageService.remove('pendingAuthPhone');
     this.isAuthenticated$.next(false);
     this.currentUser$.next(null);
   }
@@ -108,20 +155,6 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'An error occurred';
-    
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = error.error.message;
-    } else {
-      if (error.error?.message) {
-        errorMessage = error.error.message;
-      } else if (error.error?.errors) {
-        errorMessage = error.error.errors.map((e: any) => e.msg).join(', ');
-      } else {
-        errorMessage = `Server error: ${error.status}`;
-      }
-    }
-    
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

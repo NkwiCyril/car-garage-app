@@ -107,10 +107,16 @@ ion-content {
 }
 
 .dash__location {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   margin-top: 1px;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
 
   ion-icon {
     font-size: 11px;
@@ -122,6 +128,29 @@ ion-content {
     color: $gray;
     font-weight: 400;
   }
+
+  &:active span,
+  &:active ion-icon {
+    opacity: 0.6;
+  }
+
+  &--error span {
+    color: $accent;
+    text-decoration: underline;
+  }
+}
+
+.dash__location-spinner {
+  --color: #{$gray};
+  width: 14px;
+  height: 14px;
+}
+
+.dash__location-refresh {
+  font-size: 10px !important;
+  color: $gray;
+  opacity: 0.6;
+  margin-left: 1px;
 }
 
 .dash__header-right {
@@ -175,6 +204,24 @@ ion-content {
   background: $danger;
   border-radius: 50%;
   border: 1.5px solid $bg;
+}
+
+.dash__signin-btn {
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: none;
+  background: $accent;
+  color: $white;
+  font-family: inherit;
+  font-size: clamp(11px, 3vw, 12px);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px -4px rgba(0, 67, 235, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+
+  &:active { transform: scale(0.95); }
+  &:hover { box-shadow: 0 6px 16px -4px rgba(0, 67, 235, 0.55); }
 }
 
 .dash__brand {
@@ -1134,4 +1181,148 @@ ion-content {
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+// ─── Premium card treatment ──────────────────────────
+$gold: #d4a64a;
+$gold-deep: #b88130;
+$ink: #0b1b2b;
+
+.dash__car-card--premium {
+  position: relative;
+  border: none;
+  border-radius: clamp(18px, 4.4vw, 22px);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fbf9f4 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 18px 36px -16px rgba(11, 27, 43, 0.22),
+    0 2px 6px -2px rgba(11, 27, 43, 0.06);
+
+  // gold hairline frame
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(135deg, $gold 0%, rgba(212, 166, 74, 0.15) 35%, transparent 60%, rgba(212, 166, 74, 0.35) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  // gold underline accent
+  &::after {
+    content: '';
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, $gold 50%, transparent 100%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .dash__car-media {
+    background: linear-gradient(160deg, #1f2937 0%, #0b1b2b 100%);
+  }
+
+  .dash__car-media-grad {
+    height: 65%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(11, 27, 43, 0.55) 100%);
+  }
+
+  .dash__car-info {
+    padding-top: 12px;
+  }
+
+  .dash__car-name {
+    color: $ink;
+    letter-spacing: -0.3px;
+  }
+
+  .dash__car-price-value,
+  .dash__car-price-currency {
+    color: $gold-deep;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  @media (min-width: $bp-tablet) {
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 28px 48px -18px rgba(11, 27, 43, 0.32),
+        0 4px 10px -2px rgba(212, 166, 74, 0.18);
+    }
+  }
+}
+
+.dash__car-premium-ribbon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px 5px 9px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: $gold;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow:
+    0 4px 10px -2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(212, 166, 74, 0.55) inset;
+
+  ion-icon {
+    font-size: 11px;
+    color: $gold;
+  }
+}
+
+// ─── Load more button ────────────────────────────────
+.dash__load-more-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 18px 0 4px;
+  grid-column: 1 / -1;
+}
+
+.dash__load-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  border: 1.5px solid $gray-light;
+  background: $white;
+  color: $primary;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+
+  ion-icon { font-size: 14px; color: $accent; }
+  ion-spinner { width: 16px; height: 16px; --color: #{$accent}; }
+
+  &:active { transform: scale(0.97); }
+  &:hover:not(:disabled) {
+    background: $bg;
+    border-color: $accent;
+  }
+  &:disabled { cursor: not-allowed; opacity: 0.7; }
 }

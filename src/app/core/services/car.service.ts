@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CarApiResponse, SellCarRequest, RentListRequest } from '../models/car.model';
+import { friendlyErrorMessage } from '../utils/error-message.util';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,33 @@ export class CarService {
 
   constructor(private http: HttpClient) {}
 
-  // GET /api/cars/available — list all cars available for sale or rent
+  // GET /api/cars/home — premium-verified, available cars for the dashboard
+  getHomeCars(filters?: { forSale?: boolean; forRent?: boolean; page?: number; limit?: number }): Observable<any> {
+    let params = new HttpParams();
+    if (filters?.forSale !== undefined) params = params.set('forSale', String(filters.forSale));
+    if (filters?.forRent !== undefined) params = params.set('forRent', String(filters.forRent));
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.limit !== undefined) params = params.set('limit', String(filters.limit));
+
+    return this.http
+      .get<any>(`${this.apiUrl}/home`, { params })
+      .pipe(catchError(this.handleError));
+  }
+
+  // GET /api/cars/marketplace — non-premium, available cars for the marketplace
+  getMarketplaceCars(filters?: { forSale?: boolean; forRent?: boolean; page?: number; limit?: number }): Observable<any> {
+    let params = new HttpParams();
+    if (filters?.forSale !== undefined) params = params.set('forSale', String(filters.forSale));
+    if (filters?.forRent !== undefined) params = params.set('forRent', String(filters.forRent));
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.limit !== undefined) params = params.set('limit', String(filters.limit));
+
+    return this.http
+      .get<any>(`${this.apiUrl}/marketplace`, { params })
+      .pipe(catchError(this.handleError));
+  }
+
+  // GET /api/cars/available — list all available cars (legacy fallback)
   getAvailableCars(filters?: { forSale?: boolean; forRent?: boolean; page?: number; limit?: number }): Observable<any> {
     let params = new HttpParams().set('status', 'available');
     if (filters?.forSale !== undefined) params = params.set('forSale', String(filters.forSale));
@@ -28,10 +55,14 @@ export class CarService {
 
     return this.http
       .get<any>(`${this.apiUrl}/available`, { params })
-      .pipe(
-        // tap((response) => console.log('[CarService] /cars/available raw response:', JSON.stringify(response))),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
+  }
+
+  // GET /api/cars/:id — fetch a single car by id (used by shareable links)
+  getCarById(id: string): Observable<CarApiResponse> {
+    return this.http
+      .get<CarApiResponse>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
   }
 
   // GET /api/cars/user/:userId/sale — list the user's own cars for sale
@@ -159,14 +190,6 @@ export class CarService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'An error occurred';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = error.error.message;
-    } else if (error.error?.message) {
-      errorMessage = error.error.message;
-    } else {
-      errorMessage = `Server error: ${error.status}`;
-    }
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => new Error(friendlyErrorMessage(error)));
   }
 }

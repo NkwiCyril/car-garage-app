@@ -53,11 +53,17 @@ export const routes: Routes = [
     canActivate: [guestGuard],
   },
 
-  // Tabs (protected - main app shell)
+  // Tabs — main app shell. Home and Marketplace are public so guests can browse.
+  // Per-tab auth is enforced inside tabs.routes.ts (wishlist, profile).
   {
     path: 'tabs',
-    canActivate: [authGuard],
     loadChildren: () => import('./pages/tabs/tabs.routes').then((m) => m.tabsRoutes),
+  },
+
+  // Public car browsing — guests can open detail pages.
+  {
+    path: 'cars/detail',
+    loadComponent: () => import('./pages/cars/car-detail/car-detail.page').then((m) => m.CarDetailPage),
   },
 
   // Cars (protected full-screen pages, no tab bar)
@@ -76,12 +82,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/cars/my-cars/my-cars.page').then((m) => m.MyCarsPage),
   },
-  {
-    path: 'cars/detail',
-    canActivate: [authGuard],
-    loadComponent: () => import('./pages/cars/car-detail/car-detail.page').then((m) => m.CarDetailPage),
-  },
-
   {
     path: 'cars/sell',
     canActivate: [authGuard],

@@ -5,7 +5,10 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3000/api',
-  mediaUrl: 'http://localhost:3000'
+  mediaUrl: 'http://localhost:3000',
+  // Public web URL used to build shareable links. Falls back to
+  // window.location.origin when empty.
+  shareBaseUrl: ''
 };
 
 /*
