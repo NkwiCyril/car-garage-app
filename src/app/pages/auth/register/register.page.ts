@@ -71,10 +71,10 @@ export class RegisterPage {
       next: async (response) => {
         this.isLoading = false;
         if (response.success) {
-          await this.showToast(
-            response.message || `We just sent a verification code to ${this.phone}.`,
-            'success',
-          );
+          const otp = this.extractOtp(response);
+          const baseMsg = response.message || `We just sent a verification code to ${this.phone}.`;
+          const msg = otp ? `${baseMsg} Your OTP is ${otp}` : baseMsg;
+          await this.showToast(msg, 'success', otp ? 8000 : 3000);
           this.router.navigate(['/auth/verify-otp'], {
             queryParams: {
               phone: this.phone,
@@ -103,10 +103,21 @@ export class RegisterPage {
     this.router.navigate(['/auth/login'], url ? { queryParams: { returnUrl: url } } : {});
   }
 
-  private async showToast(message: string, color: string = 'primary'): Promise<void> {
+  /** Dev helper: pull the OTP out of the registration response if the backend
+   * exposes it for testing (e.g. `response.otp`, `response.code`, or embedded
+   * in `response.message` as a 4–6 digit sequence). */
+  private extractOtp(response: any): string | null {
+    const direct = response?.otp ?? response?.code ?? response?.data?.otp;
+    if (direct) return String(direct);
+    const msg: string = response?.message ?? '';
+    const match = msg.match(/\b(\d{4,6})\b/);
+    return match ? match[1] : null;
+  }
+
+  private async showToast(message: string, color: string = 'primary', duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
-      duration: 3000,
+      duration,
       position: 'top',
       color,
     });
