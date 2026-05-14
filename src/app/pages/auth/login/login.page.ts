@@ -58,17 +58,39 @@ export class LoginPage {
     this.authService.login(this.phone, this.password).subscribe({
       next: async (response) => {
         this.isLoading = false;
-        if (response.success) {
-          const firstName = response.user?.name?.split(' ')[0];
-          const greeting = firstName ? `Welcome back, ${firstName}!` : 'Welcome back!';
-          await this.showToast(greeting, 'success');
-          this.router.navigateByUrl(this.returnUrl);
-        } else {
+        if (!response?.success) {
           await this.showToast(
             response?.message || 'We couldn’t sign you in. Please try again.',
             'danger',
           );
+          return;
         }
+
+        // The backend may either:
+        //   (a) return a session token directly, or
+        //   (b) issue an OTP (Step 1 of a 2-step login) — token is delivered after
+        //       POST /users/verify-otp succeeds.
+        // AuthService.login() stores the token automatically when present, so
+        // we can simply check the authenticated state here.
+        if (this.authService.isLoggedIn) {
+          const firstName = this.authService.currentUser?.name?.split(' ')[0];
+          const greeting = firstName ? `Welcome back, ${firstName}!` : 'Welcome back!';
+          await this.showToast(greeting, 'success');
+          this.router.navigateByUrl(this.returnUrl);
+          return;
+        }
+
+        // No token yet → backend issued an OTP. Send the user to the verify screen.
+        const otp = this.extractOtp(response);
+        const baseMsg = response.message || 'We sent a verification code to your phone.';
+        const msg = otp ? `${baseMsg} Your OTP is ${otp}` : baseMsg;
+        await this.showToast(msg, 'success', otp ? 8000 : 3000);
+        this.router.navigate(['/auth/verify-otp'], {
+          queryParams: {
+            phone: this.phone,
+            returnUrl: this.returnUrl,
+          },
+        });
       },
       error: async (error) => {
         this.isLoading = false;
@@ -97,10 +119,19 @@ export class LoginPage {
     this.router.navigate(['/auth/forgot-password']);
   }
 
-  private async showToast(message: string, color: string = 'primary'): Promise<void> {
+  /** Dev helper: pull the OTP from the login response when the backend echoes it. */
+  private extractOtp(response: any): string | null {
+    const direct = response?.otp ?? response?.code ?? response?.data?.otp;
+    if (direct) return String(direct);
+    const msg: string = response?.message ?? '';
+    const match = msg.match(/\b(\d{4,6})\b/);
+    return match ? match[1] : null;
+  }
+
+  private async showToast(message: string, color: string = 'primary', duration = 3000): Promise<void> {
     const toast = await this.toastController.create({
       message,
-      duration: 3000,
+      duration,
       position: 'top',
       color,
     });

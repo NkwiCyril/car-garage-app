@@ -47,7 +47,7 @@ const TRANSLATIONS: Record<string, Record<string, string>> = {
     // ── Auto / Marketplace ────────────────────────────────────────────────────
     'auto.title': 'DriveEase Official',
     'auto.subtitle': 'Find your next dream vehicle',
-    'auto.purchase': 'Purchase',
+    'auto.purchase': 'Buy',
     'auto.rent': 'Rent',
     'auto.sell': 'Sell',
     'auto.searchPlaceholder': 'Search make, model...',
