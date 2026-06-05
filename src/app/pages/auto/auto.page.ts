@@ -183,6 +183,16 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
 
   // ─── Data loading ────────────────────────────────────
 
+  // Marketplace browse surface — non-premium cars only.
+  //
+  // The dedicated /cars/marketplace endpoint is currently broken on the backend
+  // (returns no cars even when non-premium listings exist), so we pull from the
+  // catch-all /cars/available and apply a `premiumVerified !== true` filter in
+  // the client. Premium-verified listings remain in the dashboard's Featured
+  // rail (/cars/home); the marketplace must never surface them.
+  //
+  // Switch back to /cars/marketplace (drop the filter) once the backend ticket
+  // is fixed — the segmentation invariant is unchanged.
   loadAvailableCars(): void {
     this.isLoadingAvailable = true;
     this.buyPage = 1;
@@ -192,25 +202,32 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     let done = 0;
     const finish = () => { if (++done >= 2) this.isLoadingAvailable = false; };
 
-    this.carService.getMarketplaceCars({ forRent: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
+    this.carService.getAvailableCars({ forRent: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
-        this.rentCars = items;
+        this.rentCars = this.excludePremium(items);
         this.rentHasMore = meta.hasMore;
         finish();
       },
       error: (err) => { finish(); this.showToast(err.message || 'Failed to load rental cars', 'danger'); },
     });
 
-    this.carService.getMarketplaceCars({ forSale: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
+    this.carService.getAvailableCars({ forSale: true, page: 1, limit: this.PAGE_SIZE }).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
-        this.buyCars = items;
+        this.buyCars = this.excludePremium(items);
         this.buyHasMore = meta.hasMore;
         finish();
       },
       error: (err) => { finish(); this.showToast(err.message || 'Failed to load cars for sale', 'danger'); },
     });
+  }
+
+  // The single source of truth for the "no premium in marketplace" rule.
+  // Cars with premiumVerified !== true (false, undefined, or missing) pass
+  // through; explicitly-premium ones are dropped.
+  private excludePremium(cars: Car[]): Car[] {
+    return cars.filter((c) => c.premiumVerified !== true);
   }
 
   // ─── Infinite scroll ─────────────────────────────────
@@ -234,7 +251,7 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
       this.carService.searchCars(params).subscribe({
         next: (res) => {
           const { items, meta } = parsePage<Car>(res, this.filteredPage, this.PAGE_SIZE);
-          this.filteredCars = [...this.filteredCars, ...items];
+          this.filteredCars = [...this.filteredCars, ...this.excludePremium(items)];
           this.filteredHasMore = meta.hasMore;
           target.complete();
         },
@@ -245,10 +262,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
 
     if (this.activeTab === 'rent') {
       this.rentPage += 1;
-      this.carService.getMarketplaceCars({ forRent: true, page: this.rentPage, limit: this.PAGE_SIZE }).subscribe({
+      this.carService.getAvailableCars({ forRent: true, page: this.rentPage, limit: this.PAGE_SIZE }).subscribe({
         next: (res) => {
           const { items, meta } = parsePage<Car>(res, this.rentPage, this.PAGE_SIZE);
-          this.rentCars = [...this.rentCars, ...items];
+          this.rentCars = [...this.rentCars, ...this.excludePremium(items)];
           this.rentHasMore = meta.hasMore;
           target.complete();
         },
@@ -256,10 +273,10 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
       });
     } else {
       this.buyPage += 1;
-      this.carService.getMarketplaceCars({ forSale: true, page: this.buyPage, limit: this.PAGE_SIZE }).subscribe({
+      this.carService.getAvailableCars({ forSale: true, page: this.buyPage, limit: this.PAGE_SIZE }).subscribe({
         next: (res) => {
           const { items, meta } = parsePage<Car>(res, this.buyPage, this.PAGE_SIZE);
-          this.buyCars = [...this.buyCars, ...items];
+          this.buyCars = [...this.buyCars, ...this.excludePremium(items)];
           this.buyHasMore = meta.hasMore;
           target.complete();
         },
@@ -395,7 +412,7 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
     this.carService.searchCars(params).subscribe({
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.PAGE_SIZE);
-        this.filteredCars = items;
+        this.filteredCars = this.excludePremium(items);
         this.filteredHasMore = meta.hasMore;
         this.isSearchLoading = false;
       },
@@ -500,7 +517,6 @@ export class AutoPage implements OnInit, OnDestroy, ViewWillEnter {
   }
 
   getFirstImage(car: Car): string | null {
-    console.log("FIRST CAR IMAGE: ", car)
     return car.images?.length ? this.carService.imageUrl(car.images[0]) : null;
   }
 

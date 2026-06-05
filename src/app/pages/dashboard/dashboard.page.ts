@@ -68,6 +68,7 @@ interface FeaturedCar {
   price: string;
   priceValue: number;
   isFavorite: boolean;
+  isPremium: boolean;
   bodyType: string;
   _raw: Car;
 }
@@ -99,7 +100,6 @@ export class DashboardPage implements OnInit, OnDestroy {
   currentLocation = 'Locating…';
   isLocating = false;
   locationError = false;
-  activeCategoryIndex = 0;
 
   // Promo slider
   promos: Promo[] = [];
@@ -129,11 +129,12 @@ export class DashboardPage implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
   private searchSub!: Subscription;
 
-  categories = [
-    { icon: 'grid-outline', label: 'auto.cat.all' },
-    { icon: 'car-outline', label: 'auto.cat.sedans' },
-    { icon: 'car-sport-outline', label: 'auto.cat.suvs' },
-    { icon: 'body-outline', label: 'auto.cat.luxury' },
+  // Endless scrolling announcement bar
+  announcements: string[] = [
+    'Premium and Verified Vehicles Only',
+    'Inspected by DriveEase Experts',
+    'Contact: +237123456789',
+    'Nationwide Delivery',
   ];
 
   quickActions = [
@@ -279,6 +280,10 @@ export class DashboardPage implements OnInit, OnDestroy {
     });
   }
 
+  // Featured Premium rail — strictly premium-verified cars. The /cars/home
+  // endpoint is pre-segmented by the backend (premiumVerified=true, available
+  // only) so the client doesn't have to filter. If the platform has no premium
+  // cars, the rail correctly renders its empty state.
   private loadFeaturedCars(): void {
     this.featuredPage = 1;
     this.featuredHasMore = true;
@@ -287,7 +292,7 @@ export class DashboardPage implements OnInit, OnDestroy {
       next: (res) => {
         const { items, meta } = parsePage<Car>(res, 1, this.FEATURED_PAGE_SIZE);
         this.allFeaturedCars = items.map((c) => this.carToFeatured(c));
-        this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
+        this.featuredCars = this.allFeaturedCars;
         this.featuredHasMore = meta.hasMore;
         this.isLoadingCars = false;
       },
@@ -307,7 +312,7 @@ export class DashboardPage implements OnInit, OnDestroy {
         const { items, meta } = parsePage<Car>(res, this.featuredPage, this.FEATURED_PAGE_SIZE);
         const more = items.map((c) => this.carToFeatured(c));
         this.allFeaturedCars = [...this.allFeaturedCars, ...more];
-        this.featuredCars = this.filterByCategory(this.activeCategoryIndex);
+        this.featuredCars = this.allFeaturedCars;
         this.featuredHasMore = meta.hasMore;
         this.isLoadingMoreCars = false;
       },
@@ -316,25 +321,6 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.isLoadingMoreCars = false;
       },
     });
-  }
-
-  private filterByCategory(index: number): FeaturedCar[] {
-    if (index === 0) return this.allFeaturedCars;
-    if (index === 1) {
-      const filtered = this.allFeaturedCars.filter(c => /sedan|saloon/i.test(c.bodyType));
-      return filtered.length ? filtered : this.allFeaturedCars;
-    }
-    if (index === 2) {
-      const filtered = this.allFeaturedCars.filter(c =>
-        /suv|crossover|pickup|truck|4x4|4wd/i.test(c.bodyType));
-      return filtered.length ? filtered : this.allFeaturedCars;
-    }
-    if (index === 3) {
-      const filtered = this.allFeaturedCars.filter(c =>
-        c.priceValue >= 20_000_000 || /coupe|convertible|sport|grand|limousine/i.test(c.bodyType));
-      return filtered.length ? filtered : this.allFeaturedCars;
-    }
-    return this.allFeaturedCars;
   }
 
   private advertToPromo(advert: Advert): Promo {
@@ -370,6 +356,7 @@ export class DashboardPage implements OnInit, OnDestroy {
       price: this.shortPrice(car.price),
       priceValue: car.price,
       isFavorite: false,
+      isPremium: car.premiumVerified === true,
       bodyType: car.bodyType ?? '',
       _raw: car,
     };
@@ -406,8 +393,12 @@ export class DashboardPage implements OnInit, OnDestroy {
       )
       .subscribe((res) => {
         this.isSearchLoading = false;
-        const raw: Car[] = Array.isArray(res?.data) ? res.data : [];
-        this.searchResults = raw.filter((c) => c.verified === 'verified');
+        // Surface every car the API returns. The previous code filtered to
+        // `verified === 'verified'` on the client which silently hid every
+        // car still at the default 'unverified' state — i.e. most listings.
+        // Verification status, if meaningful for the UI, belongs on a per-card
+        // badge, not as a list-level filter.
+        this.searchResults = Array.isArray(res?.data) ? res.data : [];
       });
   }
 
@@ -528,11 +519,6 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   // ─── Cars ─────────────────────────────────────────────
-
-  selectCategory(index: number): void {
-    this.activeCategoryIndex = index;
-    this.featuredCars = this.filterByCategory(index);
-  }
 
   toggleFavorite(car: FeaturedCar): void {
     if (!this.authService.isLoggedIn) {

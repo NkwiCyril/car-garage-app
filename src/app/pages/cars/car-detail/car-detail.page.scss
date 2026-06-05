@@ -1078,3 +1078,103 @@ $gold: #f59e0b;
     }
   }
 }
+
+// ─── Premium verified treatment ──────────────────────
+$cd-gold: #d4a64a;
+$cd-gold-deep: #b88130;
+
+.cd__premium-ribbon {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 72px);
+  left: clamp(16px, 4vw, 24px);
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px 6px 12px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #0b1b2b 0%, #1a2a3f 100%);
+  color: $cd-gold;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  box-shadow:
+    0 6px 14px -4px rgba(0, 0, 0, 0.45),
+    0 0 0 1.5px rgba(212, 166, 74, 0.5) inset;
+
+  ion-icon {
+    font-size: 12px;
+    color: $cd-gold;
+  }
+}
+
+// Premium info-card treatment — distinct from the regular marketplace look
+.cd--premium {
+  .cd__info {
+    background:
+      linear-gradient(180deg, #ffffff 0%, #fbf6e8 100%);
+    box-shadow:
+      0 -8px 32px -4px rgba(184, 129, 48, 0.18),
+      0 -1px 0 rgba(212, 166, 74, 0.45) inset;
+  }
+
+  .cd__year-tag {
+    color: $cd-gold-deep;
+  }
+
+  .cd__price-value,
+  .cd__price-half-val,
+  .cd__price-unit {
+    color: $cd-gold-deep;
+  }
+
+  // Gold underline on every section title
+  .cd__section-title {
+    position: relative;
+    padding-bottom: 6px;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, $cd-gold 0%, transparent 100%);
+    }
+  }
+
+  // Gold-hairline frame on the seller card
+  .cd__seller-card {
+    position: relative;
+    border-color: transparent;
+    background:
+      linear-gradient(180deg, #ffffff 0%, #fbf6e8 100%);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: linear-gradient(135deg, $cd-gold 0%, rgba(212, 166, 74, 0.15) 35%, transparent 60%, rgba(212, 166, 74, 0.35) 100%);
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+  }
+
+  // Make the sticky bottom Message button feel like the premium concierge CTA
+  .cd__cta-secondary {
+    border-color: rgba(212, 166, 74, 0.55);
+    color: #0b1b2b;
+    background: linear-gradient(180deg, #ffffff 0%, #fbf6e8 100%);
+
+    ion-icon { color: $cd-gold-deep; }
+  }
+}

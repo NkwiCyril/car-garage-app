@@ -23,19 +23,26 @@
     </button>
   </div>
 
-  <div class="cd" *ngIf="car">
+  <div class="cd" *ngIf="car" [class.cd--premium]="isPremium">
 
     <!-- ─── Hero (sticky — stays fixed while content scrolls over it) -->
     <div class="cd__hero">
 
+      <!-- Premium ribbon on the hero, only for premiumVerified cars -->
+      <span class="cd__premium-ribbon" *ngIf="isPremium">
+        <ion-icon name="diamond-outline"></ion-icon>
+        PREMIUM VERIFIED
+      </span>
+
+
       <!-- Image slider -->
       <div class="cd__img-track" #imgTrack (scroll)="onImgScroll()">
-        <ng-container *ngIf="getAllImages().length > 0">
-          <div class="cd__img-slide" *ngFor="let img of getAllImages()">
+        <ng-container *ngIf="images.length > 0">
+          <div class="cd__img-slide" *ngFor="let img of images; trackBy: trackByUrl">
             <img [src]="img" class="cd__hero-img" alt="" />
           </div>
         </ng-container>
-        <div class="cd__img-slide" *ngIf="getAllImages().length === 0">
+        <div class="cd__img-slide" *ngIf="images.length === 0">
           <div class="cd__hero-placeholder">
             <ion-icon name="car-sport-outline"></ion-icon>
           </div>
@@ -45,14 +52,14 @@
       <!-- Prev / Next buttons -->
       <button
         class="cd__img-nav cd__img-nav--prev"
-        *ngIf="getAllImages().length > 1"
+        *ngIf="images.length > 1"
         (click)="prevImage()"
       >
         <ion-icon name="chevron-back-outline"></ion-icon>
       </button>
       <button
         class="cd__img-nav cd__img-nav--next"
-        *ngIf="getAllImages().length > 1"
+        *ngIf="images.length > 1"
         (click)="nextImage()"
       >
         <ion-icon name="chevron-forward-outline"></ion-icon>
@@ -62,15 +69,15 @@
       <div class="cd__hero-grad"></div>
 
       <!-- Image counter -->
-      <span class="cd__img-counter" *ngIf="getAllImages().length > 1">
-        {{ activeImageIndex + 1 }} / {{ getAllImages().length }}
+      <span class="cd__img-counter" *ngIf="images.length > 1">
+        {{ activeImageIndex + 1 }} / {{ images.length }}
       </span>
 
       <!-- Dot indicators -->
-      <div class="cd__hero-dots" *ngIf="getAllImages().length > 1">
+      <div class="cd__hero-dots" *ngIf="images.length > 1">
         <span
           class="cd__hero-dot"
-          *ngFor="let img of getAllImages(); let i = index"
+          *ngFor="let img of images; let i = index; trackBy: trackByUrl"
           [class.cd__hero-dot--active]="activeImageIndex === i"
           (click)="selectImage(i)"
         ></span>
@@ -260,9 +267,14 @@
             </div>
           </div>
 
-          <!-- CTAs -->
+          <!-- CTAs — premium cars don't expose direct seller messaging
+               (buyers contact DriveEase via the bottom Message button instead) -->
           <div class="cd__seller-ctas">
-            <button class="cd__seller-whatsapp" (click)="messageSeller()">
+            <button
+              *ngIf="!car.premiumVerified"
+              class="cd__seller-whatsapp"
+              (click)="messageSeller()"
+            >
               <ion-icon name="logo-whatsapp"></ion-icon>
               {{ 'cd.message' | translate }}
             </button>

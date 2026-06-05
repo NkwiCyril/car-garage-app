@@ -206,17 +206,19 @@
 
       </div>
 
-      <!-- ─── Category Pills ───────────────────────────── -->
-      <div class="dash__categories">
-        <button
-          class="dash__cat"
-          *ngFor="let cat of categories; let i = index"
-          [class.dash__cat--active]="activeCategoryIndex === i"
-          (click)="selectCategory(i)"
-        >
-          <ion-icon [name]="cat.icon"></ion-icon>
-          <span>{{ cat.label | translate }}</span>
-        </button>
+      <!-- ─── Announcement marquee ─────────────────────── -->
+      <div class="dash__marquee" role="region" aria-label="DriveEase announcements">
+        <div class="dash__marquee-track">
+          <!-- duplicated twice so the loop is seamless -->
+          <span class="dash__marquee-item" *ngFor="let a of announcements">
+            <ion-icon name="diamond-outline"></ion-icon>
+            <span>{{ a }}</span>
+          </span>
+          <span class="dash__marquee-item" *ngFor="let a of announcements" aria-hidden="true">
+            <ion-icon name="diamond-outline"></ion-icon>
+            <span>{{ a }}</span>
+          </span>
+        </div>
       </div>
 
       <!-- ─── Quick Actions ───────────────────────────── -->
@@ -238,7 +240,10 @@
       <!-- ─── Featured Premium ─────────────────────────── -->
       <div class="dash__section">
         <div class="dash__section-header">
-          <h2 class="dash__section-title">{{ 'dash.featuredPremium' | translate }}</h2>
+          <div class="dash__section-title-block">
+            <span class="dash__section-kicker">DriveEase Showroom</span>
+            <h2 class="dash__section-title">{{ 'dash.featuredPremium' | translate }}</h2>
+          </div>
           <button class="dash__see-all" (click)="viewAllCars()">{{ 'dash.seeAll' | translate }}</button>
         </div>
 
@@ -273,10 +278,11 @@
               </div>
               <div class="dash__car-media-grad"></div>
 
-              <!-- Premium ribbon -->
-              <span class="dash__car-premium-ribbon">
+              <!-- Premium ribbon — only shown on cars the platform has marked
+                   premiumVerified=true. Regular available cars render without it. -->
+              <span class="dash__car-premium-ribbon" *ngIf="car.isPremium">
                 <ion-icon name="diamond-outline"></ion-icon>
-                PREMIUM
+                VERIFIED
               </span>
 
               <button
@@ -300,7 +306,7 @@
         </div>
 
         <!-- Load more -->
-        <div class="dash__load-more-wrap" *ngIf="!isLoadingCars && featuredHasMore && featuredCars.length > 0 && activeCategoryIndex === 0">
+        <div class="dash__load-more-wrap" *ngIf="!isLoadingCars && featuredHasMore && featuredCars.length > 0">
           <button class="dash__load-more" (click)="loadMoreFeatured()" [disabled]="isLoadingMoreCars">
             <ion-spinner *ngIf="isLoadingMoreCars" name="crescent"></ion-spinner>
             <span *ngIf="!isLoadingMoreCars">{{ 'dash.loadMore' | translate }}</span>
