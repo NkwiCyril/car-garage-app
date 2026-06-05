@@ -19,9 +19,21 @@ $dash-max: 960px;
   height: 100%;
 }
 
+// Premium showroom background — distinct champagne tone with a faint gold
+// radial bloom at the top and a deeper toasted cream sweeping in toward the
+// bottom. Picked to set Home apart from the neutral grey of every other tab.
 ion-content {
-  --background: #{$bg};
+  --background: transparent;
 }
+
+// :host {
+//   ion-content::part(scroll) {
+//     background:
+//       radial-gradient(120% 60% at 50% 0%, rgba(212, 166, 74, 0.22) 0%, rgba(212, 166, 74, 0) 55%),
+//       radial-gradient(90% 50% at 100% 28%, rgba(212, 166, 74, 0.10) 0%, rgba(212, 166, 74, 0) 60%),
+//       linear-gradient(180deg, #fbf6e8 0%, #f8f1dd 18%, #f6efd8 35%, #f3ead0 60%, #efe4c2 100%);
+//   }
+// }
 
 .dash {
   min-height: 100%;
@@ -438,11 +450,13 @@ ion-content {
   gap: 10px;
   height: 48px;
   padding: 0 16px;
-  background: $white;
-  border: 1.5px solid $gray-light;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(212, 166, 74, 0.28);
   border-radius: $radius;
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
 
   ion-icon {
     font-size: 18px;
@@ -498,69 +512,79 @@ ion-content {
   }
 }
 
-// ─── Category Pills ──────────────────────────────────
-.dash__categories {
-  display: flex;
-  gap: 10px;
-  padding: 0 clamp(20px, 6vw, 32px);
-  margin-bottom: clamp(20px, 4dvh, 26px);
-  overflow-x: auto;
+// ─── Announcement Marquee ────────────────────────────
+.dash__marquee {
+  margin: 0 clamp(20px, 6vw, 32px) clamp(20px, 4dvh, 26px);
+  height: 38px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0b1b2b 0%, #1a2a3f 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(212, 166, 74, 0.4),
+    0 6px 14px -8px rgba(11, 27, 43, 0.4);
+  position: relative;
 
-  &::-webkit-scrollbar {
-    display: none;
+  // gold fade at edges so text fades in/out instead of clipping
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, #0b1b2b 0%, transparent 100%);
+  }
+  &::after {
+    right: 0;
+    background: linear-gradient(-90deg, #0b1b2b 0%, transparent 100%);
   }
 
   @media (min-width: $bp-tablet) {
-    padding: 0 40px;
-    gap: 12px;
-    margin-bottom: 24px;
+    margin: 0 40px 26px;
+    height: 42px;
   }
 }
 
-.dash__cat {
+.dash__marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: 100%;
+  width: max-content;
+  animation: dash-marquee 38s linear infinite;
+  white-space: nowrap;
+  padding-left: 24px;
+}
+
+.dash__marquee-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 9px 18px;
-  border: 1.5px solid $gray-light;
-  border-radius: 9999px;
-  background: $white;
-  font-family: inherit;
-  font-size: clamp(12px, 3.4vw, 13px);
-  font-weight: 600;
-  color: $gray;
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  gap: 8px;
+  color: #d4a64a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
 
   ion-icon {
-    font-size: 15px;
-  }
-
-  &:active {
-    background: darken($bg, 3%);
-  }
-
-  &--active {
-    background: $primary;
-    border-color: $primary;
-    color: $white;
-
-    ion-icon {
-      color: $white;
-    }
+    font-size: 10px;
+    color: #d4a64a;
+    opacity: 0.7;
   }
 
   @media (min-width: $bp-tablet) {
-    padding: 10px 20px;
-    font-size: 13px;
-
-    &:not(.dash__cat--active):hover {
-      border-color: darken($gray-light, 10%);
-      color: $primary;
-    }
+    font-size: 12px;
   }
+}
+
+@keyframes dash-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 // ─── Quick Actions ───────────────────────────────────
@@ -667,15 +691,34 @@ ion-content {
   }
 }
 
-.dash__section-title {
-  margin: 0;
-  font-size: clamp(17px, 4.8vw, 20px);
-  font-weight: 700;
-  color: $primary;
-  letter-spacing: -0.3px;
+.dash__section-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dash__section-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #b88130;
 
   @media (min-width: $bp-tablet) {
-    font-size: 22px;
+    font-size: 11px;
+  }
+}
+
+.dash__section-title {
+  margin: 0;
+  font-size: clamp(19px, 5.2vw, 22px);
+  font-weight: 800;
+  color: $primary;
+  letter-spacing: -0.4px;
+  line-height: 1.15;
+
+  @media (min-width: $bp-tablet) {
+    font-size: 24px;
   }
 }
 

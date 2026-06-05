@@ -31,6 +31,7 @@ import {
   logoWhatsapp,
   alertCircle,
   shareSocialOutline,
+  diamondOutline,
 } from 'ionicons/icons';
 import { environment } from '../../../../environments/environment';
 import { Car } from '../../../core/models/car.model';
@@ -58,6 +59,12 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
   @ViewChild('imgTrack') imgTrackRef!: ElementRef<HTMLElement>;
 
   car: Car | null = null;
+  // Resolved image URLs, computed once when `car` is set. The template binds
+  // to this stable array — calling a `getAllImages()` getter from the template
+  // instead would return a new `.map()` result on every change-detection cycle,
+  // which caused `*ngFor` to re-mount every <img> and the browser to never
+  // finish loading them (looked like "the page takes forever to load").
+  images: string[] = [];
   isOwned = false;
   isWishlisted = false;
   activeImageIndex = 0;
@@ -101,10 +108,15 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
       logoWhatsapp,
       alertCircle,
       shareSocialOutline,
+      diamondOutline,
     });
   }
 
   ngOnInit(): void {}
+
+  get isPremium(): boolean {
+    return this.car?.premiumVerified === true;
+  }
 
   ionViewWillEnter(): void {
     const sharedId = this.route.snapshot.queryParamMap.get('id');
@@ -115,12 +127,24 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
       this.car = nav.car ?? null;
       this.isOwned = nav.isOwned ?? false;
       this.fromRoute = nav.fromRoute ?? null;
+      this.images = this.resolveImages(this.car);
+      this.activeImageIndex = 0;
       sessionStorage.removeItem('pendingCarNav');
       localStorage.setItem('carDetailState', raw);
       this.refreshWishlistFlag();
     } else if (sharedId) {
       this.loadCarFromShareLink(sharedId);
     }
+  }
+
+  private resolveImages(car: Car | null): string[] {
+    return (car?.images ?? []).map((f) => this.carService.imageUrl(f));
+  }
+
+  // Stable trackBy so *ngFor doesn't recreate <img> nodes when the array
+  // identity changes (e.g. after a refresh from the share-link path).
+  trackByUrl(_index: number, url: string): string {
+    return url;
   }
 
   private matchesId(rawState: string, id: string): boolean {
@@ -137,6 +161,8 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
         this.car = car;
         this.isOwned = false;
         this.fromRoute = '/tabs/auto';
+        this.images = this.resolveImages(car);
+        this.activeImageIndex = 0;
         localStorage.setItem(
           'carDetailState',
           JSON.stringify({ car, isOwned: false, fromRoute: this.fromRoute }),
@@ -214,25 +240,26 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
   }
 
   prevImage(): void {
-    const total = this.getAllImages().length;
+    const total = this.images.length;
+    if (total === 0) return;
     this.selectImage((this.activeImageIndex - 1 + total) % total);
   }
 
   nextImage(): void {
-    const total = this.getAllImages().length;
+    const total = this.images.length;
+    if (total === 0) return;
     this.selectImage((this.activeImageIndex + 1) % total);
   }
 
   onImgScroll(): void {
     const track = this.imgTrackRef?.nativeElement;
     if (!track) return;
-    const total = this.getAllImages().length;
+    const total = this.images.length;
     const index = Math.round(track.scrollLeft / track.offsetWidth);
     this.activeImageIndex = Math.max(0, Math.min(index, total - 1));
   }
 
   getCarName(): string {
-    console.log("CAR DETAILS: ", this.car);
     if (!this.car) return '';
     return `${this.car.make ?? ''} ${this.car.model ?? ''}`.trim();
   }
@@ -256,14 +283,9 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
   }
 
   getFirstImage(): string | null {
-    const images = this.getAllImages();
-    return images.length > 0
-      ? images[this.activeImageIndex] ?? images[0]
+    return this.images.length > 0
+      ? this.images[this.activeImageIndex] ?? this.images[0]
       : null;
-  }
-
-  getAllImages(): string[] {
-    return (this.car?.images ?? []).map((f) => this.carService.imageUrl(f));
   }
 
   formatPrice(price: number): string {

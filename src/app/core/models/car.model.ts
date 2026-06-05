@@ -29,6 +29,7 @@ export interface Car {
   isAvailable?: boolean;
   isVerified?: boolean;
   verified?: 'verified' | 'unverified';
+  premiumVerified?: boolean;
   fuelType?: 'petrol' | 'diesel' | 'electric' | 'hybrid';
   dealerName?: string;
   responseTime?: string;
