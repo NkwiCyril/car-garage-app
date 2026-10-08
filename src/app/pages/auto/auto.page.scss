@@ -11,7 +11,13 @@ $success: #16a34a;
 $bp-sm: 480px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
+$bp-wide: 1280px;
+$bp-xl: 1536px;
+$bp-2xl: 1920px;
 $mp-max: 960px;
+$mp-max-wide: 1280px;
+$mp-max-xl: 1480px;
+$mp-max-2xl: 1600px;
 
 :host {
   display: block;
@@ -31,6 +37,12 @@ ion-content {
     margin: 0 auto;
     padding-bottom: 48px;
   }
+
+  // See dashboard.page.scss for the rationale — keep the marketplace from
+  // looking like a stretched phone on big monitors.
+  @media (min-width: $bp-wide)  { max-width: $mp-max-wide; }
+  @media (min-width: $bp-xl)    { max-width: $mp-max-xl; }
+  @media (min-width: $bp-2xl)   { max-width: $mp-max-2xl; }
 }
 
 // ─── Header ──────────────────────────────────────────
@@ -481,16 +493,10 @@ ion-content {
   gap: clamp(12px, 3.5vw, 14px);
   padding: 0 clamp(20px, 6vw, 32px);
 
-  @media (min-width: $bp-tablet) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    padding: 0 40px;
-  }
-
-  @media (min-width: $bp-desktop) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-  }
+  @media (min-width: $bp-tablet)  { grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 40px; }
+  @media (min-width: $bp-desktop) { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  @media (min-width: $bp-xl)      { grid-template-columns: repeat(5, 1fr); gap: 20px; }
+  @media (min-width: $bp-2xl)     { grid-template-columns: repeat(6, 1fr); gap: 22px; }
 }
 
 // ─── Car Card ────────────────────────────────────────

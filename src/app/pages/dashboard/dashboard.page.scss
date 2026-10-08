@@ -12,7 +12,16 @@ $bp-sm: 480px;
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
 $bp-wide: 1280px;
+$bp-xl: 1536px;   // big laptops / standard external monitors
+$bp-2xl: 1920px;  // full HD and up
+
+// Container caps. Mobile remains fluid (no max). From tablet on we centre the
+// content; on each successive breakpoint we let the container breathe so the
+// page doesn't look like a stretched phone on a 1920px-wide monitor.
 $dash-max: 960px;
+$dash-max-wide: 1280px;
+$dash-max-xl: 1480px;
+$dash-max-2xl: 1600px;
 
 :host {
   display: block;
@@ -45,9 +54,9 @@ ion-content {
     padding-bottom: 48px;
   }
 
-  @media (min-width: $bp-wide) {
-    max-width: 1080px;
-  }
+  @media (min-width: $bp-wide)  { max-width: $dash-max-wide; }
+  @media (min-width: $bp-xl)    { max-width: $dash-max-xl; }
+  @media (min-width: $bp-2xl)   { max-width: $dash-max-2xl; }
 }
 
 // ─── Header ──────────────────────────────────────────
@@ -748,15 +757,10 @@ ion-content {
   grid-template-columns: repeat(2, 1fr);
   gap: clamp(12px, 3.5vw, 14px);
 
-  @media (min-width: $bp-tablet) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-  }
-
-  @media (min-width: $bp-desktop) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-  }
+  @media (min-width: $bp-tablet)  { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (min-width: $bp-desktop) { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  @media (min-width: $bp-xl)      { grid-template-columns: repeat(5, 1fr); gap: 20px; }
+  @media (min-width: $bp-2xl)     { grid-template-columns: repeat(6, 1fr); gap: 22px; }
 }
 
 .dash__car-card {
@@ -971,9 +975,11 @@ ion-content {
     }
   }
 
-  @media (min-width: $bp-wide) {
-    right: calc(50% - 540px + 40px);
-  }
+  // Pin the FAB to the right edge of the centred container at each breakpoint
+  // so it never drifts into empty space on wide monitors.
+  @media (min-width: $bp-wide)  { right: calc(50% - #{$dash-max-wide} / 2 + 40px); }
+  @media (min-width: $bp-xl)    { right: calc(50% - #{$dash-max-xl} / 2 + 40px); }
+  @media (min-width: $bp-2xl)   { right: calc(50% - #{$dash-max-2xl} / 2 + 40px); }
 }
 
 .dash__bottom-pad {

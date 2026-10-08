@@ -13,8 +13,29 @@ export class CarService {
   private apiUrl = `${environment.apiUrl}/cars`;
   private mediaUrl = environment.mediaUrl;
 
-  imageUrl(filename: string): string {
-    return `${this.mediaUrl}${filename}`;
+  /**
+   * Build a renderable URL for a car image path returned by the API.
+   *
+   * The backend has historically returned paths in several shapes
+   * (`/cars/foo.jpg`, `cars/foo.jpg`, occasionally an absolute URL once the
+   * platform moves uploads off the local disk). The naive
+   * `${mediaUrl}${filename}` concatenation breaks on any of those: it can
+   * drop the slash between host and path, or double up the scheme on
+   * already-absolute URLs. This helper handles all four cases plus
+   * empty/null input safely.
+   */
+  imageUrl(filename: string | null | undefined): string {
+    if (!filename) return '';
+    if (
+      filename.startsWith('http://') ||
+      filename.startsWith('https://') ||
+      filename.startsWith('data:')
+    ) {
+      return filename;
+    }
+    const base = this.mediaUrl.replace(/\/$/, '');
+    const path = filename.startsWith('/') ? filename : `/${filename}`;
+    return `${base}${path}`;
   }
 
   constructor(private http: HttpClient) {}

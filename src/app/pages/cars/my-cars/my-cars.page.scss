@@ -10,7 +10,13 @@ $danger: #dc2626;
 $bp-sm: 480px;
 $bp-md: 768px;
 $bp-lg: 1024px;
+$bp-wide: 1280px;
+$bp-xl: 1536px;
+$bp-2xl: 1920px;
 $mc-max: 1020px;
+$mc-max-wide: 1280px;
+$mc-max-xl: 1480px;
+$mc-max-2xl: 1600px;
 
 :host {
   display: block;
@@ -29,6 +35,10 @@ ion-content {
     max-width: $mc-max;
     margin: 0 auto;
   }
+
+  @media (min-width: $bp-wide) { max-width: $mc-max-wide; }
+  @media (min-width: $bp-xl)   { max-width: $mc-max-xl; }
+  @media (min-width: $bp-2xl)  { max-width: $mc-max-2xl; }
 }
 
 // ─── Nav ─────────────────────────────────────────────
@@ -218,9 +228,9 @@ ion-content {
     gap: clamp(16px, 2.5vw, 22px);
   }
 
-  @media (min-width: $bp-lg) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  @media (min-width: $bp-lg)   { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: $bp-xl)   { grid-template-columns: repeat(4, 1fr); }
+  @media (min-width: $bp-2xl)  { grid-template-columns: repeat(5, 1fr); }
 }
 
 // ─── Card ────────────────────────────────────────────

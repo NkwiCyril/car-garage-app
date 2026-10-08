@@ -11,7 +11,12 @@ $whatsapp: #25d366;
 
 $bp-tablet: 768px;
 $bp-desktop: 1024px;
+$bp-wide: 1280px;
+$bp-xl: 1536px;
+$bp-2xl: 1920px;
 $pf-max: 960px;
+$pf-max-wide: 1200px;
+$pf-max-xl: 1380px;
 
 :host {
   display: block;
@@ -31,6 +36,9 @@ ion-content {
     margin: 0 auto;
     padding-bottom: 48px;
   }
+
+  @media (min-width: $bp-wide) { max-width: $pf-max-wide; }
+  @media (min-width: $bp-xl)   { max-width: $pf-max-xl; }
 }
 
 // ─── Hero Header ─────────────────────────────────────

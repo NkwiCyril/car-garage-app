@@ -5,6 +5,8 @@ $gray-light: #e2e4e9;
 $white: #ffffff;
 
 $bp-tablet: 768px;
+$bp-wide: 1280px;
+$bp-xl: 1536px;
 
 ion-tab-bar {
   --background: #{$white};
@@ -13,9 +15,12 @@ ion-tab-bar {
   height: 64px;
   box-shadow: 0 -4px 16px rgba(11, 27, 43, 0.05);
 
-  // Keep full width, but visually center the buttons
+  // Keep the bar itself full-width (the bottom edge of the viewport) so it
+  // doesn't look detached, but cluster the buttons in the centre so they
+  // don't drift to the far corners on big monitors.
   @media (min-width: $bp-tablet) {
     justify-content: center;
+    gap: 8px;
   }
 
   ion-tab-button {
@@ -28,10 +33,12 @@ ion-tab-bar {
     position: relative;
     transition: opacity 0.15s ease;
 
-    // Cap each button's width on desktop so they don't stretch
-    @media (min-width: $bp-tablet) {
-      max-width: 160px;
-    }
+    // Buttons grow wider on each successive desktop breakpoint so the cluster
+    // visually scales with the content container above it instead of getting
+    // increasingly lost in empty space.
+    @media (min-width: $bp-tablet) { max-width: 180px; min-width: 140px; }
+    @media (min-width: $bp-wide)   { max-width: 220px; min-width: 180px; }
+    @media (min-width: $bp-xl)     { max-width: 260px; min-width: 220px; }
 
     ion-icon {
       font-size: 22px;

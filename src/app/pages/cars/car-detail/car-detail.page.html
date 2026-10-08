@@ -39,7 +39,19 @@
       <div class="cd__img-track" #imgTrack (scroll)="onImgScroll()">
         <ng-container *ngIf="images.length > 0">
           <div class="cd__img-slide" *ngFor="let img of images; trackBy: trackByUrl">
-            <img [src]="img" class="cd__hero-img" alt="" />
+            <!-- Per-slide fallback: when the actual file fails to load,
+                 swap to the same placeholder used for the empty case
+                 instead of showing the browser's broken-image icon. -->
+            <img
+              *ngIf="!isImageBroken(img)"
+              [src]="img"
+              class="cd__hero-img"
+              alt=""
+              (error)="onImgError(img)"
+            />
+            <div class="cd__hero-placeholder" *ngIf="isImageBroken(img)">
+              <ion-icon name="car-sport-outline"></ion-icon>
+            </div>
           </div>
         </ng-container>
         <div class="cd__img-slide" *ngIf="images.length === 0">
@@ -296,7 +308,16 @@
             (click)="openSimilarCar(sc)"
           >
             <div class="cd__similar-img-wrap">
-              <img [src]="sc.image" [alt]="sc.name" class="cd__similar-img" />
+              <img
+                *ngIf="sc.image"
+                [src]="sc.image"
+                [alt]="sc.name"
+                class="cd__similar-img"
+                (error)="onSimilarImgError(sc)"
+              />
+              <div class="cd__similar-img-placeholder" *ngIf="!sc.image">
+                <ion-icon name="car-sport-outline"></ion-icon>
+              </div>
               <span class="cd__similar-year">{{ sc.year }}</span>
             </div>
             <div class="cd__similar-info">

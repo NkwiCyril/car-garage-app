@@ -147,6 +147,26 @@ export class CarDetailPage implements OnInit, ViewWillEnter {
     return url;
   }
 
+  // Tracks hero image URLs whose actual file 404'd (or otherwise failed to
+  // load) so the template can swap to the placeholder instead of leaving the
+  // browser's broken-image icon visible. Backing storage is currently Render's
+  // ephemeral disk, so this happens more often than it should.
+  private brokenImages = new Set<string>();
+
+  onImgError(url: string): void {
+    if (!this.brokenImages.has(url)) {
+      this.brokenImages.add(url);
+    }
+  }
+
+  isImageBroken(url: string): boolean {
+    return this.brokenImages.has(url);
+  }
+
+  onSimilarImgError(card: SimilarCar): void {
+    card.image = '';
+  }
+
   private matchesId(rawState: string, id: string): boolean {
     try {
       return JSON.parse(rawState)?.car?._id === id;
